@@ -50,11 +50,14 @@ class AddSourceForm extends Component {
       url: this.state.url,
       type: this.state.type,
       tag: this.state.tag,
+      dateofCreate: dateformat(this.state.dateofCreate, "dd, mm, yyyy"),
+      dateofUpdate: dateformat(this.state.dateofUpdate, "dd, mm, yyyy"),
+      creator: this.state.creator,
     })
       .then((res) => {
         this.setState({
           isSubmit: true,
-          id: res.data.identity.low,
+          id: res.data
         })
       })
       .catch(() => {

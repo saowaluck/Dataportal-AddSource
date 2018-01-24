@@ -62,17 +62,20 @@ app.get('/source/:id/', (req, res) => {
 
 app.post('/source/', (req, res) => {
   const getSource = session.run(
-    'CREATE n = (source:Source:Type {name:{name}, url:{url}, type:{type}, tag:{tag}}) RETURN n',
+    'CREATE n = (user:User{name:{creator}})-[:Add]->(source:Source:Type {name:{name}, url:{url}, type:{type}, tag:{tag}, dateofCreate:{dateofCreate}, dateofUpdate:{dateofUpdate}}) RETURN n',
     {
+      creator: req.body.creator,
       name: req.body.name,
       url: req.body.url,
       type: req.body.type,
       tag: req.body.tag,
+      dateofCreate: req.body.dateofCreate,
+      dateofUpdate: req.body.dateofUpdate
     },
   )
   getSource.then((result) => {
     session.close()
-    res.json(result.records[0]._fields[0].start)
+    res.json(result.records[0]._fields[0].end.identity.low)
     db.close()
   })
 })
