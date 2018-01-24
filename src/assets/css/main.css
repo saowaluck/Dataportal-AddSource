@@ -1,0 +1,38 @@
+.nav-item img {
+  max-height: 4rem;
+}
+.ui.menu {
+    margin: 0;
+}
+.ui.secondary.menu.nav-item {
+    background: #e8e8e8;
+}
+.search input {
+     width: 100%;
+}
+.ui.input {
+    font-size: 1.3em;
+}
+.meta {
+  color: rgba(0, 0, 0, 0.4);
+  margin: 1.5rem 0;
+}
+.visible.content {
+  font-size: 0.8em;
+}
+.ui.secondary.pointing.menu .active.item {
+    border-color: #01adee;
+    border-width: 4;
+}
+.ui.list>.item .header {
+    color: #01adee;
+}
+p.ui.sub.header {
+  color: #01adee;
+}
+.empty.heart.icon {
+  color: #f90909;
+}
+.heart.icon {
+  color: #f90909;
+}

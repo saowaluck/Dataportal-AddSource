@@ -1,0 +1,32 @@
+iframe{
+  height: -webkit-fill-available;
+  width: 100%;
+  border: 0;
+}
+.ui.secondary.menu {
+  margin-left: 0;
+  margin-right: 0;
+}
+.ui.input {
+  font-size: 1.3em;
+  width: 100%;
+}
+.ui.secondary.pointing.menu .active.item {
+  border-color: #01adee;
+  border-width: 5px;
+}
+.ui.avatar.image{
+  margin-right: -0.55em;
+}
+.ui.segment{
+  box-shadow: none;
+  border-style: none;
+  padding: 2rem 0.5rem;
+}
+.ui.vertical.segment{
+  padding-top: 1em;
+}
+.ui.form .inline.fields .field {
+  padding: 0 0 0 0;
+  padding-top: 3em;
+}

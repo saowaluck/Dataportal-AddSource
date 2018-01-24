@@ -1,0 +1,37 @@
+version: '3'
+services:
+  db:
+    image: neo4j
+    ports:
+      - 7474:7474
+      - 7473:7473
+      - 7687:7687
+    volumes:
+      - ./db/dbms:/data/dbms
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./compose/nodejs/Dockerfile
+    ports:
+      - 5000:5000
+    volumes:
+      - ./src:/app/src
+    links:
+      - db
+    env_file:
+      - .env
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./compose/react/Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+    depends_on:
+      - backend
+    env_file:
+      - .env
