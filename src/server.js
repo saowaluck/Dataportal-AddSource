@@ -36,9 +36,10 @@ app.get('/api/source/', (req, res) => {
   getAllSource.then((result) => {
     session.close()
     const data = result.records.map(item => ({
-      id: item._fields[0].end.identity.low,
+      id: item._fields[0].segments[0].relationship.identity.low,
       name: item._fields[0].end.properties.name,
       type: item._fields[0].end.properties.type,
+      tag: item._fields[0].end.properties.tag,
       url: item._fields[0].end.properties.url,
       dateofCreate: item._fields[0].end.properties.dateofCreate,
       dateofUpdate: item._fields[0].end.properties.dateofUpdate,
@@ -54,9 +55,10 @@ app.get('/source/:id/', (req, res) => {
   getSource.then((result) => {
     session.close()
     const data = result.records.map(item => ({
-      id: item._fields[0].end.identity.low,
+      id: item._fields[0].segments[0].relationship.identity.low,
       name: item._fields[0].end.properties.name,
       type: item._fields[0].end.properties.type,
+      tag: item._fields[0].end.properties.tag,
       url: item._fields[0].end.properties.url,
       dateofCreate: item._fields[0].end.properties.dateofCreate,
       dateofUpdate: item._fields[0].end.properties.dateofUpdate,
@@ -82,7 +84,7 @@ app.post('/source/', (req, res) => {
   )
   getSource.then((result) => {
     session.close()
-    res.json(result.records[0]._fields[0].end.identity.low)
+    res.json(result.records[0]._fields[0].segments[0].relationship.identity.low,)
     db.close()
   })
 })
