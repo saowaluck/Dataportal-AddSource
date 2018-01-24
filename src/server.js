@@ -32,14 +32,17 @@ app.get('/api/types/', (req, res) => {
 })
 
 app.get('/api/source/', (req, res) => {
-  const getAllSource = session.run('MATCH (s:Source) RETURN s')
+  const getAllSource = session.run('MATCH p=()-[r:Add]->() RETURN p')
   getAllSource.then((result) => {
     session.close()
     const data = result.records.map(item => ({
-      id: item._fields[0].identity.low,
-      name: item._fields[0].properties.name,
-      type: item._fields[0].properties.type,
-      url: item._fields[0].properties.url,
+      id: item._fields[0].end.identity.low,
+      name: item._fields[0].end.properties.name,
+      type: item._fields[0].end.properties.type,
+      url: item._fields[0].end.properties.url,
+      dateofCreate: item._fields[0].end.properties.dateofCreate,
+      dateofUpdate: item._fields[0].end.properties.dateofUpdate,
+      creator:item._fields[0].start.properties.name
     }))
     res.json(data)
     db.close()
