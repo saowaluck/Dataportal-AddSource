@@ -8,9 +8,11 @@ dotenv.config({ path: './../../.env' })
 
 class DisplaySourceDetail extends Component {
   state = {
-    name: '',
-    type: '',
     url: '',
+    name: '',
+    tag: '',
+    dateofCreate: '',
+    creator: '',
   }
 
   componentDidMount() {
@@ -19,9 +21,11 @@ class DisplaySourceDetail extends Component {
     axios
       .get(url)
       .then((data) => {
-        this.setState({ name: data.data[0].name })
-        this.setState({ type: data.data[0].type })
         this.setState({ url: data.data[0].url })
+        this.setState({ name: data.data[0].name })
+        this.setState({ tag: data.data[0].tag })
+        this.setState({ dateofCreate: data.data[0].dateofCreate })
+        this.setState({ creator: data.data[0].creator })
       })
       .catch(() => {
       })
@@ -31,9 +35,11 @@ class DisplaySourceDetail extends Component {
     return (
       <div>
         <DisplaySourceDetailConmponent
-          name={this.state.name}
-          type={this.state.type}
           url={this.state.url}
+          name={this.state.name}
+          tag={this.state.tag}
+          dateofCreate={this.state.dateofCreate}
+          creator={this.state.creator}
         />
       </div>
     )
