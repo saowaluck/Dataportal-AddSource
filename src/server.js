@@ -50,13 +50,17 @@ app.get('/api/source/', (req, res) => {
 })
 
 app.get('/source/:id/', (req, res) => {
-  const getSource = session.run('MATCH (n :Source) WHERE ID(n) = {id} RETURN n', { id: Number(req.params.id) })
+  const getSource = session.run('MATCH p=()-[r:Add]->() WHERE ID(r) = {id} RETURN p', { id: Number(req.params.id) })
   getSource.then((result) => {
     session.close()
     const data = result.records.map(item => ({
-      name: item._fields[0].properties.name,
-      type: item._fields[0].properties.type,
-      url: item._fields[0].properties.url,
+      id: item._fields[0].end.identity.low,
+      name: item._fields[0].end.properties.name,
+      type: item._fields[0].end.properties.type,
+      url: item._fields[0].end.properties.url,
+      dateofCreate: item._fields[0].end.properties.dateofCreate,
+      dateofUpdate: item._fields[0].end.properties.dateofUpdate,
+      creator:item._fields[0].start.properties.name
     }))
     res.json(data)
     db.close()
