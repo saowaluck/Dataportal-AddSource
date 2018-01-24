@@ -16,6 +16,12 @@ const ListAllSource = ({ resource }) => (
                       <div className='visible content'>{item.type}</div>
                     </div>
                   </h3>
+                  <br />
+                  <p>
+                    <span><a href='member'><i className='spy icon people' />{item.creator}</a></span>
+                    <span><i className='wait icon' />{item.dateofCreate}</span>
+                    <span><i className='history icon' />{item.dateofUpdate}</span>
+                  </p>
                 </div>
               </div>
             </div>
