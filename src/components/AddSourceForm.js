@@ -66,7 +66,6 @@ class AddSourceForm extends Component {
 
   render() {
     return (
-      console.log(dateformat(this.state.dateofCreate, "dd, mm, yyyy")),
       <div className='ui main container'>
         <h1>Add New Resource</h1>
         <div className='ui segment'>
