@@ -15,14 +15,13 @@ describe('<AddSourceForm />', () => {
   it('should innitial state of type', () => {
     const wrapper = shallow(<AddSourceForm />)
     wrapper.setState({
-      type: ['Superset Chart', 'Superset Dashboard'],
+      type: ['Superset Dashboard'],
     })
-    expect(wrapper.state().type).toEqual(['Superset Chart', 'Superset Dashboard'])
+    expect(wrapper.state().type).toEqual(['Superset Dashboard'])
   })
 
   it('should render form', () => {
     const wrapper = shallow(<AddSourceForm />)
-
     const form = wrapper.find('form')
 
     expect(form.length).toBe(1)
