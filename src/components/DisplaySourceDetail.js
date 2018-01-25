@@ -21,7 +21,7 @@ const DisplaySourceDetail = ({
         <div className='ui segment'>
           <h2 className='ui header'>{name}</h2>
           <div className='meta'>
-            <span className='ui left floated label'>{tag}</span>
+            {tag.split(',').map(item => <span key={item.id} className='ui left floated label'>{item}</span>)}
           </div>
           <div className='ui list meta'>
             <div className='item'>
