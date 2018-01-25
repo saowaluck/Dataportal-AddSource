@@ -72,7 +72,8 @@ class AddSourceForm extends Component {
           <div className='ui stackable grid'>
             <div className='ten wide column'>
               <form className='ui form' onSubmit={this.handleSubmit}>
-                <div className='field'>Resource Type
+                <div className='field'>
+                <label htmlFor='tag'>Resource Type</label>
                   <Dropdown
                     selection
                     name='type'
