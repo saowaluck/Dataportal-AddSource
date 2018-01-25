@@ -13,7 +13,7 @@ describe('< DisplaySourceDetail />', () => {
   })
 
   it('should set state to resource when call API properly', (done) => {
-    const wrapper = shallow(<DisplaySourceDetailContainer id="0" />)
+    const wrapper = shallow(<DisplaySourceDetailContainer id='0' />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
@@ -22,8 +22,10 @@ describe('< DisplaySourceDetail />', () => {
         response: [
           {
             name: 'Track Reseller',
-            type: 'Superset Dashboard',
             url: 'https://www.prontotools.io/',
+            tag: 'Reseller',
+            dateofCreate: '01, 01, 2018',
+            creator: 'Thanisorn Noodech',
           },
         ],
       }).then(() => {
@@ -31,7 +33,9 @@ describe('< DisplaySourceDetail />', () => {
         expect(request.config.method).toBe('get')
         expect(wrapper.state().name).toBe('Track Reseller')
         expect(wrapper.state().url).toBe('https://www.prontotools.io/')
-        expect(wrapper.state().type).toBe('Superset Dashboard')
+        expect(wrapper.state().tag).toBe('Reseller')
+        expect(wrapper.state().dateofCreate).toBe('01, 01, 2018')
+        expect(wrapper.state().creator).toBe('Thanisorn Noodech')
         done()
       })
     })
