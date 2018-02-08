@@ -19,31 +19,15 @@ const db = neo4j.driver(
 )
 const session = db.session()
 
-app.get('/api/types/', (req, res) => {
-  const getType = session.run('MATCH (n:Source) RETURN distinct(n.type)')
-  getType.then((result) => {
-    session.close()
-    const types = result.records.map(item => ({
-      type: item._fields[0],
-    }))
-    res.json(types)
-    db.close()
-  })
-})
-
 app.get('/api/source/', (req, res) => {
-  const getAllSource = session.run('MATCH p=()-[r:Add]->() RETURN p')
+  const getAllSource = session.run('MATCH (s:Source) RETURN s')
   getAllSource.then((result) => {
     session.close()
     const data = result.records.map(item => ({
-      id: item._fields[0].segments[0].relationship.identity.low,
-      name: item._fields[0].end.properties.name,
-      type: item._fields[0].end.properties.type,
-      tag: item._fields[0].end.properties.tag,
-      url: item._fields[0].end.properties.url,
-      dateofCreate: item._fields[0].end.properties.dateofCreate,
-      dateofUpdate: item._fields[0].end.properties.dateofUpdate,
-      creator:item._fields[0].start.properties.name
+      id: item._fields[0].identity.low,
+      name: item._fields[0].properties.name,
+      type: item._fields[0].properties.type,
+      url: item._fields[0].properties.url,
     }))
     res.json(data)
     db.close()
@@ -51,40 +35,63 @@ app.get('/api/source/', (req, res) => {
 })
 
 app.get('/source/:id/', (req, res) => {
-  const getSource = session.run('MATCH p=()-[r:Add]->() WHERE ID(r) = {id} RETURN p', { id: Number(req.params.id) })
+  const getSource = session.run('MATCH (n :Source) WHERE ID(n) = {id} RETURN n', { id: Number(req.params.id) })
   getSource.then((result) => {
     session.close()
-    const data = result.records.map(item => ({
-      id: item._fields[0].segments[0].relationship.identity.low,
-      name: item._fields[0].end.properties.name,
-      type: item._fields[0].end.properties.type,
-      tag: item._fields[0].end.properties.tag,
-      url: item._fields[0].end.properties.url,
-      dateofCreate: item._fields[0].end.properties.dateofCreate,
-      dateofUpdate: item._fields[0].end.properties.dateofUpdate,
-      creator:item._fields[0].start.properties.name
-    }))
-    res.json(data)
+    const { type } = result.records[0]._fields[0].properties
+    if (type === 'Database') {
+      const { name, columns } = result.records[0]._fields[0].properties
+      res.json({
+        name,
+        type,
+        columns,
+      })
+    } else {
+      const { name, url, tag } = result.records[0]._fields[0].properties
+      res.json({
+        name,
+        type,
+        url,
+        tag,
+      })
+    }
     db.close()
   })
 })
 
 app.post('/source/', (req, res) => {
-  const getSource = session.run(
-    'CREATE n = (user:User{name:{creator}})-[:Add]->(source:Source:Type {name:{name}, url:{url}, type:{type}, tag:{tag}, dateofCreate:{dateofCreate}, dateofUpdate:{dateofUpdate}}) RETURN n',
-    {
-      creator: req.body.creator,
-      name: req.body.name,
-      url: req.body.url,
-      type: req.body.type,
-      tag: req.body.tag,
-      dateofCreate: req.body.dateofCreate,
-      dateofUpdate: req.body.dateofUpdate
-    },
-  )
-  getSource.then((result) => {
-    session.close()
-    res.json(result.records[0]._fields[0].segments[0].relationship.identity.low,)
-    db.close()
-  })
+  const { type } = req.body
+  if (type === 'Database') {
+    const columns = req.body.column.map(row => `${row[0]},${row[1]}`)
+    const getSource = session.run(
+      'CREATE n = (:Source{name:{name}, type:{type}, columns:{columns}}) RETURN n',
+      {
+        name: req.body.tableName,
+        type: req.body.type,
+        columns,
+      },
+    )
+    getSource.then((result) => {
+      session.close()
+      res.json(result.records[0]._fields[0].start)
+      db.close()
+    })
+  }
+  if (type === 'Superset Dashboard') {
+    const { name, url, tag } = req.body
+    const getSource = session.run(
+      'CREATE n = (source:Source:Type {name:{name}, url:{url}, type:{type}, tag:{tag}}) RETURN n',
+      {
+        name,
+        url,
+        type,
+        tag,
+      },
+    )
+    getSource.then((result) => {
+      session.close()
+      res.json(result.records[0]._fields[0].start)
+      db.close()
+    })
+  }
 })

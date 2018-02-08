@@ -11,17 +11,11 @@ const ListAllSource = ({ resource }) => (
               <div className='ui row vertical segment'>
                 <div className='ui item'>
                   <h3 className='ui header'>
-                    <a href={`/DisplaySourceDetail/${item.id}/`}>{item.name}</a>
+                    <a href={`/resources/${item.id}/`}>{item.name}</a>
                     <div className='ui right floated button disabled'>
                       <div className='visible content'>{item.type}</div>
                     </div>
                   </h3>
-                  <br />
-                  <p>
-                    <span><a href='member'><i className='spy icon people' />{item.creator}</a></span>
-                    <span><i className='wait icon' />{item.dateofCreate}</span>
-                    <span><i className='history icon' />{item.dateofUpdate}</span>
-                  </p>
                 </div>
               </div>
             </div>
@@ -32,7 +26,7 @@ const ListAllSource = ({ resource }) => (
 )
 
 ListAllSource.propTypes = {
-  resource: PropTypes.array.isRequired,
+  resource: PropTypes.arrayOf(PropTypes.any).isRequired,
 }
 
 export default ListAllSource
