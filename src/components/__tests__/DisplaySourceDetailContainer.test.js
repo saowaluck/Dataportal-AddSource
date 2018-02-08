@@ -12,30 +12,52 @@ describe('< DisplaySourceDetail />', () => {
     moxios.uninstall()
   })
 
-  it('should set state to resource when call API properly', (done) => {
+  it('should set state type of database resource when call API properly', (done) => {
     const wrapper = shallow(<DisplaySourceDetailContainer id='0' />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
       request.respondWith({
         status: 200,
-        response: [
-          {
-            name: 'Track Reseller',
-            url: 'https://www.prontotools.io/',
-            tag: 'Reseller',
-            dateofCreate: '01, 01, 2018',
-            creator: 'Thanisorn Noodech',
-          },
-        ],
+        response: {
+          name: 'AccountName',
+          type: 'Database',
+          columns: [
+            'accountName,String',
+            'status,string',
+          ],
+        },
       }).then(() => {
         expect(request.url).toBe('http://localhost:5000/source/0/')
         expect(request.config.method).toBe('get')
-        expect(wrapper.state().name).toBe('Track Reseller')
+        expect(wrapper.state().name).toBe('AccountName')
+        expect(wrapper.state().columns).toEqual(['accountName,String', 'status,string'])
+        expect(wrapper.state().type).toBe('Database')
+        done()
+      })
+    })
+  })
+
+  it('should set state type of superset resource when call API properly', (done) => {
+    const wrapper = shallow(<DisplaySourceDetailContainer id='0' />)
+
+    moxios.wait(() => {
+      const request = moxios.requests.mostRecent()
+      request.respondWith({
+        status: 200,
+        response: {
+          name: 'pw_accounts_account',
+          type: 'Superset Dashboard',
+          url: 'https://www.prontotools.io/',
+          tag: 'athena',
+        },
+      }).then(() => {
+        expect(request.url).toBe('http://localhost:5000/source/0/')
+        expect(request.config.method).toBe('get')
+        expect(wrapper.state().name).toBe('pw_accounts_account')
         expect(wrapper.state().url).toBe('https://www.prontotools.io/')
-        expect(wrapper.state().tag).toBe('Reseller')
-        expect(wrapper.state().dateofCreate).toBe('01, 01, 2018')
-        expect(wrapper.state().creator).toBe('Thanisorn Noodech')
+        expect(wrapper.state().type).toBe('Superset Dashboard')
+        expect(wrapper.state().tag).toBe('athena')
         done()
       })
     })
