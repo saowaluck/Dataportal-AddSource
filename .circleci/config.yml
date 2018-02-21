@@ -31,5 +31,5 @@ jobs:
       - run:
           name: Run Unit Tests
           command: |
-            yarn run src/components/__tests__/DisplayDatabaseSource.test.js
+            yarn test src/components/__tests__/DisplayDatabaseSource.test.js
             
