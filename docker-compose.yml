@@ -4,10 +4,12 @@ services:
     image: neo4j
     ports:
       - 7474:7474
-      - 7473:7473
       - 7687:7687
+      - 7473:7473
     volumes:
       - ./db/dbms:/data/dbms
+      - ./db/plugins:/plugins
+      - ./db/conf:/conf
 
   backend:
     build:

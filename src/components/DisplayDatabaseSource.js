@@ -14,6 +14,8 @@ class DisplayDatabaseSource extends Component {
     return data
   }
 
+  convertTags = () => this.props.tags.map(tag => (<span key={tag} className='ui left floated label'>{tag}</span>))
+
   render() {
     return (
       <div className='ui main container'>
@@ -25,6 +27,7 @@ class DisplayDatabaseSource extends Component {
                 <tr>
                   <th>Name</th>
                   <th>Type</th>
+                  <th>Description</th>
                 </tr>
               </thead>
               <tbody>
@@ -35,8 +38,15 @@ class DisplayDatabaseSource extends Component {
           <div className='five wide column'>
             <div className='ui segment'>
               <h3 className='ui header'>
-                <a href='/'>{this.props.name}</a>
+                {this.props.name}
+                <a href={`/resources/edit/${this.props.id}/`}>
+                  &nbsp;<i className='edit icon' />
+                </a>
               </h3>
+              {this.convertTags()}
+              <p>{this.props.description}</p>
+              <p>{this.props.createdDate}</p>
+              <hr />
             </div>
           </div>
         </div>
@@ -46,8 +56,12 @@ class DisplayDatabaseSource extends Component {
 }
 
 DisplayDatabaseSource.propTypes = {
+  id: PropTypes.string.isRequired,
   columns: PropTypes.arrayOf(PropTypes.string).isRequired,
   name: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  createdDate: PropTypes.string.isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 
 export default DisplayDatabaseSource

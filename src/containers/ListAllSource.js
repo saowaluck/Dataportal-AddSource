@@ -1,9 +1,6 @@
-import dotenv from 'dotenv'
 import React, { Component } from 'react'
 import axios from 'axios'
 import ListAllSourceComponent from './../components/ListAllSource'
-
-dotenv.config({ path: './../../.env' })
 
 class ListAllSource extends Component {
   state = {
@@ -11,7 +8,7 @@ class ListAllSource extends Component {
   }
 
   componentDidMount() {
-    const url = `${process.env.REACT_APP_API_URL}/api/source/`
+    const url = `${process.env.REACT_APP_API_URL}/source/`
     axios
       .get(url)
       .then((res) => {

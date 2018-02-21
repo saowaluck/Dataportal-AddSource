@@ -17,7 +17,6 @@ const Header = () => (
           <div className='menu'>
             <a className='item' href='/'>Edit Profile</a>
             <div className='divider' />
-            <div class="g-signin2" data-width="300" data-height="200" data-longtitle="true" />
             <a className='item' href='/'>Log Out</a>
           </div>
         </div>

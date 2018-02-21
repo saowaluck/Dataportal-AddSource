@@ -37,7 +37,7 @@ describe('< ListAllSource />', () => {
         const name = wrapper.state().resource.map(node => node.name)
         const url = wrapper.state().resource.map(node => node.url)
         const type = wrapper.state().resource.map(node => node.type)
-        expect(request.url).toBe('http://localhost:5000/api/source/')
+        expect(request.url).toBe('http://localhost:5000/source/')
         expect(request.config.method).toBe('get')
         expect(name).toEqual(['Track Reseller', 'How to use checkbox of semantic-ui'])
         expect(url).toEqual(['https://www.prontotools.io/', 'https://semantic-ui.com/modules/checkbox.html'])

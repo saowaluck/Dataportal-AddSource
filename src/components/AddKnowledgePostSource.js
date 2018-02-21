@@ -4,7 +4,7 @@ import axios from 'axios'
 import PropTypes from 'prop-types'
 import { Dropdown } from 'semantic-ui-react'
 
-class AddSupersetSource extends Component {
+class AddKnowledgePostSource extends Component {
   state = {
     id: 0,
     name: '',
@@ -14,13 +14,6 @@ class AddSupersetSource extends Component {
     options: [],
   }
 
-  componentDidMount() {
-  }
-
-  handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
-  }
-
   handleTagsAddition = (e, { value }) => {
     this.setState({
       options: [{ text: value, value }, ...this.state.options],
@@ -28,6 +21,10 @@ class AddSupersetSource extends Component {
   }
 
   handleTagsChange = (e, { value }) => this.setState({ tags: value })
+
+  handleChange = e => {
+    this.setState({ [e.target.name]: e.target.value })
+  }
 
   handleSubmit = e => {
     e.preventDefault()
@@ -77,7 +74,7 @@ class AddSupersetSource extends Component {
             </label>
           </div>
           <div className='field'>
-            <label htmlFor='tags'>tags
+            <label htmlFor='tag'>Tag
               <Dropdown
                 options={this.state.options}
                 placeholder='Insert Tag'
@@ -102,8 +99,8 @@ class AddSupersetSource extends Component {
   }
 }
 
-AddSupersetSource.propTypes = {
+AddKnowledgePostSource.propTypes = {
   type: PropTypes.string.isRequired,
 }
 
-export default AddSupersetSource
+export default AddKnowledgePostSource

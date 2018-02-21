@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import AddSourceForm from './AddSourceForm'
 import DisplaySourceDetail from './../containers/DisplaySourceDetail'
 import ListAllSource from './../containers/ListAllSource'
+import EditSource from './../containers/EditSource'
 import Header from './Header'
 import './../assets/css/main.css'
 
@@ -14,10 +15,8 @@ const App = () => (
       <Switch>
         <Route exact path='/' component={ListAllSource} />
         <Route path='/resources/add/' component={AddSourceForm} />
-        <Route
-          path='/resources/:id'
-          render={({ match }) => <DisplaySourceDetail id={match.params.id} />}
-        />
+        <Route path='/resources/edit/:id' component={EditSource} />
+        <Route path='/resources/:id' component={DisplaySourceDetail} />
       </Switch>
     </div>
   </Router>

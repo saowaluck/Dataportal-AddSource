@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
-import axios from 'axios'
-import { Dropdown, Modal, Button } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
+import axios from 'axios'
+import { Redirect } from 'react-router-dom'
+import { Dropdown, Modal, Button } from 'semantic-ui-react'
 
-class AddDatabaseSource extends Component {
+class EditDatabaseSource extends Component {
   state = {
     types: [
       { key: '0', text: 'int', value: 'int' },
@@ -16,8 +16,8 @@ class AddDatabaseSource extends Component {
       { key: '6', text: 'timestamp', value: 'timestamp' },
       { key: '7', text: 'date', value: 'date' },
     ],
-    name: '',
-    description: '',
+    tableName: '',
+    tableDescription: '',
     tags: [],
     columns: [],
     columnID: 0,
@@ -25,22 +25,25 @@ class AddDatabaseSource extends Component {
     columnType: '',
     columnDescription: '',
     isSubmit: false,
-    options: [],
+    isOpen: false,
   }
 
-  handleTagsAddition = (e, { value }) => {
+  componentDidMount = () => {
     this.setState({
-      options: [{ text: value, value }, ...this.state.options],
+      tableName: this.props.name,
+      tableDescription: this.props.description,
+      columns: this.props.columns.map(row => (
+        row.split(',')
+      )),
     })
   }
 
-  handleTagsChange = (e, { value }) => this.setState({ tags: value })
-
   handleSubmit = e => {
     e.preventDefault()
-    axios.post(`${process.env.REACT_APP_API_URL}/source/`, {
-      name: this.state.name,
-      description: this.state.description,
+    axios.post(`${process.env.REACT_APP_API_URL}/source/edit/`, {
+      id: this.props.id,
+      tableName: this.state.tableName,
+      tableDescription: this.state.tableDescription,
       columns: this.state.columns,
       tags: this.state.tags,
       type: this.props.type,
@@ -48,7 +51,7 @@ class AddDatabaseSource extends Component {
       .then((res) => {
         this.setState({
           isSubmit: true,
-          id: res.data.id,
+          id: res.data.identity.low,
         })
       })
       .catch(() => {
@@ -104,7 +107,7 @@ class AddDatabaseSource extends Component {
             <i className='edit icon' />
           </div>
           <div className='ui red icon button' role='presentation' onClick={() => this.handleDeleteColumn(item)}>
-            <i className='remove icon' />
+            <i className='trash icon' />
           </div>
         </Button.Group>
       </div>
@@ -184,100 +187,99 @@ class AddDatabaseSource extends Component {
   }
 
   render() {
-    const { tags } = this.state
     return (
-      <div>
-        {this.handleModal()}
-        <form onSubmit={this.handleSubmit}>
-          <div className='field'>
-            <label htmlFor='name'>Table Name
-              <input
-                type='text'
-                name='name'
-                placeholder='Table Name'
-                value={this.state.name}
-                required
-                onChange={this.handleChange}
-              />
-            </label>
-          </div>
-          <div className='field'>
-            <label htmlFor='name'>Table Description
-              <textarea
-                type='text'
-                name='description'
-                value={this.state.description}
-                onChange={this.handleChange}
-              />
-            </label>
-          </div>
-          <div className='field'>
-            <label htmlFor='name'>Tag
-              <Dropdown
-                options={this.state.options}
-                placeholder='Insert Tag'
-                name='tags'
-                search
-                selection
-                fluid
-                multiple
-                allowAdditions
-                value={tags}
-                onAddItem={this.handleTagsAddition}
-                onChange={this.handleTagsChange}
-              />
-            </label>
-          </div>
-          <div className='field'>
-            { this.listColumns().length !== 0 && <h4 className='ui horizontal divider header'>Columns</h4>}
-            { this.listColumns()}
-            <h4 className='ui horizontal divider header'>Add Columns</h4>
-            <div className='three fields'>
-              <div className='field'>
-                <input
-                  placeholder='Column Name'
-                  type='text'
-                  name='columnName'
-                  value={this.state.columnName}
-                  onChange={this.handleChange}
-                />
-              </div>
-              <div className='field'>
-                <Dropdown
-                  selection
-                  name='columnType'
-                  options={this.state.types}
-                  onChange={(e, { value }) => {
-                    this.handleDropdownChange(value)
-                  }}
-                />
-              </div>
-              <div className='field'>
-                <textarea
-                  placeholder='Column Description'
-                  type='text'
-                  name='columnDescription'
-                  rows='1'
-                  value={this.state.columnDescription}
-                  onChange={this.handleChange}
-                />
-              </div>
-              <div className='ui primary icon button' role='presentation' onClick={this.handleAddColumn} >
-                <i className='add icon' />
-              </div>
+      <div className='ui main container'>
+        <h1>Edit Resource</h1>
+        <div className='ui segment'>
+          <div className='ui stackable grid'>
+            <div className='ten wide column'>
+              <form className='ui form' onSubmit={this.handleSubmit} >
+                {this.handleModal()}
+                <div className='field'>
+                  <label htmlFor='name'>Table Name
+                    <input
+                      type='text'
+                      name='tableName'
+                      placeholder='Table Name'
+                      value={this.state.tableName}
+                      required
+                      onChange={this.handleChange}
+                    />
+                  </label>
+                </div>
+                <div className='field'>
+                  <label htmlFor='name'>Table Description
+                    <textarea
+                      type='text'
+                      name='tableDescription'
+                      value={this.state.tableDescription}
+                      onChange={this.handleChange}
+                    />
+                  </label>
+                </div>
+                <div className='field'>
+                  <label htmlFor='name'>Tag
+                    <input type='text' name='tags' />
+                  </label>
+                </div>
+                <div className='field'>
+                  { this.listColumns().length !== 0 && <h4 className='ui horizontal divider header'>Columns</h4>}
+                  { this.listColumns()}
+                  <h4 className='ui horizontal divider header'>Add Columns</h4>
+                  <div className='three fields'>
+                    <div className='field'>
+                      <input
+                        placeholder='Column Name'
+                        type='text'
+                        name='columnName'
+                        value={this.state.columnName}
+                        onChange={this.handleChange}
+                      />
+                    </div>
+                    <div className='field'>
+                      <Dropdown
+                        selection
+                        placeholder='Column Type'
+                        name='columnType'
+                        options={this.state.types}
+                        onChange={(e, { value }) => {
+                          this.handleDropdownChange(value)
+                        }}
+                      />
+                    </div>
+                    <div className='field'>
+                      <textarea
+                        placeholder='Column Description'
+                        type='text'
+                        name='columnDescription'
+                        rows='1'
+                        value={this.state.columnDescription}
+                        onChange={this.handleChange}
+                      />
+                    </div>
+                    <div className='ui primary icon button' role='presentation' onClick={this.handleAddColumn}>
+                      <i className='add icon' />
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <button className='ui primary button' type='submit' >Save Table</button>
+              </form>
+              {this.state.isSubmit && (<Redirect to={`/resources/${this.state.id}/`} />)}
             </div>
           </div>
-          <hr />
-          <button className='ui primary button' type='submit'>Save Table</button>
-        </form>
-        {this.state.isSubmit && (<Redirect to={`/resources/${this.state.id}/`} />)}
+        </div>
       </div>
     )
   }
 }
 
-AddDatabaseSource.propTypes = {
+EditDatabaseSource.propTypes = {
+  id: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  columns: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 
-export default AddDatabaseSource
+export default EditDatabaseSource

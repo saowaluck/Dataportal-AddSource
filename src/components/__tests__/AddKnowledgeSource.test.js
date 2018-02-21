@@ -1,9 +1,9 @@
 import React from 'react'
 import moxios from 'moxios'
 import { shallow, mount } from 'enzyme'
-import AddSupersetSource from './../AddSupersetSource'
+import AddKnowledgePostSource from './../AddKnowledgePostSource'
 
-describe('<AddSupersetSource />', () => {
+describe('<AddKnowledgePostSource />', () => {
   beforeEach(() => {
     moxios.install()
   })
@@ -13,12 +13,12 @@ describe('<AddSupersetSource />', () => {
   })
 
   it('should initial of type', () => {
-    const wrapper = mount(<AddSupersetSource type='Superset Dashboard' />)
-    expect(wrapper.props().type).toBe('Superset Dashboard')
+    const wrapper = mount(<AddKnowledgePostSource type='Knowledge Post' />)
+    expect(wrapper.props().type).toBe('Knowledge Post')
   })
 
   it('should render form', () => {
-    const wrapper = mount(<AddSupersetSource type='Superset Dashboard' />)
+    const wrapper = shallow(<AddKnowledgePostSource type='Knowledge Post' />)
     const form = wrapper.find('form')
 
     expect(form.length).toBe(1)
@@ -29,21 +29,21 @@ describe('<AddSupersetSource />', () => {
   })
 
   it('should change state when set data in feilds', () => {
-    const wrapper = shallow(<AddSupersetSource type='Superset Dashboard' />)
+    const wrapper = shallow(<AddKnowledgePostSource type='Knowledge Post' />)
 
     wrapper.setState({
-      name: 'Track Reseller',
-      url: 'https://www.prontotools.io/',
-      tags: 'Athena, Prontoworld',
+      name: 'Robot Framework',
+      url: 'https://www.prontotools.io/robot-framework-101-มาลองใช้กัน/',
+      tags: 'automate_testing, circle_ci',
     })
 
-    expect(wrapper.state().name).toBe('Track Reseller')
-    expect(wrapper.state().url).toBe('https://www.prontotools.io/')
-    expect(wrapper.state().tags).toBe('Athena, Prontoworld')
+    expect(wrapper.state().name).toBe('Robot Framework')
+    expect(wrapper.state().url).toBe('https://www.prontotools.io/robot-framework-101-มาลองใช้กัน/')
+    expect(wrapper.state().tags).toBe('automate_testing, circle_ci')
   })
 
   it('should simulates click submit form', (done) => {
-    const wrapper = shallow(<AddSupersetSource type='Superset Dashboard' />)
+    const wrapper = shallow(<AddKnowledgePostSource type='' />)
 
     const preventDefault = jest.fn()
     wrapper.find('form').simulate('submit', { preventDefault })
@@ -53,14 +53,14 @@ describe('<AddSupersetSource />', () => {
       request.respondWith({
         status: 200,
         response: {
-          id: 1780,
+          id: 1800,
         },
       }).then(() => {
         expect(preventDefault).toBeCalled()
         expect(wrapper.state().isSubmit).toBeTruthy()
         expect(request.url).toBe('http://localhost:5000/source/')
         expect(request.config.method).toBe('post')
-        expect(wrapper.state().id).toBe(1780)
+        expect(wrapper.state().id).toBe(1800)
         done()
       })
     })
