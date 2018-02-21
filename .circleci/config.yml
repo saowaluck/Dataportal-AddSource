@@ -10,6 +10,8 @@ jobs:
       - restore_cache:
           keys:
           - node-dependencies-{{ checksum "package.json" }}
+          - yarn-cache-{{ .Branch }}
+          - yarn-cache-
 
       - run:
           name: Install Dependencies
