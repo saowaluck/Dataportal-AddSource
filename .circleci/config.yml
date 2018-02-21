@@ -7,21 +7,12 @@ jobs:
 
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - node-dependencies-{{ checksum "package.json" }}
-          - ~/.cache/yarn
 
       - run:
           name: Install Dependencies
           command: |
             yarn install
-          
-      - save_cache:
-          paths:
-            - ./node_modules
-          key: node-dependencies-{{ checksum "package.json" }}
-      
+
       - run:
           name: Run ESlint
           command: |
@@ -30,7 +21,5 @@ jobs:
  
       - run:
           name: Run Unit Tests
-          test:
-            override: |
-              yarn test src/components/__tests__/DisplayDatabaseSource.test.js
+          command: yarn test src/components/__tests__/DisplayDatabaseSource.test.js
             
