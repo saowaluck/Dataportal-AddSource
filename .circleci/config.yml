@@ -32,6 +32,6 @@ jobs:
       - run:
           name: Run Unit Tests
           command: |
-            CI=true yarn test:coverage
+            CI=true yarn test --coverage
             yarn reportCoverage
 
