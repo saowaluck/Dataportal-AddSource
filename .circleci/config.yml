@@ -1,0 +1,34 @@
+version: 2
+jobs:
+  build: 
+    docker:
+      - image: circleci/node:9.3.0
+    working_directory: ~/dataportal
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - node-dependencies-{{ checksum "package.json" }}
+
+      - run:
+          name: Install Dependencies
+          command: |
+            yarn install
+          
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: node-dependencies-{{ checksum "package.json" }}
+      
+      - run:
+          name: Run ESlint
+          command: |
+            yarn eslint src/components/
+            yarn eslint src/containers/
+
+test:
+  override:
+    - yarn test
+
+
