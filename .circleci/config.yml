@@ -31,5 +31,5 @@ jobs:
       - run:
           name: Run Unit Tests
           command: |
-            npm run test
+            yarn run src/components/__tests__/DisplayDatabaseSource.test.js
             
