@@ -26,9 +26,9 @@ jobs:
           command: |
             yarn eslint src/components/
             yarn eslint src/containers/
-
-test:
-  override:
-    - yarn test
-
+ 
+      - run:
+          name: Run Unit Tests
+          command: |
+            yarn test
 
