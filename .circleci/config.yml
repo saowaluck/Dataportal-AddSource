@@ -30,6 +30,7 @@ jobs:
  
       - run:
           name: Run Unit Tests
-          command: |
-            yarn test src/components/__tests__/DisplayDatabaseSource.test.js
+          test:
+            override: |
+              yarn test src/components/__tests__/DisplayDatabaseSource.test.js
             
