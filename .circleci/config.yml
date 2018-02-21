@@ -31,5 +31,5 @@ jobs:
       - run:
           name: Run Unit Tests
           command: |
-            CI=true yarn test --coverage
+            npm run test
             
