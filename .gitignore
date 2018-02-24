@@ -2,3 +2,4 @@
 db/
 node_mudules/
 .env
+node_modules/
