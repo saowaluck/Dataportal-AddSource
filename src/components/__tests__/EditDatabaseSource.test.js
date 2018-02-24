@@ -13,12 +13,38 @@ describe('<EditDatabaseSource />', () => {
   })
 
   it('should initial of type', () => {
-    const wrapper = mount(<EditDatabaseSource id={200} name='ProntoWorld Teams' description='Description ProntoWorld Teams' columns={['TeamName, string, Description']} type='Database' />)
+    const id = 5
+    const name = 'ProntoWorld Teams'
+    const description = 'Description ProntoWorld Teams'
+    const columns = ['TeamName, string, Description']
+    const type = 'Database'
+    const tags = ['team', 'database']
+    const wrapper = mount(<EditDatabaseSource
+      id={id}
+      name={name}
+      description={description}
+      columns={columns}
+      type={type}
+      tags={tags}
+    />)
     expect(wrapper.props().type).toBe('Database')
   })
 
   it('should initial state of Columntype', () => {
-    const wrapper = shallow(<EditDatabaseSource id={200} name='ProntoWorld Teams' description='Description ProntoWorld Teams' columns={['TeamName, string, Description']} type='Database' />)
+    const id = 5
+    const name = 'ProntoWorld Teams'
+    const description = 'Description ProntoWorld Teams'
+    const columns = ['TeamName, string, Description']
+    const type = 'Database'
+    const tags = ['team', 'database']
+    const wrapper = shallow(<EditDatabaseSource
+      id={id}
+      name={name}
+      description={description}
+      columns={columns}
+      type={type}
+      tags={tags}
+    />)
     wrapper.setState({
       type: [
         'int',
@@ -44,19 +70,44 @@ describe('<EditDatabaseSource />', () => {
   })
 
   it('should render form', () => {
-    const wrapper = shallow(<EditDatabaseSource id={200} name='ProntoWorld Teams' description='Description ProntoWorld Teams' columns={['TeamName, string, Description']} type='Database' />)
+    const id = 5
+    const name = 'ProntoWorld Teams'
+    const description = 'Description ProntoWorld Teams'
+    const columns = ['TeamName, string, Description']
+    const type = 'Database'
+    const tags = ['team', 'database']
+    const wrapper = shallow(<EditDatabaseSource
+      id={id}
+      name={name}
+      description={description}
+      columns={columns}
+      type={type}
+      tags={tags}
+    />)
     const form = wrapper.find('form')
-
-    expect(form.length).toBe(2)
+    expect(form.length).toBe(1)
     expect(form.find('input[name="name"]').length).toBe(1)
     expect(form.find('textarea[name="description"]').length).toBe(1)
-    expect(form.find('input[name="tags"]').length).toBe(1)
-    expect(form.find('input[name="columnName"]').length).toBe(3)
-    expect(form.find('Dropdown').length).toBe(2)
+    expect(form.find('Dropdown[name="tags"]').length).toBe(1)
+    expect(form.find('input[name="columnName"]').length).toBe(2)
+    expect(form.find('Dropdown[name="columnType"]').length).toBe(1)
   })
 
   it('should change state when set data in feilds', () => {
-    const wrapper = shallow(<EditDatabaseSource id={200} name='ProntoWorld Teams' description='Description ProntoWorld Teams' columns={['TeamName, string, Description']} type='Database' />)
+    const id = 5
+    const name = 'ProntoWorld Teams'
+    const description = 'Description ProntoWorld Teams'
+    const columns = ['TeamName, string, Description']
+    const type = 'Database'
+    const tags = ['team', 'database']
+    const wrapper = shallow(<EditDatabaseSource
+      id={id}
+      name={name}
+      description={description}
+      columns={columns}
+      type={type}
+      tags={tags}
+    />)
     wrapper.setState({
       name: 'ProntoWorld Teams',
       description: 'Description ProntoWorld Teams',
@@ -71,7 +122,20 @@ describe('<EditDatabaseSource />', () => {
   })
 
   it('should simulates click submit form', (done) => {
-    const wrapper = shallow(<EditDatabaseSource id={200} name='ProntoWorld Teams' description='Description ProntoWorld Teams' columns={['TeamName, string, Description']} type='Database' />)
+    const id = 5
+    const name = 'ProntoWorld Teams'
+    const description = 'Description ProntoWorld Teams'
+    const columns = ['TeamName, string, Description']
+    const type = 'Database'
+    const tags = ['team', 'database']
+    const wrapper = shallow(<EditDatabaseSource
+      id={id}
+      name={name}
+      description={description}
+      columns={columns}
+      type={type}
+      tags={tags}
+    />)
     const preventDefault = jest.fn()
     wrapper.find('form[name="table"]').simulate('submit', { preventDefault })
     moxios.wait(() => {

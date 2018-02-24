@@ -45,7 +45,6 @@ class AddKnowledgePostSource extends Component {
   }
 
   render() {
-    const { tags } = this.state
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -84,7 +83,7 @@ class AddKnowledgePostSource extends Component {
                 fluid
                 multiple
                 allowAdditions
-                value={tags}
+                value={this.state.tags}
                 onAddItem={this.handleTagsAddition}
                 onChange={this.handleTagsChange}
               />

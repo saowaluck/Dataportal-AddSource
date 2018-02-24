@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
-import dotenv from 'dotenv'
 import EditDatabaseSource from './../components/EditDatabaseSource'
 import EditSupersetSource from './../components/EditSupersetSource'
 import EditKnowledgePostSource from './../components/EditKnowledgePostSource'
-
-dotenv.config({ path: './../../.env' })
 
 class EditSource extends Component {
   state = {
@@ -24,21 +21,19 @@ class EditSource extends Component {
     const path = `${process.env.REACT_APP_API_URL}/source/${id}/`
     axios
       .get(path)
-      .then((data) => {
-        const { type } = data.data
+      .then((result) => {
+        this.setState({ id: +this.props.match.params.id })
+        const { name, type } = result.data.source
+        const { tags } = result.data
         if (type === 'Database') {
-          const {
-            name, description, columns,
-          } = data.data
+          const { columns, description } = result.data.source
           this.setState({
-            id, name, description, type, columns,
+            name, columns, description, type, tags,
           })
         } else {
-          const {
-            name, url, tags,
-          } = data.data
+          const { url } = result.data.source
           this.setState({
-            id, name, type, url, tags,
+            name, type, url, tags,
           })
         }
       })
@@ -46,37 +41,35 @@ class EditSource extends Component {
       })
   }
   render() {
-    const {
-      id, name, description, type, columns, tags, url,
-    } = this.state
     return (
       <div>
         {
           this.state.type === 'Database' &&
           <EditDatabaseSource
-            id={id}
-            name={name}
-            description={description}
-            type={type}
-            columns={columns}
+            id={this.state.id}
+            name={this.state.name}
+            description={this.state.description}
+            type={this.state.type}
+            tags={this.state.tags}
+            columns={this.state.columns}
           />
         }
         { this.state.type === 'Superset Dashboard' &&
           <EditSupersetSource
-            id={id}
-            name={name}
-            type={type}
-            url={url}
-            tags={tags}
+            id={this.state.id}
+            name={this.state.name}
+            type={this.state.type}
+            url={this.state.url}
+            tags={this.state.tags}
           />
         }
         { this.state.type === 'Knowledge Post' &&
           <EditKnowledgePostSource
-            id={id}
-            name={name}
-            type={type}
-            url={url}
-            tags={tags}
+            id={this.state.id}
+            name={this.state.name}
+            type={this.state.type}
+            url={this.state.url}
+            tags={this.state.tags}
           />
         }
       </div>

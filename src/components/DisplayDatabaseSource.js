@@ -44,9 +44,13 @@ class DisplayDatabaseSource extends Component {
                 </a>
               </h3>
               {this.convertTags()}
-              <p>{this.props.description}</p>
-              <p>{this.props.createdDate}</p>
-              <hr />
+              <div className='ui row vertical segment'>
+                <div className='ui list meta'>
+                  <p>{this.props.description}</p>
+                  <b>created : </b>{this.props.createdDate}
+                </div>
+                <hr />
+              </div>
             </div>
           </div>
         </div>
@@ -56,7 +60,7 @@ class DisplayDatabaseSource extends Component {
 }
 
 DisplayDatabaseSource.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
   columns: PropTypes.arrayOf(PropTypes.string).isRequired,
   name: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,

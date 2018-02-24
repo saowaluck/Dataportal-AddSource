@@ -21,10 +21,10 @@ class AddSourceForm extends Component {
   render() {
     return (
       <div className='ui main container'>
-        <h1>Add New Resource</h1>
-        <div className='ui segment'>
-          <div className='ui stackable grid'>
-            <div className='ten wide column'>
+        <div className='ui centered grid'>
+          <div className='twelve wide column'>
+            <div className='ui segment'>
+              <h1>Add New Resource</h1>
               <form className='ui form'>
                 <div className='field'>
                   <label htmlFor='name'>

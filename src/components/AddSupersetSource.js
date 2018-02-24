@@ -48,7 +48,6 @@ class AddSupersetSource extends Component {
   }
 
   render() {
-    const { tags } = this.state
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -87,7 +86,7 @@ class AddSupersetSource extends Component {
                 fluid
                 multiple
                 allowAdditions
-                value={tags}
+                value={this.state.tags}
                 onAddItem={this.handleTagsAddition}
                 onChange={this.handleTagsChange}
               />

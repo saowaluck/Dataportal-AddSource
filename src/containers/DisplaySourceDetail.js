@@ -7,6 +7,7 @@ import DisplayDatabaseSource from './../components/DisplayDatabaseSource'
 
 class DisplaySourceDetail extends Component {
   state = {
+    id: 0,
     name: '',
     description: '',
     type: '',
@@ -22,6 +23,7 @@ class DisplaySourceDetail extends Component {
     axios
       .get(path)
       .then((result) => {
+        this.setState({ id: +this.props.match.params.id })
         let { createdDate } = result.data.source
         createdDate = moment(createdDate).format('MMMM Do YYYY')
         const { name, type } = result.data.source
@@ -42,38 +44,38 @@ class DisplaySourceDetail extends Component {
       })
   }
   render() {
-    const {
-      name, description, createdDate, type, columns, tags, url,
-    } = this.state
     return (
       <div>
         {
           this.state.type === 'Database' &&
           <DisplayDatabaseSource
-            name={name}
-            columns={columns}
-            description={description}
-            createdDate={createdDate}
-            type={type}
-            tags={tags}
+            id={this.state.id}
+            name={this.state.name}
+            columns={this.state.columns}
+            description={this.state.description}
+            createdDate={this.state.createdDate}
+            type={this.state.type}
+            tags={this.state.tags}
           />
         }
         { this.state.type === 'Superset Dashboard' &&
           <DisplaySourceDetailComponent
-            name={name}
-            createdDate={createdDate}
-            type={type}
-            url={url}
-            tags={tags}
+            id={this.state.id}
+            name={this.state.name}
+            createdDate={this.state.createdDate}
+            type={this.state.type}
+            url={this.state.url}
+            tags={this.state.tags}
           />
         }
         { this.state.type === 'Knowledge Post' &&
           <DisplaySourceDetailComponent
-            name={name}
-            createdDate={createdDate}
-            type={type}
-            url={url}
-            tags={tags}
+            id={this.state.id}
+            name={this.state.name}
+            createdDate={this.state.createdDate}
+            type={this.state.type}
+            url={this.state.url}
+            tags={this.state.tags}
           />
         }
       </div>
@@ -82,8 +84,7 @@ class DisplaySourceDetail extends Component {
 }
 
 DisplaySourceDetail.propTypes = {
-  id: PropTypes.string.isRequired,
-  match: PropTypes.string.isRequired,
+  match: PropTypes.objectOf(PropTypes.any).isRequired,
 }
 
 export default DisplaySourceDetail

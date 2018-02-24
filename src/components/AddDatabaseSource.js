@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import axios from 'axios'
-import { Dropdown, Modal, Button } from 'semantic-ui-react'
+import { Dropdown, Button } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
 
 class AddDatabaseSource extends Component {
@@ -18,14 +18,17 @@ class AddDatabaseSource extends Component {
     ],
     name: '',
     description: '',
-    tags: [],
+    tags: [''],
     columns: [],
-    columnID: 0,
     columnName: '',
     columnType: '',
     columnDescription: '',
     isSubmit: false,
     options: [],
+    editID: '',
+    editName: '',
+    editType: '',
+    editDescription: '',
   }
 
   handleTagsAddition = (e, { value }) => {
@@ -72,6 +75,7 @@ class AddDatabaseSource extends Component {
     this.setState({
       columnName: '',
       columnDescription: '',
+      columnType: '',
     })
   }
 
@@ -81,114 +85,133 @@ class AddDatabaseSource extends Component {
 
   listColumns = () => (
     this.state.columns.map((item, id) => (
-      <div className='three fields' key={item}>
-        <div className='field disabled'>
-          <input
-            type='text'
-            name='columnName'
-            value={item[0]}
-          />
-        </div>
-        <div className='field disabled'>
-          <input
-            type='text'
-            name='columnType'
-            value={item[1]}
-          />
-        </div>
-        <div className='field disabled'>
-          <textarea type='text' name='columnDescription' rows='1' value={item[2]} />
-        </div>
-        <Button.Group size='large'>
-          <div className='ui primary icon button' role='presentation' onClick={() => this.handleShow(item, id)}>
-            <i className='edit icon' />
+      this.state.editID === id ? (
+        this.handleShowEditColumn()
+      ) : (
+        <div
+          className='three fields'
+          key={item}
+        >
+          <div
+            className='field'
+            role='presentation'
+            onClick={() => this.handleEditColumn(item, id)}
+          >
+            <input
+              disabled
+              type='text'
+              name='columnName'
+              defaultValue={item[0]}
+            />
           </div>
-          <div className='ui red icon button' role='presentation' onClick={() => this.handleDeleteColumn(item)}>
-            <i className='remove icon' />
+          <div
+            className='field'
+            role='presentation'
+            onClick={() => this.handleEditColumn(item, id)}
+          >
+            <input
+              disabled
+              className='disabled'
+              type='text'
+              name='columnType'
+              defaultValue={item[1]}
+            />
           </div>
-        </Button.Group>
-      </div>
+          <div
+            className='field'
+            role='presentation'
+            onClick={() => this.handleEditColumn(item, id)}
+          >
+            <textarea
+              disabled
+              className='disabled'
+              type='text'
+              name='columnDescription'
+              rows='1'
+              defaultValue={item[2]}
+            />
+          </div>
+          <Button.Group size='large'>
+            <div className='ui red icon button' role='presentation' onClick={() => this.handleDeleteColumn(item)}>
+              <i className='trash icon' />
+            </div>
+          </Button.Group>
+        </div>
+      )
     ))
   )
 
-  handleModal = () => (
-    <Modal dimmer='blurring' open={this.state.isOpen} onClose={this.handleClose} closeIcon>
-      <Modal.Header>Edit Column</Modal.Header>
-      <Modal.Content>
-        <form className='ui form'>
-          <div className='three fields'>
-            <div className='field'>
-              <input
-                placeholder='Column Name'
-                type='text'
-                name='columnName'
-                value={this.state.columnName}
-                onChange={this.handleChange}
-              />
-            </div>
-            <div className='field'>
-              <Dropdown
-                selection
-                placeholder='Column Type'
-                name='columnType'
-                defaultValue={this.state.columnType}
-                options={this.state.types}
-                onChange={(e, { value }) => {
-                    this.handleDropdownChange(value)
-                  }}
-              />
-            </div>
-            <div className='field'>
-              <textarea
-                placeholder='Column Description'
-                type='text'
-                name='columnDescription'
-                rows='1'
-                value={this.state.columnDescription}
-                onChange={this.handleChange}
-              />
-            </div>
-          </div>
-        </form>
-      </Modal.Content>
-      <Modal.Actions>
-        <button className='ui primary button' onClick={this.updateColumn} >Save</button>
-      </Modal.Actions>
-    </Modal>
+  handleShowEditColumn = () => (
+    <div className='three fields' >
+      <div className='field'>
+        <input
+          placeholder='Column Name'
+          type='text'
+          name='editName'
+          value={this.state.editName}
+          onChange={this.handleChange}
+        />
+      </div>
+      <div className='field'>
+        <Dropdown
+          selection
+          placeholder='Column Type'
+          name='columnType'
+          defaultValue={this.state.editType}
+          options={this.state.types}
+          onChange={(e, { value }) => {
+              this.handleDropdownChange(value)
+            }}
+        />
+      </div>
+      <div className='field'>
+        <textarea
+          placeholder='Column Description'
+          type='text'
+          name='editDescription'
+          rows='1'
+          value={this.state.editDescription}
+          onChange={this.handleChange}
+        />
+      </div>
+      <Button.Group size='large'>
+        <div className='ui primary icon button' role='presentation' onClick={this.updateColumn} >
+          <i className='save icon' />
+        </div>
+      </Button.Group>
+    </div>
   )
 
-  handleShow = (itemEdit, id) => {
+  handleEditColumn = (itemEdit, id) => {
     this.setState({
-      isOpen: true,
-      columnID: id,
-      columnName: itemEdit[0],
-      columnType: itemEdit[1],
-      columnDescription: itemEdit[2],
+      editID: id,
+      editName: itemEdit[0],
+      editType: itemEdit[1],
+      editDescription: itemEdit[2],
     })
   }
 
-  handleClose = () => this.setState({ isOpen: false, columnName: '', columnDescription: '' })
+  handleClose = () => this.setState({ columnName: '', columnDescription: '' })
 
   updateColumn = () => {
     const newColumns = this.state.columns
-    newColumns.splice(this.state.columnID, 1, [
-      this.state.columnName,
-      this.state.columnType,
-      this.state.columnDescription])
+    newColumns.splice(this.state.editID, 1, [
+      this.state.editName,
+      this.state.editType,
+      this.state.editDescription])
     this.setState({
       columns: newColumns,
-      isOpen: false,
-      columnName: '',
-      columnDescription: '',
+      editID: '',
+      editName: '',
+      editType: '',
+      editDescription: '',
     })
   }
 
   render() {
-    const { tags } = this.state
     return (
       <div>
-        {this.handleModal()}
-        <form onSubmit={this.handleSubmit}>
+        <form name='table' onSubmit={this.handleSubmit}>
           <div className='field'>
             <label htmlFor='name'>Table Name
               <input
@@ -222,7 +245,7 @@ class AddDatabaseSource extends Component {
                 fluid
                 multiple
                 allowAdditions
-                value={tags}
+                value={this.state.tags}
                 onAddItem={this.handleTagsAddition}
                 onChange={this.handleTagsChange}
               />
@@ -246,6 +269,7 @@ class AddDatabaseSource extends Component {
                 <Dropdown
                   selection
                   name='columnType'
+                  value={this.state.columnType}
                   options={this.state.types}
                   onChange={(e, { value }) => {
                     this.handleDropdownChange(value)

@@ -13,7 +13,10 @@ describe('< DisplaySourceDetail />', () => {
   })
 
   it('should set state type of database resource when call API properly', (done) => {
-    const wrapper = shallow(<DisplaySourceDetailContainer id='0' />)
+    const match = {
+      params: { id: 0 },
+    }
+    const wrapper = shallow(<DisplaySourceDetailContainer match={match} />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
@@ -50,7 +53,10 @@ describe('< DisplaySourceDetail />', () => {
   })
 
   it('should set state type of superset resource when call API properly', (done) => {
-    const wrapper = mount(<DisplaySourceDetailContainer id='0' />)
+    const match = {
+      params: { id: 0 },
+    }
+    const wrapper = mount(<DisplaySourceDetailContainer match={match} />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
@@ -82,7 +88,10 @@ describe('< DisplaySourceDetail />', () => {
   })
 
   it('should set state type of knowledge post resource when call API properly', (done) => {
-    const wrapper = shallow(<DisplaySourceDetailContainer id='0' />)
+    const match = {
+      params: { id: 0 },
+    }
+    const wrapper = shallow(<DisplaySourceDetailContainer match={match} />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()

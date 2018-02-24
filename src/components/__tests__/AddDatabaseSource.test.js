@@ -74,7 +74,7 @@ describe('<AddDatabaseSource />', () => {
     const wrapper = shallow(<AddDatabaseSource type='Database' />)
 
     const preventDefault = jest.fn()
-    wrapper.find('form').simulate('submit', { preventDefault })
+    wrapper.find('form[name="table"]').simulate('submit', { preventDefault })
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()

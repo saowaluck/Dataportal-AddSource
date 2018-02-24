@@ -2,14 +2,16 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import axios from 'axios'
 import PropTypes from 'prop-types'
+import { Dropdown } from 'semantic-ui-react'
 
 class EditSupersetSource extends Component {
   state = {
     id: 0,
     name: '',
     url: '',
-    tags: '',
+    tags: [''],
     isSubmit: false,
+    options: [],
   }
 
   componentDidMount = () => {
@@ -18,8 +20,18 @@ class EditSupersetSource extends Component {
       name: this.props.name,
       url: this.props.url,
       tags: this.props.tags,
+      options: this.props.tags.map(tag =>
+        Object.assign({ text: tag, value: tag })),
     })
   }
+
+  handleTagsAddition = (e, { value }) => {
+    this.setState({
+      options: [{ text: value, value }, ...this.state.options],
+    })
+  }
+
+  handleTagsChange = (e, { value }) => this.setState({ tags: value })
 
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value })
@@ -37,7 +49,7 @@ class EditSupersetSource extends Component {
       .then((res) => {
         this.setState({
           isSubmit: true,
-          id: res.data.identity.low,
+          id: res.data.id,
         })
       })
       .catch(() => {
@@ -47,10 +59,10 @@ class EditSupersetSource extends Component {
   render() {
     return (
       <div className='ui main container'>
-        <h1>Edit Resource</h1>
-        <div className='ui segment'>
-          <div className='ui stackable grid'>
-            <div className='ten wide column'>
+        <div className='ui centered grid'>
+          <div className='twelve wide column'>
+            <div className='ui segment'>
+              <h1>Edit Resource</h1>
               <form className='ui form' onSubmit={this.handleSubmit}>
                 <div className='field'>
                   <label htmlFor='name'>Name
@@ -78,13 +90,18 @@ class EditSupersetSource extends Component {
                 </div>
                 <div className='field'>
                   <label htmlFor='tag'>Tag
-                    <input
-                      type='text'
+                    <Dropdown
+                      options={this.state.options}
+                      placeholder='Insert Tag'
                       name='tags'
-                      placeholder='Tag'
+                      search
+                      selection
+                      fluid
+                      multiple
+                      allowAdditions
                       value={this.state.tags}
-                      required
-                      onChange={this.handleChange}
+                      onAddItem={this.handleTagsAddition}
+                      onChange={this.handleTagsChange}
                     />
                   </label>
                 </div>
@@ -101,10 +118,10 @@ class EditSupersetSource extends Component {
 }
 
 EditSupersetSource.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
-  tags: PropTypes.string.isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string).isRequired,
   type: PropTypes.string.isRequired,
 }
 

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const DisplaySourceDetail = ({
-  name, createdDate, url, tags,
+  id, name, createdDate, url, tags,
 }) => (
   <div className='ui main container'>
     <div className='ui stackable grid'>
@@ -20,7 +20,7 @@ const DisplaySourceDetail = ({
       <div className='five wide column'>
         <div className='ui segment'>
           <h3 className='ui header'>{ name }
-            <a href='/'>
+            <a href={`/resources/edit/${id}/`}>
               &nbsp;<i className='edit icon' />
             </a>
           </h3>
@@ -30,7 +30,7 @@ const DisplaySourceDetail = ({
           <div className='ui row vertical segment'>
             <div className='ui list meta'>
               <div className='item' />
-              <b>created</b>{createdDate}
+              <b>created : </b>{createdDate}
             </div>
           </div>
         </div>
@@ -40,6 +40,7 @@ const DisplaySourceDetail = ({
 )
 
 DisplaySourceDetail.propTypes = {
+  id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   createdDate: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,

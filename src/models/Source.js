@@ -1,5 +1,5 @@
-const db = require('./db')
 const moment = require('moment')
+const db = require('./db')
 
 const session = db.session()
 const Source = {
@@ -100,6 +100,63 @@ const Source = {
     }
     return false
   },
+
+  editSourceTypeOfSuperset: async (id, name, url, type) => {
+    const createdDate = moment().format()
+    const source = await session
+      .run('MATCH (n :Source) WHERE ID(n) = {id} ' +
+      'SET n = {' +
+        'name:{name},' +
+        'url:{url},' +
+        'type:{type},' +
+        'createdDate:{createdDate}}' +
+      'RETURN n', {
+        id, name, url, type, createdDate,
+      })
+    return source
+  },
+
+  editSourceTypeOfDataBase: async (id, name, columns, type, description) => {
+    const createdDate = moment().format()
+    const source = await session
+      .run('MATCH (n :Source) WHERE ID(n) = {id} ' +
+      'SET n = {' +
+        'name:{name},' +
+        'columns:{columns},' +
+        'type:{type},' +
+        'description:{description},' +
+        'createdDate:{createdDate}}' +
+      'RETURN n', {
+        id, name, columns, type, description, createdDate,
+      })
+    return source
+  },
+
+  editSourceTypeOfKnowledgePost: async (id, name, url, type) => {
+    const createdDate = moment().format()
+    const source = await session
+      .run('MATCH (n :Source) WHERE ID(n) = {id} ' +
+      'SET n = {' +
+        'name:{name},' +
+        'url:{url},' +
+        'type:{type},' +
+        'createdDate:{createdDate}}' +
+      'RETURN n', {
+        id, name, url, type, createdDate,
+      })
+    return source
+  },
+
+  clearRelationchip: async (id) => {
+    await session
+      .run('MATCH (source:Source)-[r:hasTag]->() ' +
+      'WHERE ID(source) = {id} DELETE r ' +
+      'RETURN ID(source)', {
+        id,
+      })
+    return id
+  },
+
 }
 session.close()
 db.close()

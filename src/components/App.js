@@ -3,7 +3,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import AddSourceForm from './AddSourceForm'
 import DisplaySourceDetail from './../containers/DisplaySourceDetail'
-import ListAllSource from './../containers/ListAllSource'
+import Search from './Search'
 import EditSource from './../containers/EditSource'
 import Header from './Header'
 import './../assets/css/main.css'
@@ -13,7 +13,7 @@ const App = () => (
     <div>
       <Header />
       <Switch>
-        <Route exact path='/' component={ListAllSource} />
+        <Route exact path='/' component={Search} />
         <Route path='/resources/add/' component={AddSourceForm} />
         <Route path='/resources/edit/:id' component={EditSource} />
         <Route path='/resources/:id' component={DisplaySourceDetail} />
