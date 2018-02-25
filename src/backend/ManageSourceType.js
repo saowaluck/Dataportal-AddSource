@@ -29,7 +29,7 @@ const ManageSourceType = () => (
                 <tr>
                   <td>1</td>
                   <td>Database</td>
-                  <td>Apr 26,2017</td>
+                  <td>Feb 25,2018</td>
                   <td>
                     <Button.Group size='tiny'>
                       <div className='ui primary icon button' role='presentation' >
