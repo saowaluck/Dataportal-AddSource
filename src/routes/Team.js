@@ -8,6 +8,12 @@ router.get('/', async (req, res) => {
   res.status(200).json(teams)
 })
 
+router.get('/{:id}', async (req, res) => {
+  const { id } = req.params
+  const membersOfteam = await Team.getMemberOfTeam(id)
+  res.status(200).json(membersOfteam)
+})
+
 router.post('/', async (req, res) => {
   const { name, description, members } = req.body
   const teamId = await Team.createTeam(name, description)

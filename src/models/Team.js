@@ -15,7 +15,7 @@ const Team = {
   createTeamhasMember: async (teamId, memberId) => {
     const teamHasMember = await session.run('MATCH (a:Team),(b:Member) ' +
     'WHERE ID(a) = {team}  AND ID(b) = {member} ' +
-    'CREATE n=(a)-[r:RELTYPE]->(b) ' +
+    'CREATE n=(a)-[r:hasMember]->(b) ' +
     'RETURN n', {
       team: Number(teamId),
       member: Number(memberId),
@@ -24,8 +24,31 @@ const Team = {
   },
 
   getTeam: async () => {
-    const teams = await session.run('MATCH n=(t:Team)-[r:hasMember]->(m:Member) RETURN n ')
-    return teams
+    const teams = await session.run('MATCH (t:Team) RETURN t')
+    const data = await Promise.all(teams.records.map(async (team) => {
+      const id = team._fields[0].identity.low
+      const members = await session.run('MATCH (t:Team)-[r:hasMember]->(m:Member) WHERE ID(t)= {id} RETURN m', { id })
+      const member = members.records.map((item) => ({
+        id: item._fields[0].identity.low,
+        name: item._fields[0].properties.name,
+      }))
+      return {
+        id: team._fields[0].identity.low,
+        name: team._fields[0].properties.name,
+        description: team._fields[0].properties.description,
+        member,
+      }
+    }))
+    return data
+  },
+
+  getMemberOfTeam: async (id) => {
+    const members = await session.run('MATCH (t:Team)-[r:hasMember]->(m:Member) WHERE ID(t)= {id} RETURN m', { id })
+    const member = members.records.map((item) => ({
+      id: item._fields[0].identity.low,
+      name: item._fields[0].properties.name,
+    }))
+    return member
   },
 
   deleteTeam: async (teamId) => {
