@@ -18,6 +18,7 @@ class DisplayDatabaseDetail extends Component {
 
   convertTags = () => this.props.data.tags.map(tag => (<span key={tag} className='ui left floated label'>{tag}</span>))
   render() {
+    console.log(this.props.data.auth.getEmail(),this.props.data.creator.email)
     return (
       <div className='ui main container'>
         <div className='ui stackable grid'>
@@ -39,9 +40,11 @@ class DisplayDatabaseDetail extends Component {
           <div className='five wide column'>
             <div className='ui segment'>
               <h3 className='ui header'>{ this.props.data.name }
-                <a href={`/resources/edit/${this.props.data.id}/`}>
+                { (this.props.data.auth.getEmail() === this.props.data.creator.email) &&
+                <a href={`/resources/${this.props.data.id}/edit/`}>
                   {' '}<i className='edit icon' />
                 </a>
+              }
               </h3>
               <div className='meta'>
                 {this.props.data.tags.map(tag => <span key={tag} className='ui left floated label'>{tag}</span>)}
