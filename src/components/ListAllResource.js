@@ -49,3 +49,4 @@ ListAllResource.propTypes = {
 }
 
 export default ListAllResource
+

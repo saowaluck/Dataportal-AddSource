@@ -30,3 +30,4 @@ describe('< ListAllResource />', () => {
     expect(wrapper.html()).toEqual(expected)
   })
 })
+
