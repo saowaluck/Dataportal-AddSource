@@ -7,19 +7,31 @@ jobs:
 
     steps:
       - checkout
+      - restore_cache:
+          keys:
+          - node-dependencies-{{ checksum "package.json" }}
 
       - run:
           name: Install Dependencies
           command: |
             yarn install
-
+          
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: node-dependencies-{{ checksum "package.json" }}
+      
       - run:
           name: Run ESlint
           command: |
             yarn eslint src/components/
             yarn eslint src/containers/
+            yarn eslint src/routes/
+            yarn eslint src/models/
  
       - run:
           name: Run Unit Tests
-          command: yarn test --bail
-            
+          command: |
+            yarn test --bail
+
+
