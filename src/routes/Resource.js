@@ -69,24 +69,27 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   let resources = []
+  let resourceId = 'undefined'
   const member = await Member.getMemberByEmail(req.body.email)
   resources = await Resource.createResource(req.body)
-  const resourceId = Number(resources.id)
-  const memberId = Number(member.id)
-  resources = await Resource.memberCreatedResource(resourceId, memberId)
-  const { tags } = req.body
-  if (tags !== '') {
-    const tagsCleaned = cleanTags(tags)
-    resources = await Promise.all(tagsCleaned.map(async (tag) => {
-      let result = await Tag.getTagsByName(tag)
-      if (result.records.length === 0) {
-        result = await Resource.createResourceHasTag(resourceId, tag)
-      } else {
-        const tagId = result.records[0]._fields[0].identity.low
-        result = await Resource.createResourceHasTagDuplicate(resourceId, tagId)
-      }
-      return result
-    }))
+  if (resources.length !== 0) {
+    resourceId = Number(resources.id)
+    const memberId = Number(member.id)
+    resources = await Resource.memberCreatedResource(resourceId, memberId)
+    const { tags } = req.body
+    if (tags !== '') {
+      const tagsCleaned = cleanTags(tags)
+      resources = await Promise.all(tagsCleaned.map(async (tag) => {
+        let result = await Tag.getTagsByName(tag)
+        if (result.records.length === 0) {
+          result = await Resource.createResourceHasTag(resourceId, tag)
+        } else {
+          const tagId = result.records[0]._fields[0].identity.low
+          result = await Resource.createResourceHasTagDuplicate(resourceId, tagId)
+        }
+        return result
+      }))
+    }
   }
   res.json({ id: resourceId })
 })
