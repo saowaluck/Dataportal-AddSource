@@ -11,12 +11,14 @@ const ManageSourceType = () => (
               <h2>Resource Type</h2>
             </Grid.Column>
             <Grid.Column floated='right' width={5}>
-              <button className='ui right floated primary active button'>Add Type</button>
+              <button className='ui right floated primary active button' role='presentation' onClick={this.handleAddTable} >
+                Add Type 
+              </button>
             </Grid.Column>
           </Grid>
           <hr />
           <form className='ui form'>
-            <table className='ui single line selectable table'>
+            <table className='ui very basic collapsing padded table'>
               <thead>
                 <tr>
                   <th>No.</th>
