@@ -8,8 +8,8 @@ const Tags = {
     return tags
   },
 
-  getTagsBySourceId: async (id) => {
-    let tags = await session.run('MATCH (s:Source)-[:hasTag]->(t:Tag) ' +
+  getTagsByResourceId: async (id) => {
+    let tags = await session.run('MATCH (s:Resource)-[:hasTag]->(t:Tag) ' +
       'WHERE ID(s) = {id} ' +
       'RETURN t', { id })
     tags = tags.records.map(item => item._fields[0].properties.name)

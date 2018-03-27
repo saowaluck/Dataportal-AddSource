@@ -20,25 +20,25 @@ describe('server', () => {
       })
   })
 
-  it('should call Get /source', (done) => {
+  it('should call Get /resource', (done) => {
     request(app.listen())
-      .get('/api/getAllSource/')
+      .get('/api/getAllResource/')
       .expect(200)
       .end(() => {
         done()
       })
   })
 
-  it('should call Get /source/:id', (done) => {
+  it('should call Get /resource/:id', (done) => {
     request(app.listen())
-      .get('/DisplaySourceDetail/582/')
+      .get('/DisplayResourceDetail/582/')
       .expect(200)
       .end(() => {
         done()
       })
   })
 
-  it('should call Post /source', (done) => {
+  it('should call Post /resource', (done) => {
     const data = {
       properties: {
         name: 'pronto dashboard',
@@ -48,7 +48,7 @@ describe('server', () => {
       },
     }
     request(app.listen())
-      .post('/addSource/')
+      .post('/addResource/')
       .send(data)
       .expect(200)
       .end(() => {
