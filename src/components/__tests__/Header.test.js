@@ -4,20 +4,25 @@ import Header from './../Header'
 
 describe('<Header />', () => {
   it('should render header', () => {
-    const wrapper = shallow(<Header />)
+    let auth = jest.fn()
 
-    expect(wrapper.html()).toEqual('<div class="ui fixed menu">' +
+    auth = {
+      getEmail: jest.fn(),
+      getName: jest.fn(),
+      getAvatar: jest.fn(),
+      isAuthenticated: jest.fn(),
+    }
+
+    const wrapper = shallow(<Header auth={auth} />)
+    const expected = '<div class="ui stackable menu">' +
     '<div class="ui container">' +
     '<a href="/" class="header item">' +
-    '<img class="logo" src="logo-mark.png" alt=""/>Dataportal</a>' +
+    '<img class="ui mini image" src="logo-mark.png" alt=""/>Dataportal</a>' +
     '<div class="right menu"><div class="ui simple right item">' +
     '<a href="/resources/add/">Add New Resource</a></div>' +
-    '<div class="ui simple right dropdown item">' +
-    'Kan Ouivirach <i class="dropdown icon"></i>' +
-    '<div class="menu"><a class="item" href="/">' +
-    'Edit Profile</a><div class="divider">' +
-    '</div><a class="item" href="/">' +
-    'Log Out</a>' +
-    '</div></div></div></div></div>')
+    '<div class="ui active centered inline loader"></div>' +
+    '</div></div></div>'
+
+    expect(wrapper.html()).toEqual(expected)
   })
 })
