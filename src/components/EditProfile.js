@@ -61,18 +61,6 @@ class EditProfile extends Component {
             <div className='ui segment'>
               <form className='ui form' onSubmit={this.handleSubmit}>
                 <div className='field'>
-                  <label htmlFor='name'>Name
-                    <input
-                      type='text'
-                      name='name'
-                      placeholder='Name'
-                      value={this.state.name}
-                      required
-                      onChange={this.handleChange}
-                    />
-                  </label>
-                </div>
-                <div className='field'>
                   <label htmlFor='url'>Position
                     <input
                       type='text'
