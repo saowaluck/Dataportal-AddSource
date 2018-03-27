@@ -4,7 +4,7 @@ module.exports = {
   rules:{
     semi: ["error", "never"],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "no-underscore-dangle": [2, { "allow": ["_fields"] }],
+    "no-underscore-dangle": [2, { "allow": ["_fields","_source","_id"] }],
     "jsx-quotes": [2, "prefer-single"],
     "arrow-parens": [0, "as-needed"],
   },

@@ -58,7 +58,7 @@ const Resource = {
 
   createResource: async (req) => {
     let data
-    let resources
+    let resources = []
     if (req.type === 'Database') {
       data = {
         name: req.name,
@@ -102,30 +102,36 @@ const Resource = {
         type: req.type,
         createdDate: moment().format(),
       }
-      const result = await session
-        .run('CREATE n = (resource:Resource {name:{name}, ' +
+      const check = await session.run('MATCH (r:Resource) WHERE r.type = {type} and r.url = {url} RETURN r', {
+        type: data.type,
+        url: data.url,
+      })
+      if (check.records.length === 0) {
+        const result = await session
+          .run('CREATE n = (resource:Resource {name:{name}, ' +
         'url:{url}, type:{type}, createdDate:{createdDate}, ' +
         'updatedDate:{createdDate}}) RETURN n', {
-          name: data.name,
-          url: data.url,
-          type: data.type,
-          createdDate: data.createdDate,
-          updatedDate: data.updatedDate,
-        })
-      resources = {
-        id: Number(result.records[0]._fields[0].start.identity.low),
-        name: result.records[0]._fields[0].start.properties.name,
-        type: result.records[0]._fields[0].start.properties.type,
-        url: result.records[0]._fields[0].start.properties.url,
-        createdDate: result.records[0]._fields[0].start.properties.createdDate,
-        updatedDate: result.records[0]._fields[0].start.properties.updatedDate,
+            name: data.name,
+            url: data.url,
+            type: data.type,
+            createdDate: data.createdDate,
+            updatedDate: data.updatedDate,
+          })
+        resources = {
+          id: Number(result.records[0]._fields[0].start.identity.low),
+          name: result.records[0]._fields[0].start.properties.name,
+          type: result.records[0]._fields[0].start.properties.type,
+          url: result.records[0]._fields[0].start.properties.url,
+          createdDate: result.records[0]._fields[0].start.properties.createdDate,
+          updatedDate: result.records[0]._fields[0].start.properties.updatedDate,
+        }
+        addIndex(
+          resources.id,
+          resources.name,
+          resources.type,
+          resources.url,
+        )
       }
-      addIndex(
-        resources.id,
-        resources.name,
-        resources.type,
-        resources.url,
-      )
     }
     return resources
   },
