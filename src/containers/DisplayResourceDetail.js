@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import moment from 'moment'
+import { Loader } from 'semantic-ui-react'
 import DisplayResourceDetailComponent from './../components/DisplayResourceDetail'
-import DisplayDatabaseResource from './../components/DisplayDatabaseResource'
+import DisplayDatabaseDetail from './../components/DisplayDatabaseDetail'
+
 
 class DisplayResourceDetail extends Component {
   state = {
@@ -48,51 +50,36 @@ class DisplayResourceDetail extends Component {
   }
 
   render() {
-    return (
-      <div>
-        {
-          this.state.type === 'Database' &&
-          <DisplayDatabaseResource
-            id={this.state.id}
-            name={this.state.name}
-            columns={this.state.columns}
-            description={this.state.description}
-            createdDate={this.state.createdDate}
-            type={this.state.type}
-            tags={this.state.tags}
-            creator={this.state.creator}
-            relatedResources={this.state.relatedResources}
-            auth={this.props.auth}
-          />
-        }
-        { this.state.type === 'Superset Dashboard' &&
-          <DisplayResourceDetailComponent
-            id={this.state.id}
-            name={this.state.name}
-            createdDate={this.state.createdDate}
-            type={this.state.type}
-            url={this.state.url}
-            tags={this.state.tags}
-            creator={this.state.creator}
-            relatedResources={this.state.relatedResources}
-            auth={this.props.auth}
-          />
-        }
-        { this.state.type === 'Knowledge Post' &&
-          <DisplayResourceDetailComponent
-            id={this.state.id}
-            name={this.state.name}
-            createdDate={this.state.createdDate}
-            type={this.state.type}
-            url={this.state.url}
-            tags={this.state.tags}
-            creator={this.state.creator}
-            relatedResources={this.state.relatedResources}
-            auth={this.props.auth}
-          />
-        }
-      </div>
-    )
+    if (this.state.type === 'Database') {
+      const data = {
+        id: this.state.id,
+        name: this.state.name,
+        columns: this.state.columns,
+        description: this.state.description,
+        createdDate: this.state.createdDate,
+        type: this.state.type,
+        tags: this.state.tags,
+        creator: this.state.creator,
+        relatedResources: this.state.relatedResources,
+        auth: this.props.auth,
+      }
+      return <DisplayDatabaseDetail data={data} />
+    }
+    if (this.state.type === 'Superset Dashboard' || this.state.type === 'Knowledge Post') {
+      const data = {
+        id: this.state.id,
+        name: this.state.name,
+        createdDate: this.state.createdDate,
+        type: this.state.type,
+        url: this.state.url,
+        tags: this.state.tags,
+        creator: this.state.creator,
+        relatedResources: this.state.relatedResources,
+        auth: this.props.auth,
+      }
+      return <DisplayResourceDetailComponent data={data} />
+    }
+    return <Loader active inline='centered' />
   }
 }
 

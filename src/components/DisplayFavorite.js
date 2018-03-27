@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Accordion, Icon } from 'semantic-ui-react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { Accordion, Icon } from 'semantic-ui-react'
 
-class DisplayListOfUserFavoriteResource extends Component {
+class DisplayFavorite extends Component {
   state = {
     activeIndex: null,
   }
@@ -18,15 +19,17 @@ class DisplayListOfUserFavoriteResource extends Component {
     return (
       <Accordion>
         <Accordion.Title active={this.state.activeIndex === 0} index={0} onClick={this.handleClick}>
-          <Icon className='large heart icon' />
-          favorited by {this.props.members.length} protons
+          <Icon className='ui heart icon' />
+          favorited by {this.props.thisResource.members.length} protons
           <Icon className='angle down icon' />
         </Accordion.Title>
         <Accordion.Content active={this.state.activeIndex === 0}>
           <div className='ui horizontal list'>
-            { this.props.members.map(member => (
+            { this.props.thisResource.members.map(member => (
               <div className='item' key={member.id}>
-                <a href={`/members/${member.id}/`}><img className='ui mini circular image' src={member.avatar} alt='' /></a>
+                <a href={`/members/${member.id}/`}>
+                  <img className='ui mini circular image' src={member.avatar} alt='' />
+                </a>
               </div>
             ))}
           </div>
@@ -35,9 +38,12 @@ class DisplayListOfUserFavoriteResource extends Component {
     )
   }
 }
+const mapStateToProps = (state) => ({
+  thisResource: state.thisResource,
+})
 
-DisplayListOfUserFavoriteResource.propTypes = {
-  members: PropTypes.arrayOf(PropTypes.any).isRequired,
+DisplayFavorite.propTypes = {
+  thisResource: PropTypes.objectOf(PropTypes.arrayOf().any).isRequired,
 }
 
-export default DisplayListOfUserFavoriteResource
+export default connect(mapStateToProps)(DisplayFavorite)

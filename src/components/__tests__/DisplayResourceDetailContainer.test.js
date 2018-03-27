@@ -1,6 +1,6 @@
 import React from 'react'
 import moxios from 'moxios'
-import { shallow, mount } from 'enzyme'
+import { mount } from 'enzyme'
 import DisplayResourceDetailContainer from './../../containers/DisplayResourceDetail'
 
 describe('< DisplayResourceDetail />', () => {
@@ -145,7 +145,7 @@ describe('< DisplayResourceDetail />', () => {
     auth = {
       getEmail: () => 'test@pronto.com',
     }
-    const wrapper = shallow(<DisplayResourceDetailContainer match={match} auth={auth} />)
+    const wrapper = mount(<DisplayResourceDetailContainer match={match} auth={auth} />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()

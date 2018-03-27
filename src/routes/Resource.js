@@ -32,17 +32,15 @@ router.post('/:id/favorites/', async (req, res) => {
     await Resource.addRelationFavorite(id, email)
     isFavorite = true
   }
-  res.json({ isFavorite })
+  const members = await Resource.getFavoriteByResourceId(id)
+  res.json({ isFavorite, members })
 })
 
 router.get('/:id/favorites/', async (req, res) => {
   const { id } = req.params
   const email = req.query.memberEmail
-  let members = []
   const isFavorite = await Resource.isRelationFavorite(id, email)
-  if (isFavorite) {
-    members = await Resource.getFavoriteByResourceId(id)
-  }
+  const members = await Resource.getFavoriteByResourceId(id)
   res.json({ isFavorite, members })
 })
 
