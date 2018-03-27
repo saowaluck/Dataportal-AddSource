@@ -183,7 +183,6 @@ const Resource = {
       name: result.records[0]._fields[0].properties.name,
       position: result.records[0]._fields[0].properties.position,
       avatar: result.records[0]._fields[0].properties.avatar,
-      email: result.records[0]._fields[0].properties.email,
     }
     if (type === 'Database') {
       const {
