@@ -20,9 +20,11 @@ const DisplayResourceDetail = ({ data }) => (
       <div className='five wide column'>
         <div className='ui segment'>
           <h3 className='ui header'>{data.name}
+            {(data.auth.getEmail() === data.creator.email) &&
             <a href={`/resources/${data.id}/edit/`}>
               <i className='edit icon' />
             </a>
+          }
           </h3>
           <div className='meta'>
             {data.tags.map(tag => <span key={tag} className='ui left floated label'>{tag}</span>)}
