@@ -68,7 +68,7 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  let resources = []
+  let resources
   let resourceId = 'undefined'
   const member = await Member.getMemberByEmail(req.body.email)
   resources = await Resource.createResource(req.body)
