@@ -120,7 +120,7 @@ router.get('/:id/', async (req, res) => {
 router.post('/:id/edit/', async (req, res) => {
   const id = Number(req.params.id)
   const { tags } = req.body
-  await Resource.editResource(id, req.body)
+  const resource = await Resource.editResource(id, req.body)
   await Resource.clearRelationchip(id)
   if (tags !== '') {
     const tagsCleaned = cleanTags(tags)
@@ -135,7 +135,8 @@ router.post('/:id/edit/', async (req, res) => {
       return result
     }))
   }
-  res.json({ id })
+  res.json({ id: resource.id })
 })
 
 module.exports = router
+
