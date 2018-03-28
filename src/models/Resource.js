@@ -7,24 +7,24 @@ const client = new elasticsearch.Client({
   host: 'elasticsearch:9200',
 })
 
-const addIndex = (id, name, type, url) => (
+const addIndex = (id, name, type, url, tags) => (
   client.index({
     index: 'dataportal',
     type: 'resource',
     id,
     body: {
-      name, type, url, createdDate: moment().format(),
+      name, type, url, tags,
     },
   })
 )
 
-const addIndexTypeOfDatabase = (id, name, type, columns, description) => {
+const addIndexTypeOfDatabase = (id, name, type, columns, description, tags) => {
   client.index({
     index: 'dataportal',
     type: 'resource',
     id,
     body: {
-      name, type, columns, description, createdDate: moment().format(),
+      name, type, columns, description, tags,
     },
   })
 }
@@ -59,6 +59,7 @@ const Resource = {
   createResource: async (req) => {
     let data
     let resources
+    const { tags } = req
     if (req.type === 'Database') {
       data = {
         name: req.name,
@@ -94,6 +95,7 @@ const Resource = {
         resources.type,
         resources.columns,
         resources.description,
+        tags,
       )
     } else {
       data = {
@@ -130,6 +132,7 @@ const Resource = {
           resources.name,
           resources.type,
           resources.url,
+          tags,
         )
       }
     }
@@ -212,6 +215,7 @@ const Resource = {
   editResource: async (id, req) => {
     let data
     let resources
+    const { tags } = req
     if (req.type === 'Database') {
       data = {
         id,
@@ -255,6 +259,7 @@ const Resource = {
         resources.type,
         resources.columns,
         resources.description,
+        tags,
       )
     } else {
       data = {
@@ -299,6 +304,7 @@ const Resource = {
           resources.name,
           resources.type,
           resources.url,
+          tags,
         )
       }
     }
