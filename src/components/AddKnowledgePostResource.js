@@ -6,12 +6,13 @@ import { Dropdown } from 'semantic-ui-react'
 
 class AddKnowledgePostResource extends Component {
   state = {
-    id: 0,
+    id: undefined,
     name: '',
     url: '',
     tags: [],
     isSubmit: false,
     options: [],
+    message: false,
   }
 
   onSearchChange = (e, { searchQuery }) => {
@@ -63,14 +64,18 @@ class AddKnowledgePostResource extends Component {
       email: this.props.auth.getEmail(),
     })
       .then((res) => {
-        console.log(res)
-        this.setState({
-          isSubmit: true,
-          id: res.data.id,
-        })
-      })
-      .catch((error) => {
-        console.log(error)
+        if (res.data.id === undefined) {
+          this.setState({
+            isSubmit: false,
+            message: true,
+          })
+        } else {
+          this.setState({
+            isSubmit: true,
+            id: res.data.id,
+            message: false,
+          })
+        }
       })
   }
 
@@ -124,6 +129,7 @@ class AddKnowledgePostResource extends Component {
           <hr />
           <button className='ui primary button' type='submit'>Add</button>
         </form>
+        { this.state.message && <div className='ui red message'>Data is Dublicate</div>}
         {this.state.isSubmit && (<Redirect to={`/resources/${this.state.id}/`} />)}
       </div>
     )
