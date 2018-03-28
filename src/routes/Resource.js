@@ -71,7 +71,8 @@ router.post('/', async (req, res) => {
   let resources
   const member = await Member.getMemberByEmail(req.body.email)
   resources = await Resource.createResource(req.body)
-  // console.log(resources)
+  console.log('aaaaaaaaa')
+  console.log(resources)
   const resourceId = Number(resources.id)
   const memberId = Number(member.id)
   resources = await Resource.memberCreatedResource(resourceId, memberId)

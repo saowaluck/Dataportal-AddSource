@@ -7,24 +7,24 @@ const client = new elasticsearch.Client({
   host: 'elasticsearch:9200',
 })
 
-const addIndex = (id, name, type, url) => (
+const addIndex = (id, name, type, url, tags) => (
   client.index({
     index: 'dataportal',
     type: 'resource',
     id,
     body: {
-      name, type, url, createdDate: moment().format(),
+      name, type, url, tags,
     },
   })
 )
 
-const addIndexTypeOfDatabase = (id, name, type, columns, description) => {
+const addIndexTypeOfDatabase = (id, name, type, columns, description, tags) => {
   client.index({
     index: 'dataportal',
     type: 'resource',
     id,
     body: {
-      name, type, columns, description, createdDate: moment().format(),
+      name, type, columns, description, tags,
     },
   })
 }
@@ -59,6 +59,7 @@ const Resource = {
   createResource: async (req) => {
     let data
     let resources
+    const { tags } = req
     if (req.type === 'Database') {
       data = {
         name: req.name,
@@ -94,6 +95,7 @@ const Resource = {
         resources.type,
         resources.columns,
         resources.description,
+        tags,
       )
     } else {
       data = {
@@ -130,6 +132,7 @@ const Resource = {
           resources.name,
           resources.type,
           resources.url,
+          tags,
         )
       }
     }
@@ -183,6 +186,7 @@ const Resource = {
       name: result.records[0]._fields[0].properties.name,
       position: result.records[0]._fields[0].properties.position,
       avatar: result.records[0]._fields[0].properties.avatar,
+      email: result.records[0]._fields[0].properties.email,
     }
     if (type === 'Database') {
       const {
@@ -211,7 +215,8 @@ const Resource = {
 
   editResource: async (id, req) => {
     let data
-    let resources
+    let resources = []
+    const { tags } = req
     if (req.type === 'Database') {
       data = {
         id,
@@ -255,6 +260,7 @@ const Resource = {
         resources.type,
         resources.columns,
         resources.description,
+        tags,
       )
     } else {
       data = {
@@ -265,42 +271,37 @@ const Resource = {
         createdDate: req.createdDate,
         updatedDate: moment().format(),
       }
-      const check = await session.run('MATCH (r:Resource) WHERE r.type = {type} and r.url = {url} RETURN r', {
-        type: data.type,
-        url: data.url,
-      })
-      if (check.records.length === 0) {
-        const result = await session
-          .run('MATCH (n :Resource) WHERE ID(n) = {id} ' +
-          'SET n = {' +
-            'name:{name},' +
-            'url:{url},' +
-            'type:{type},' +
-            'createdDate:{createdDate},' +
-            'updatedDate:{updatedDate}}' +
-          'RETURN n', {
-            id: data.id,
-            name: data.name,
-            url: data.url,
-            type: data.type,
-            createdDate: data.createdDate,
-            updatedDate: data.updatedDate,
-          })
-        resources = {
-          id: Number(result.records[0]._fields[0].identity.low),
-          name: result.records[0]._fields[0].properties.name,
-          type: result.records[0]._fields[0].properties.type,
-          url: result.records[0]._fields[0].properties.url,
-          createdDate: result.records[0]._fields[0].properties.createdDate,
-          updatedDate: result.records[0]._fields[0].properties.updatedDate,
-        }
-        addIndex(
-          resources.id,
-          resources.name,
-          resources.type,
-          resources.url,
-        )
+      const result = await session
+        .run('MATCH (n :Resource) WHERE ID(n) = {id} ' +
+        'SET n = {' +
+          'name:{name},' +
+          'url:{url},' +
+          'type:{type},' +
+          'createdDate:{createdDate},' +
+          'updatedDate:{updatedDate}}' +
+        'RETURN n', {
+          id: data.id,
+          name: data.name,
+          url: data.url,
+          type: data.type,
+          createdDate: data.createdDate,
+          updatedDate: data.updatedDate,
+        })
+      resources = {
+        id: Number(result.records[0]._fields[0].identity.low),
+        name: result.records[0]._fields[0].properties.name,
+        type: result.records[0]._fields[0].properties.type,
+        url: result.records[0]._fields[0].properties.url,
+        createdDate: result.records[0]._fields[0].properties.createdDate,
+        updatedDate: result.records[0]._fields[0].properties.updatedDate,
       }
+      addIndex(
+        resources.id,
+        resources.name,
+        resources.type,
+        resources.url,
+        tags,
+      )
     }
     return resources
   },

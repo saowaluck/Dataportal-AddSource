@@ -63,12 +63,14 @@ class AddKnowledgePostResource extends Component {
       email: this.props.auth.getEmail(),
     })
       .then((res) => {
+        console.log(res)
         this.setState({
           isSubmit: true,
           id: res.data.id,
         })
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error)
       })
   }
 
