@@ -6,12 +6,13 @@ import { Dropdown } from 'semantic-ui-react'
 
 class AddSupersetResource extends Component {
   state = {
-    id: 0,
+    id: undefined,
     name: '',
     url: '',
     tags: [],
     isSubmit: false,
     options: [],
+    message: false,
   }
 
   onSearchChange = (e, { searchQuery }) => {
@@ -63,12 +64,18 @@ class AddSupersetResource extends Component {
       email: this.props.auth.getEmail(),
     })
       .then((res) => {
-        this.setState({
-          isSubmit: true,
-          id: res.data.id,
-        })
-      })
-      .catch(() => {
+        if (res.data.id === undefined) {
+          this.setState({
+            isSubmit: false,
+            message: true,
+          })
+        } else {
+          this.setState({
+            isSubmit: true,
+            id: res.data.id,
+            message: false,
+          })
+        }
       })
   }
 
@@ -122,6 +129,7 @@ class AddSupersetResource extends Component {
           <hr />
           <button className='ui primary button' type='submit'>Add</button>
         </form>
+        { this.state.message && <div className='ui red message'>Data is Dublicate</div>}
         {this.state.isSubmit && (<Redirect to={`/resources/${this.state.id}/`} />)}
       </div>
     )

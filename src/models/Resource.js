@@ -58,7 +58,7 @@ const Resource = {
 
   createResource: async (req) => {
     let data
-    let resources
+    let resources = []
     const { tags } = req
     if (req.type === 'Database') {
       data = {
