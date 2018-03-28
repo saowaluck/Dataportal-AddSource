@@ -75,6 +75,7 @@ class EditResource extends Component {
       createdDate: this.props.createdDate,
     })
       .then((res) => {
+        console.log(res.data)
         this.setState({
           isSubmit: true,
           id: res.data.id,

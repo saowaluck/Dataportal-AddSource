@@ -18,7 +18,6 @@ class DisplayDatabaseDetail extends Component {
 
   convertTags = () => this.props.data.tags.map(tag => (<span key={tag} className='ui left floated label'>{tag}</span>))
   render() {
-    console.log(this.props.data.auth.getEmail(),this.props.data.creator.email)
     return (
       <div className='ui main container'>
         <div className='ui stackable grid'>
