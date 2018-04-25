@@ -472,6 +472,19 @@ const Resource = {
     return resources
   },
 
+  searchResource: async(text) => {
+    const searchText = '.*(?i)'+text+'.*'
+    const result = await session.run('MATCH (resource:Resource) WHERE resource.name =~ {searchText} RETURN resource ' +
+    'UNION MATCH (resource:Resource)-[:hasTag]->(tag:Tag) WHERE tag.name =~ {searchText} RETURN resource ' +
+    'UNION MATCH (resource:Resource) WHERE resource.description =~ {searchText} RETURN resource ' +
+    'UNION MATCH (resource:Resource) WHERE resource.url =~ {searchText} RETURN resource ' +
+    'UNION MATCH (resource:Resource) WHERE resource.columns =~ {searchText} RETURN resource', {searchText})
+    const resources = result.records.map(item => ({
+      id: item._fields[0].identity.low,
+    }))
+    return resources
+  }
+
 }
 session.close()
 db.close()

@@ -13,6 +13,7 @@ class Search extends Component {
     searchText: '',
     resources: [],
     defaultresources: [],
+    checked:false,
   }
 
   componentDidMount() {
@@ -36,9 +37,7 @@ class Search extends Component {
   handleSubmit = e => {
     if (e.key === 'Enter' && this.state.searchText.trim() !== '') {
       e.preventDefault()
-      const url = `${process.env.REACT_APP_API_URL}/resources/search/${this.state.searchText}/`
-      axios
-        .get(url)
+      axios.get(`${process.env.REACT_APP_API_URL}/resources/search/${this.state.searchText}/?checked=${this.state.checked}`)
         .then((res) => {
           this.setState({ resources: res.data.resources })
         })
@@ -46,6 +45,18 @@ class Search extends Component {
     this.setState({
       resources: this.state.defaultresources,
     })
+  }
+
+  handleChecked = () => {
+    if(this.state.checked) {
+      this.setState({
+        checked: false,
+      })
+    } else {
+      this.setState({
+        checked: true,
+      })
+    }
   }
 
   panes = () => (
@@ -75,6 +86,11 @@ class Search extends Component {
                     onKeyPress={this.handleSubmit}
                   />
                   <i className='search icon' />
+                </div>
+                <br />
+                <div className='ui checkbox' onClick={this.handleChecked} >
+                  <input type='checkbox' name='checked' />
+                  <label>Basic Search</label>
                 </div>
               </div>
               <div className='ui twelve wide column'>

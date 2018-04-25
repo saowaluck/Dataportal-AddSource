@@ -129,13 +129,25 @@ router.post('/:id/consumers/', async req => {
 })
 
 router.get('/search/:text/', async (req, res) => {
+  console.log(req.query.checked)
   const { text } = req.params
+  let data = []
   console.log(text)
-  const result = await client.search({ q: text })
-  const data = await Promise.all(result.hits.hits.map(async (item) => {
-    const results = await Resource.getResourceById(Number(item._id))
-    return results
-  }))
+  if(req.query.checked){
+    const result = await Resource.searchResource(text)
+    data = await Promise.all(result.map(async (item) => {
+      const results = await Resource.getResourceById(Number(item.id))
+      console.log(results)
+      return results
+    }))
+  } else {
+    const result = await client.search({ q: text })
+    data = await Promise.all(result.hits.hits.map(async (item) => {
+      const results = await Resource.getResourceById(Number(item._id))
+      return results
+    }))
+  }
+  console.log(data)
   const resources = await Promise.all(data.map(async (item) => {
     console.log('item',item)
     const favorites = await Resource.getFavoriteByResourceId(Number(item[0].resourceId))
