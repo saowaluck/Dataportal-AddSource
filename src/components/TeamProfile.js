@@ -3,6 +3,7 @@ import axios from 'axios'
 import PropTypes from 'prop-types'
 import { Tab, Icon } from 'semantic-ui-react'
 import MemberList from './MemberList'
+import ListResourceByCreated from './ListResourceByCreated'
 
 class TeamProfile extends Component {
   state = {
@@ -12,17 +13,19 @@ class TeamProfile extends Component {
     actionsDisplay: false,
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const id = +this.props.match.params.id
     const email = this.props.auth.getEmail()
     const path = `${process.env.REACT_APP_API_URL}/teams/${id}/?memberEmail=${email}`
     axios
       .get(path)
       .then(team => {
-        const { name, description } = team.data.team
-        this.setState({ name, description })
-        this.setState({ members: team.data.members })
-        this.setState({ actionsDisplay: team.data.isRelationTeam })
+        this.setState({
+          name: team.data.team.name,
+          description: team.data.team.description,
+          members: team.data.members,
+          actionsDisplay: team.data.isRelationTeam,
+        })
       })
       .catch(() => {
       })
@@ -48,6 +51,7 @@ class TeamProfile extends Component {
 
   panes = () => (
     [
+      { menuItem: 'Pinned', render: () => <ListResourceByCreated id={this.props.match.params.id} actionsDisplay={this.state.actionsDisplay} /> },
       { menuItem: 'Members', render: () => <MemberList members={this.state.members} /> },
     ]
   )

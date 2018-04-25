@@ -35,9 +35,9 @@ describe('< Search />', () => {
         response: {
           resources: [{
             resource: {
-              memberID: 129,
+              memberId: 129,
               member: 'kanokwan',
-              resourceID: 139,
+              resourceId: 139,
               name: 'Track Reseller',
               type: 'Knowledge Post',
               createdDate: 'Mar 27, 2018',
@@ -47,9 +47,9 @@ describe('< Search />', () => {
           }],
         },
       }).then(() => {
-        const name = wrapper.state().resource.map(node => node.resource.name)
-        const member = wrapper.state().resource.map(node => node.resource.member)
-        const type = wrapper.state().resource.map(node => node.resource.type)
+        const name = wrapper.state().resources.map(node => node.resource.name)
+        const member = wrapper.state().resources.map(node => node.resource.member)
+        const type = wrapper.state().resources.map(node => node.resource.type)
         expect(request.url).toBe('http://localhost:5000/resources/')
         expect(request.config.method).toBe('get')
         expect(name).toEqual(['Track Reseller'])
@@ -70,9 +70,9 @@ describe('< Search />', () => {
         response: {
           resources: [{
             resource: {
-              memberID: 129,
+              memberId: 129,
               member: 'saowalak',
-              resourceID: 139,
+              resourceId: 139,
               name: 'Athena',
               type: 'Superset Dashboard',
               createdDate: 'Mar 27, 2018',
@@ -82,9 +82,9 @@ describe('< Search />', () => {
           }],
         },
       }).then(() => {
-        const name = wrapper.state().resource.map(node => node.resource.name)
-        const member = wrapper.state().resource.map(node => node.resource.member)
-        const type = wrapper.state().resource.map(node => node.resource.type)
+        const name = wrapper.state().resources.map(node => node.resource.name)
+        const member = wrapper.state().resources.map(node => node.resource.member)
+        const type = wrapper.state().resources.map(node => node.resource.type)
         expect(request.url).toBe('http://localhost:5000/resources/')
         expect(request.config.method).toBe('get')
         expect(name).toEqual(['Athena'])
@@ -105,9 +105,9 @@ describe('< Search />', () => {
         response: {
           resources: [{
             resource: {
-              memberID: 129,
+              memberId: 129,
               member: 'saowalak',
-              resourceID: 139,
+              resourceId: 139,
               name: 'Athena',
               type: 'Superset Dashboard',
               createdDate: 'Mar 27, 2018',

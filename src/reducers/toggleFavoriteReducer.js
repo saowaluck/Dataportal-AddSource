@@ -1,4 +1,4 @@
-import TOGGLE_FAVORITE from './../actions/type'
+import { TOGGLE_FAVORITE } from './../actions/types'
 
 const initailState = {
   isFavorite: false,

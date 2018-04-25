@@ -27,6 +27,7 @@ class Home extends Component {
       email: this.state.email,
       slack: '',
       avatar: this.state.avatar,
+      role: 'employee',
     })
   )
 

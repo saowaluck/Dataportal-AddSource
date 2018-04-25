@@ -15,6 +15,12 @@ const Tags = {
     tags = tags.records.map(item => item._fields[0].properties.name)
     return tags
   },
+
+  getTags: async () => {
+    let tags = await session.run('MATCH (n:Tag) RETURN n')
+    tags = tags.records.map(item => item._fields[0].properties.name)
+    return tags
+  },
 }
 
 module.exports = Tags

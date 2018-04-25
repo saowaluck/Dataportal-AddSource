@@ -2,16 +2,19 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import axios from 'axios'
 import PropTypes from 'prop-types'
-import { Dropdown } from 'semantic-ui-react'
+import { Dropdown, Confirm } from 'semantic-ui-react'
 
 class EditResource extends Component {
   state = {
-    id: 0,
+    id: undefined,
     name: '',
     url: '',
     tags: [''],
     isSubmit: false,
+    isRedirect: false,
     options: [],
+    message: false,
+    open: false,
   }
 
   componentDidMount = () => {
@@ -23,6 +26,17 @@ class EditResource extends Component {
       options: this.props.tags.map(tag =>
         Object.assign({ text: tag, value: tag })),
     })
+    axios.get(`${process.env.REACT_APP_API_URL}/tags/`)
+      .then(res => {
+        res.data.tags.map(tag => (
+          this.setState({
+            options: [
+              { text: tag, value: tag },
+              ...this.state.options,
+            ],
+          })
+        ))
+      })
   }
 
   onSearchChange = (e, { searchQuery }) => {
@@ -64,6 +78,20 @@ class EditResource extends Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
+  handleDeleteResource = e => {
+    const { id } = this.state
+    e.preventDefault()
+    axios.post(`${process.env.REACT_APP_API_URL}/resources/${id}/delete/`)
+      .then((res) => {
+        if (res) {
+          this.setState({ open: false, isRedirect: true })
+        }
+      })
+  }
+
+  show = () => this.setState({ open: true })
+  handleCancel = () => this.setState({ open: false })
+
   handleSubmit = e => {
     const { id } = this.state
     e.preventDefault()
@@ -73,13 +101,21 @@ class EditResource extends Component {
       tags: this.state.tags,
       type: this.props.type,
       createdDate: this.props.createdDate,
+      check_url: this.props.url,
     })
       .then((res) => {
-        console.log(res.data)
-        this.setState({
-          isSubmit: true,
-          id: res.data.id,
-        })
+        if (res.data.id === undefined) {
+          this.setState({
+            isSubmit: false,
+            message: true,
+          })
+        } else {
+          this.setState({
+            isSubmit: true,
+            id: res.data.id,
+            message: false,
+          })
+        }
       })
       .catch(() => {
       })
@@ -92,7 +128,7 @@ class EditResource extends Component {
           <div className='twelve wide column'>
             <div className='ui segment'>
               <h1>Edit Resource</h1>
-              <form className='ui form' onSubmit={this.handleSubmit}>
+              <form className='ui form'>
                 <div className='field'>
                   <label htmlFor='name'>Name
                     <input
@@ -137,12 +173,27 @@ class EditResource extends Component {
                   </label>
                 </div>
                 <hr />
-                <button className='ui primary button' type='submit'>Save</button>
               </form>
+              <button name='submit' onClick={this.handleSubmit} className='ui primary button' type='submit'>Save</button>
+              <button name='delete'onClick={this.show} className='ui negative button' type='submit'>Delete</button>
+              { this.state.message &&
+                <div className='ui red message'>
+                  The value was already entered. Type and URL must be unique. Please try again
+                </div>
+              }
               {this.state.isSubmit && (<Redirect to={`/resources/${this.state.id}/`} />)}
+              {this.state.isRedirect && (<Redirect to='/search/' />)}
             </div>
           </div>
         </div>
+        <Confirm
+          open={this.state.open}
+          content='Are you sure to delete this resource ?'
+          cancelButton='Not right now'
+          confirmButton='Yes, delete resource'
+          onCancel={this.handleCancel}
+          onConfirm={this.handleDeleteResource}
+        />
       </div>
     )
   }

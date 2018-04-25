@@ -83,6 +83,66 @@ const Team = {
     })
     return result
   },
+
+  getResourceByCreated: async id => {
+    const result = await session.run('MATCH (member:Member)-[:attend]->(team:Team)' +
+    'WHERE ID(team) = {id} WITH member AS m MATCH (m)-[c:created]->(r:Resource)' +
+    'RETURN r ORDER By r.updatedDate DESC', { id: Number(id) })
+    const createdResource = result.records.map(item => ({
+      id: item._fields[0].identity.low,
+      name: item._fields[0].properties.name,
+      type: item._fields[0].properties.type,
+      url: item._fields[0].properties.url,
+    }))
+    const data = await Promise.all(createdResource.map(async (item) => {
+      const results = await session.run('MATCH (t:Team)-[:pin]-(r:Resource) WHERE ID(r) = {resourceId} and ID(t) = {teamId} RETURN r', {
+        teamId: Number(id),
+        resourceId: item.id,
+      })
+      if (results.records.length !== 0) {
+        return { createdResource: item, isPinned: true }
+      } return { createdResource: item, isPinned: false }
+    }))
+    return data
+  },
+
+  isPinResource: async id => {
+    const isPinResource = await session
+      .run('MATCH n = (t:Team)-[:pin]->(r:Resource) WHERE ID(t) = {id} AND ID(r) ={id} RETURN n', {
+        id: Number(id),
+      })
+    if (isPinResource.records.length > 0) {
+      return true
+    }
+    return false
+  },
+
+  pinResource: async (teamId, resourceId) => {
+    const result = await session
+      .run('MATCH (t:Team),(r:Resource) WHERE ID(t) = {teamId} AND ID(r)= {resourceId} CREATE p=(t)-[:pin]->(r) RETURN p', {
+        teamId, resourceId,
+      })
+    return result
+  },
+
+  unPinResource: async (teamId, resourceId) => {
+    const result = await session
+      .run('MATCH (t:Team)-[p:pin]->(r:Resource) WHERE ID(r) = {resourceId} AND ID(t) = {teamId} DELETE p', {
+        teamId, resourceId,
+      })
+    return result
+  },
+
+  getResourceByPin: async id => {
+    const result = await session.run('MATCH n= ((t:Team)-[:pin]->(r:Resource)) WHERE ID(t) = {id} RETURN n', { id: Number(id) })
+    const pinnedResources = result.records.map(item => ({
+      id: item._fields[0].end.identity.low,
+      name: item._fields[0].end.properties.name,
+      type: item._fields[0].end.properties.type,
+      url: item._fields[0].end.properties.url,
+    }))
+    return pinnedResources
+  },
 }
 
 session.close()

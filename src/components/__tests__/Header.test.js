@@ -16,7 +16,7 @@ describe('<Header />', () => {
     const wrapper = shallow(<Header auth={auth} />)
     const expected = '<div class="ui stackable menu">' +
     '<div class="ui container">' +
-    '<a href="/" class="header item">' +
+    '<a href="/search/" class="header item">' +
     '<img class="ui mini image" src="logo-mark.png" alt=""/>Dataportal</a>' +
     '<div class="right menu"><div class="ui simple right item">' +
     '<a href="/resources/add/">Add New Resource</a></div>' +

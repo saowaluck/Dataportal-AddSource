@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import 'semantic-ui-css/semantic.min.css'
 import GoogleButton from 'react-google-button'
 import logo from './../assets/images/logo-mark.png'
 

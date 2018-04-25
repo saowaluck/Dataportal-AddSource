@@ -34,7 +34,6 @@ describe('<EditResource />', () => {
     expect(form.find('input[name="name"]').length).toBe(1)
     expect(form.find('input[name="url"]').length).toBe(1)
     expect(form.find('Dropdown[name="tags"]').length).toBe(1)
-    expect(form.find('button[type="submit"]').length).toBe(1)
   })
 
   it('should render edit form when resource type Superset Dashboard', () => {
@@ -59,7 +58,6 @@ describe('<EditResource />', () => {
     expect(form.find('input[name="name"]').length).toBe(1)
     expect(form.find('input[name="url"]').length).toBe(1)
     expect(form.find('Dropdown[name="tags"]').length).toBe(1)
-    expect(form.find('button[type="submit"]').length).toBe(1)
   })
 
   it('should simulates click submit form when edit resource type Knowledge Post in fields', (done) => {
@@ -80,7 +78,7 @@ describe('<EditResource />', () => {
     />)
     const preventDefault = jest.fn()
 
-    wrapper.find('form').simulate('submit', { preventDefault })
+    wrapper.find('button[name="submit"]').simulate('click', { preventDefault })
     wrapper.setState({
       id,
       name,
@@ -109,22 +107,12 @@ describe('<EditResource />', () => {
         },
       }).then(() => {
         expect(preventDefault).toBeCalled()
-        expect(wrapper.state().isSubmit).toBeTruthy()
         expect(request.url).toBe('http://localhost:5000/resources/756/edit/')
         expect(request.config.method).toBe('post')
         expect(wrapper.state().name).toBe('Pronto Tools พวกเราทำอะไร?')
         expect(wrapper.state().url).toBe('https://www.prontotools.io/')
         expect(wrapper.state().tags).toEqual(['Reseller'])
-        const expected = ('<div class="ui main container"><div class="ui centered grid"><div class="twelve wide column">' +
-        '<div class="ui segment"><h1>Edit Resource</h1><form class="ui form"><div class="field"><label for="name">Name' +
-        '<input type="text" name="name" placeholder="Name" value="Pronto Tools พวกเราทำอะไร?" required=""/></label></div>' +
-        '<div class="field"><label for="url">URL<input type="url" name="url" placeholder="URL" value="https://www.prontotools.io/" required=""/></label></div>' +
-        '<div class="field"><label for="name">Tags<div name="tags" role="combobox" aria-expanded="false" class="ui fluid multiple search selection dropdown">' +
-        '<a class="ui label" value="Reseller">Reseller<i aria-hidden="true" class="delete icon"></i></a>' +
-        '<input type="text" aria-autocomplete="list" autoComplete="off" class="search" tabindex="0" value=""/>' +
-        '<span class="sizer"></span><div class="text" role="alert" aria-live="polite"></div><i aria-hidden="true" class="dropdown icon"></i>' +
-        '<div aria-multiselectable="true" role="listbox" class="menu transition"><div class="message">No results found.</div></div></div></label></div><hr/>' +
-        '<button class="ui primary button" type="submit">Save</button></form></div></div></div></div>')
+        const expected = ('<div class="ui main container"><div class="ui centered grid"><div class="twelve wide column"><div class="ui segment"><h1>Edit Resource</h1><form class="ui form"><div class="field"><label for="name">Name<input type="text" name="name" placeholder="Name" value="Pronto Tools พวกเราทำอะไร?" required=""/></label></div><div class="field"><label for="url">URL<input type="url" name="url" placeholder="URL" value="https://www.prontotools.io/" required=""/></label></div><div class="field"><label for="name">Tags<div name="tags" role="combobox" aria-expanded="false" class="ui fluid multiple search selection dropdown"><a class="ui label" value="Reseller">Reseller<i aria-hidden="true" class="delete icon"></i></a><input type="text" aria-autocomplete="list" autoComplete="off" class="search" tabindex="0" value=""/><span class="sizer"></span><div class="text" role="alert" aria-live="polite"></div><i aria-hidden="true" class="dropdown icon"></i><div aria-multiselectable="true" role="listbox" class="menu transition"><div class="message">No results found.</div></div></div></label></div><hr/></form><button name="submit" class="ui primary button" type="submit">Save</button><button name="delete" class="ui negative button" type="submit">Delete</button></div></div></div></div>')
         expect(wrapper.html()).toEqual(expected)
         done()
       })
@@ -149,7 +137,7 @@ describe('<EditResource />', () => {
     />)
     const preventDefault = jest.fn()
 
-    wrapper.find('form').simulate('submit', { preventDefault })
+    wrapper.find('button[name="submit"]').simulate('click', { preventDefault })
     wrapper.setState({
       id,
       name,
@@ -178,22 +166,23 @@ describe('<EditResource />', () => {
         },
       }).then(() => {
         expect(preventDefault).toBeCalled()
-        expect(wrapper.state().isSubmit).toBeTruthy()
         expect(request.url).toBe('http://localhost:5000/resources/1/edit/')
         expect(request.config.method).toBe('post')
         expect(wrapper.state().name).toBe('Track Reseller')
         expect(wrapper.state().url).toBe('https://www.prontotools.io/')
         expect(wrapper.state().tags).toEqual(['Athena'])
-        const expected = '<div class="ui main container"><div class="ui centered grid"><div class="twelve wide column"><div class="ui segment">' +
-        '<h1>Edit Resource</h1><form class="ui form"><div class="field"><label for="name">Name' +
-        '<input type="text" name="name" placeholder="Name" value="Track Reseller" required=""/></label></div>' +
-        '<div class="field"><label for="url">URL<input type="url" name="url" placeholder="URL" value="https://www.prontotools.io/" required=""/></label></div>' +
-        '<div class="field"><label for="name">Tags<div name="tags" role="combobox" aria-expanded="false" class="ui fluid multiple search selection dropdown">' +
+        const expected = '<div class="ui main container"><div class="ui centered grid"><div class="twelve wide column">' +
+        '<div class="ui segment"><h1>Edit Resource</h1><form class="ui form"><div class="field"><label for="name">Name' +
+        '<input type="text" name="name" placeholder="Name" value="Track Reseller" required=""/></label></div><div class="field">' +
+        '<label for="url">URL<input type="url" name="url" placeholder="URL" value="https://www.prontotools.io/" required=""/>' +
+        '</label></div><div class="field"><label for="name">Tags<div name="tags" role="combobox" aria-expanded="false" class="ui fluid multiple search selection dropdown">' +
         '<a class="ui label" value="Athena">Athena<i aria-hidden="true" class="delete icon"></i></a>' +
         '<input type="text" aria-autocomplete="list" autoComplete="off" class="search" tabindex="0" value=""/>' +
-        '<span class="sizer"></span><div class="text" role="alert" aria-live="polite"></div><i aria-hidden="true" class="dropdown icon"></i>' +
-        '<div aria-multiselectable="true" role="listbox" class="menu transition"><div class="message">No results found.</div></div></div></label></div><hr/>' +
-        '<button class="ui primary button" type="submit">Save</button></form></div></div></div></div>'
+        '<span class="sizer"></span><div class="text" role="alert" aria-live="polite"></div>' +
+        '<i aria-hidden="true" class="dropdown icon"></i><div aria-multiselectable="true" role="listbox" class="menu transition">' +
+        '<div class="message">No results found.</div></div></div></label></div><hr/></form>' +
+        '<button name="submit" class="ui primary button" type="submit">Save</button>' +
+        '<button name="delete" class="ui negative button" type="submit">Delete</button></div></div></div></div>'
         expect(wrapper.html()).toEqual(expected)
         done()
       })

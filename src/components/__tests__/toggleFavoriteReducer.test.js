@@ -1,5 +1,5 @@
 import toggleFavoriteReducer from '../../reducers/toggleFavoriteReducer'
-import TOGGLE_FAVORITE from '../../actions/type'
+import { TOGGLE_FAVORITE } from '../../actions/types'
 
 
 describe('<toggleFavoriteReducer />', () => {

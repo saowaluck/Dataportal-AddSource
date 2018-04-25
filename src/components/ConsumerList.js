@@ -1,11 +1,26 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import axios from 'axios'
 import { Accordion, Icon } from 'semantic-ui-react'
 
-class DisplayFavorite extends Component {
+class ConsumerList extends Component {
   state = {
     activeIndex: null,
+    consumed: [],
+  }
+
+  componentDidMount() {
+    const { id } = this.props
+    const path = `${process.env.REACT_APP_API_URL}/resources/${id}/consumers/`
+    axios
+      .get(path)
+      .then(res => {
+        this.setState({
+          consumed: res.data.consumed,
+        })
+      })
+      .catch(() => {
+      })
   }
 
   handleClick = (e, titleProps) => {
@@ -19,13 +34,13 @@ class DisplayFavorite extends Component {
     return (
       <Accordion>
         <Accordion.Title active={this.state.activeIndex === 0} index={0} onClick={this.handleClick}>
-          <Icon className='ui heart icon' />
-          favorited by {this.props.thisResource.members.length} protons
+          <Icon className='user icon people' />
+            recently comsumed by {this.state.consumed.length} protons
           <Icon className='angle down icon' />
         </Accordion.Title>
         <Accordion.Content active={this.state.activeIndex === 0}>
           <div className='ui horizontal list'>
-            { this.props.thisResource.members.map(member => (
+            { this.state.consumed.map(member => (
               <div className='item' key={member.id}>
                 <a href={`/members/${member.id}/`}>
                   <img className='ui mini circular image' src={member.avatar} alt='' />
@@ -38,12 +53,9 @@ class DisplayFavorite extends Component {
     )
   }
 }
-const mapStateToProps = (state) => ({
-  thisResource: state.thisResource,
-})
 
-DisplayFavorite.propTypes = {
-  thisResource: PropTypes.objectOf(PropTypes.any).isRequired,
+ConsumerList.propTypes = {
+  id: PropTypes.number.isRequired,
 }
 
-export default connect(mapStateToProps)(DisplayFavorite)
+export default ConsumerList

@@ -5,7 +5,6 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 
-import PropTypes from 'prop-types'
 import Auth from './Auth'
 import history from './history'
 
@@ -63,7 +62,7 @@ const App = () => (
               path='/callback'
               render={props => {
                   handleAuthentication(props)
-                  return <Home auth={auth}{...props} />
+                  return <Home auth={auth} {...props} />
                 }}
             />
             <PrivateRoute auth={auth}>
@@ -72,7 +71,7 @@ const App = () => (
                 <Route path='/resources/:id/edit/' component={EditResource} />
                 <Route path='/resources/add/' render={props => <AddResourceForm auth={auth} {...props} />} />
                 <Route path='/resources/:id/' render={props => <DisplayResourceDetail auth={auth} {...props} />} />
-                <Route path='/teams/:id/' render={(props) => <TeamProfile auth={auth}{...props} />} />
+                <Route path='/teams/:id/' render={props => <TeamProfile auth={auth} {...props} />} />
                 <Route path='/members/:id/edit/' render={props => <EditProfile auth={auth} {...props} />} />
                 <Route path='/members/:id/' component={MemberProfile} />
               </Switch>
@@ -83,9 +82,5 @@ const App = () => (
     </div>
   </Provider>
 )
-
-App.propTypes = {
-  children: PropTypes.node.isRequired,
-}
 
 export default App

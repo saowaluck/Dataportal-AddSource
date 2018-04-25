@@ -41,7 +41,7 @@ Favorite.propTypes = {
   toggleFavorite: PropTypes.func.isRequired,
   memberEmail: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
-  thisResource: PropTypes.arrayOf(PropTypes.objectOf.any).isRequired,
+  thisResource: PropTypes.objectOf(PropTypes.any).isRequired,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Favorite)

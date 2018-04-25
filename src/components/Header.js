@@ -9,6 +9,7 @@ class Header extends Component {
     id: '',
     name: this.props.auth.getName(),
     avatar: this.props.auth.getAvatar(),
+    role: 'employee'
   }
 
   componentDidMount() {
@@ -16,7 +17,10 @@ class Header extends Component {
     axios
       .get(`${process.env.REACT_APP_API_URL}/members/?memberEmail=${memberEmail}`)
       .then(result => {
-        this.setState({ id: result.data.id })
+        this.setState({ 
+          id: result.data.id,
+          role: result.data.role,
+        })
       })
       .catch(() => {
       })
@@ -27,7 +31,7 @@ class Header extends Component {
     return (
       <div className='ui stackable menu'>
         <div className='ui container'>
-          <a href='/' className='header item'>
+          <a href='/search/' className='header item'>
             <img className='ui mini image' src={logo} alt='' />
             Dataportal
           </a>
@@ -37,11 +41,19 @@ class Header extends Component {
             </div>
             {isAuthenticated() ? (
               <div className='ui simple right dropdown item'>
-                <img className='ui avatar image' src={this.state.avatar} alt='logo' />
-                {this.state.name}<i className='dropdown icon' />
+                <a href={`/members/${this.state.id}/`}><img className='ui avatar image' src={this.state.avatar} alt='logo' />
+                  {this.state.name}
+                  <i className='dropdown icon' />
+                </a>
                 <div className='menu'>
                   <a className='item' href={`/members/${this.state.id}/edit/`}>Edit Profile</a>
                   <div className='divider' />
+                  { this.state.role === 'admin' && (
+                    <div>
+                      <a className='item' href='/teams/manage/'>Manage Team</a>
+                      <div className='divider' />
+                    </div>
+                  )}
                   <a className='item' href='/logout'>Logout</a>
                 </div>
               </div>) : (<Loader active inline='centered' />)

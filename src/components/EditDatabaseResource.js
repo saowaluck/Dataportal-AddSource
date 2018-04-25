@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
-import { Dropdown, Button } from 'semantic-ui-react'
+import { Dropdown, Button, Confirm } from 'semantic-ui-react'
 
 class EditDatabaseResource extends Component {
   state = {
@@ -29,6 +29,8 @@ class EditDatabaseResource extends Component {
     editName: '',
     editType: '',
     editDescription: '',
+    isRedirect: false,
+    open: false,
   }
 
   componentDidMount = () => {
@@ -41,6 +43,17 @@ class EditDatabaseResource extends Component {
       tags: this.props.tags,
       options: this.props.tags.map(tag => Object.assign({ text: tag, value: tag })),
     })
+    axios.get(`${process.env.REACT_APP_API_URL}/tags/`)
+      .then(res => {
+        res.data.tags.map(tag => (
+          this.setState({
+            options: [
+              { text: tag, value: tag },
+              ...this.state.options,
+            ],
+          })
+        ))
+      })
   }
 
   onSearchChange = (e, { searchQuery }) => {
@@ -236,6 +249,20 @@ class EditDatabaseResource extends Component {
     })
   }
 
+  handleDeleteResource = e => {
+    const { id } = this.props
+    e.preventDefault()
+    axios.post(`${process.env.REACT_APP_API_URL}/resources/${id}/delete/`)
+      .then((res) => {
+        if (res) {
+          this.setState({ open: false, isRedirect: true })
+        }
+      })
+  }
+
+  show = () => this.setState({ open: true })
+  handleCancel = () => this.setState({ open: false })
+
   handleClose = () => this.setState({ columnName: '', columnDescription: '' })
 
   updateColumn = () => {
@@ -260,7 +287,7 @@ class EditDatabaseResource extends Component {
           <div className='twelve wide column'>
             <div className='ui segment'>
               <h1>Edit Resource</h1>
-              <form name='table' className='ui form' onSubmit={this.handleSubmit} >
+              <form name='table' className='ui form' >
                 <div className='field'>
                   <label htmlFor='name'>Table Name
                     <input
@@ -344,12 +371,22 @@ class EditDatabaseResource extends Component {
                   </div>
                 </div>
                 <hr />
-                <button className='ui primary button' type='submit' >Save Table</button>
               </form>
+              <button name='submit' onClick={this.handleSubmit} className='ui primary button' type='submit' >Save Table</button>
+              <button name='delete' onClick={this.show} className='ui negative button' type='submit'>Delete</button>
               {this.state.isSubmit && (<Redirect to={`/resources/${this.state.id}/`} />)}
+              {this.state.isRedirect && (<Redirect to='/search/' />)}
             </div>
           </div>
         </div>
+        <Confirm
+          open={this.state.open}
+          content='Are you sure to delete this resource ?'
+          cancelButton='Not right now'
+          confirmButton='Yes, delete resource'
+          onCancel={this.handleCancel}
+          onConfirm={this.handleDeleteResource}
+        />
       </div>
     )
   }

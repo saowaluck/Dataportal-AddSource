@@ -1,5 +1,5 @@
 import axios from 'axios'
-import TOGGLE_FAVORITE from './type'
+import { TOGGLE_FAVORITE } from './types'
 
 const toggleFavoriteSuccess = thisResource => ({
   type: TOGGLE_FAVORITE,

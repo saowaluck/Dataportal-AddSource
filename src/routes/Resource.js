@@ -2,7 +2,7 @@ const express = require('express')
 const elasticsearch = require('elasticsearch')
 
 const Resource = require('../models/Resource')
-const Tag = require('../models/Tags')
+const Tag = require('../models/Tag')
 const Member = require('../models/Member')
 
 const router = express.Router()
@@ -20,6 +20,47 @@ const cleanTags = (tags) => {
   })
   return result
 }
+
+router.get('/recomment/', async (req, res) => {
+  let resources = []
+  const email = req.query.memberEmail
+  const resourcesId = await Resource.getResourceIdByRecomment(email)
+  console.log('resourceId', resourcesId)
+  const tagsName = await Resource.getTagByRecomentId(resourcesId)
+  console.log('tagsName', tagsName)
+  resources = await Resource.getResourceByTagsName(tagsName, email)
+  console.log('resources', resources)
+  if (resources.length === 0) {
+    console.log('!!!!!!!!!!')
+    resources = await Resource.getTopFavorite(email)
+    console.log(resources)
+  }
+  res.json(resources)
+})
+
+router.get('/:id/', async (req, res) => {
+  const id = Number(req.params.id)
+  let resource = ''
+  let tags = []
+  let relatedResources = []
+  const type = await Resource.getTypeResourceById(id)
+  const status = await Resource.hasTags(id)
+  resource = await Resource.getResourceByType(id, type)
+  if (status) {
+    tags = await Tag.getTagsByResourceId(id)
+  }
+  const text = resource.name
+  const result = await client.search({ q: text, size: 5 })
+  const related = result.hits.hits.filter(item => Number(item._id) !== Number(id))
+  relatedResources = related.map(item => ({
+    id: item._id,
+    name: item._source.name,
+    type: item._source.type,
+  }))
+  res.json({
+    resource, tags, relatedResources,
+  })
+})
 
 router.post('/:id/favorites/', async (req, res) => {
   const { id } = req.params
@@ -44,15 +85,60 @@ router.get('/:id/favorites/', async (req, res) => {
   res.json({ isFavorite, members })
 })
 
+router.get('/:id/consumers/', async (req, res) => {
+  const id = Number(req.params.id)
+  const consumed = await Resource.getConsumersByResourceId(id)
+  res.json({ consumed })
+})
+
+router.post('/:id/edit/', async (req, res) => {
+  const id = Number(req.params.id)
+  const { tags } = req.body
+  const resources = await Resource.editResource(id, req.body)
+  if (resources !== undefined) {
+    await Resource.clearRelationchip(id)
+    if (tags !== '') {
+      const tagsCleaned = cleanTags(tags)
+      await Promise.all(tagsCleaned.map(async (tag) => {
+        let result = await Tag.getTagsByName(tag)
+        if (result.records.length === 0) {
+          result = await Resource.createResourceHasTag(id, tag)
+        } else {
+          const tagId = result.records[0]._fields[0].identity.low
+          result = await Resource.createResourceHasTagDuplicate(id, tagId)
+        }
+        return result
+      }))
+    }
+    res.json({ id: resources.id })
+  } else {
+    res.json({ id: resources })
+  }
+})
+
+router.post('/:id/delete/', async (req, res) => {
+  const id = Number(req.params.id)
+  const deleted = await Resource.deleteResource(id)
+  res.json({ deleted })
+})
+
+router.post('/:id/consumers/', async req => {
+  const { id } = req.params
+  const email = req.query.memberEmail
+  await Resource.isConsumedByMember(id, email)
+})
+
 router.get('/search/:text/', async (req, res) => {
   const { text } = req.params
+  console.log(text)
   const result = await client.search({ q: text })
   const data = await Promise.all(result.hits.hits.map(async (item) => {
-    const results = await Resource.getResourceById(item._id)
+    const results = await Resource.getResourceById(Number(item._id))
     return results
   }))
   const resources = await Promise.all(data.map(async (item) => {
-    const favorites = await Resource.getFavoriteByResourceId(item[0].resourceID)
+    console.log('item',item)
+    const favorites = await Resource.getFavoriteByResourceId(Number(item[0].resourceId))
     return { resource: item[0], favorite: favorites.length }
   }))
   res.status(200).json({ resources })
@@ -61,7 +147,7 @@ router.get('/search/:text/', async (req, res) => {
 router.get('/', async (req, res) => {
   const result = await Resource.getResource()
   const resources = await Promise.all(result.map(async (item) => {
-    const favorites = await Resource.getFavoriteByResourceId(item.resourceID)
+    const favorites = await Resource.getFavoriteByResourceId(Number(item.resourceId))
     return { resource: item, favorite: favorites.length }
   }))
   res.status(200).json({ resources })
@@ -95,49 +181,4 @@ router.post('/', async (req, res) => {
   }
 })
 
-router.get('/:id/', async (req, res) => {
-  const id = Number(req.params.id)
-  let resource = ''
-  let tags = []
-  let relatedResources = []
-  const type = await Resource.getTypeResourceById(id)
-  const status = await Resource.hasTags(id)
-  resource = await Resource.getResourceByType(id, type)
-
-  if (status) {
-    tags = await Tag.getTagsByResourceId(id)
-  }
-  const text = resource.name
-  const result = await client.search({ q: text, size: 5 })
-  const related = result.hits.hits.filter(item => Number(item._id) !== Number(id))
-  relatedResources = related.map(item => ({
-    id: item._id,
-    name: item._source.name,
-    type: item._source.type,
-  }))
-  res.json({ resource, tags, relatedResources })
-})
-
-router.post('/:id/edit/', async (req, res) => {
-  const id = Number(req.params.id)
-  const { tags } = req.body
-  const resource = await Resource.editResource(id, req.body)
-  await Resource.clearRelationchip(id)
-  if (tags !== '') {
-    const tagsCleaned = cleanTags(tags)
-    await Promise.all(tagsCleaned.map(async (tag) => {
-      let result = await Tag.getTagsByName(tag)
-      if (result.records.length === 0) {
-        result = await Resource.createResourceHasTag(id, tag)
-      } else {
-        const tagId = result.records[0]._fields[0].identity.low
-        result = await Resource.createResourceHasTagDuplicate(id, tagId)
-      }
-      return result
-    }))
-  }
-  res.json({ id: resource.id })
-})
-
 module.exports = router
-

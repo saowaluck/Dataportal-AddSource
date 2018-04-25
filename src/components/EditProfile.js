@@ -56,39 +56,46 @@ class EditProfile extends Component {
   render() {
     return (
       <div className='ui main container'>
-        <div className='ui centered grid'>
-          <div className='twelve wide column'>
-            <div className='ui segment'>
-              <form className='ui form' onSubmit={this.handleSubmit}>
-                <div className='field'>
-                  <label htmlFor='url'>Position
-                    <input
-                      type='text'
-                      name='position'
-                      placeholder='position'
-                      value={this.state.position}
-                      required
-                      onChange={this.handleChange}
-                    />
-                  </label>
-                </div>
-                <div className='field'>
-                  <label htmlFor='slack'>Slack
-                    <input
-                      type='text'
-                      name='slack'
-                      placeholder='Slack'
-                      value={this.state.slack}
-                      required
-                      onChange={this.handleChange}
-                    />
-                  </label>
-                </div>
-                <hr />
-                <button className='ui primary button' type='submit'>Update profile</button>
-              </form>
-              {this.state.isSubmit && (<Redirect to={`/members/${this.state.id}/`} />)}
+        <div className='ui stackable grid segment'>
+          <div className='ui four wide column'>
+            <div className='ui row basic segment aligned page'>
+              <img className='ui small circular image' src={this.state.avatar} alt='' />
+              <h2 className='ui header'>{this.state.name}</h2>
+              <div className='item'>
+                <i className='envelope outline blue icon' />
+                {this.state.email}
+              </div>
             </div>
+          </div>
+          <div className='ui twelve wide column'>
+            <h2>Edit Profile</h2>
+            <form className='ui form' onSubmit={this.handleSubmit}>
+              <div className='field'>
+                <label htmlFor='url'>Position
+                  <input
+                    type='text'
+                    name='position'
+                    placeholder='position'
+                    value={this.state.position}
+                    onChange={this.handleChange}
+                  />
+                </label>
+              </div>
+              <div className='field'>
+                <label htmlFor='slack'>Slack
+                  <input
+                    type='text'
+                    name='slack'
+                    placeholder='Slack'
+                    value={this.state.slack}
+                    onChange={this.handleChange}
+                  />
+                </label>
+              </div>
+              <hr />
+              <button className='ui primary button' type='submit'>Update profile</button>
+            </form>
+            {this.state.isSubmit && (<Redirect to={`/members/${this.state.id}/`} />)}
           </div>
         </div>
       </div>

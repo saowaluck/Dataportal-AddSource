@@ -33,13 +33,15 @@ const Resource = {
   getResource: async () => {
     const result = await session.run('MATCH n= ((m:Member)-[:created]->(r:Resource)) RETURN n ORDER By r.updatedDate DESC')
     const resources = result.records.map(item => ({
-      memberID: item._fields[0].start.identity.low,
+      memberId: item._fields[0].start.identity.low,
       member: item._fields[0].start.properties.name,
-      resourceID: item._fields[0].end.identity.low,
+      memberAvatar: item._fields[0].start.properties.avatar,
+      resourceId: item._fields[0].end.identity.low,
+      resourceName: item._fields[0].end.properties.name,
       name: item._fields[0].end.properties.name,
       type: item._fields[0].end.properties.type,
-      createdDate: moment(item._fields[0].end.properties.createdDate).format('MMM DD, YYYY'),
-      updatedDate: moment(item._fields[0].end.properties.updatedDate).format('MMM DD, YYYY'),
+      createdDate: item._fields[0].end.properties.createdDate,
+      updatedDate: item._fields[0].end.properties.updatedDate,
     }))
     return resources
   },
@@ -59,7 +61,6 @@ const Resource = {
   createResource: async (req) => {
     let data
     let resources = []
-    const { tags } = req
     if (req.type === 'Database') {
       data = {
         name: req.name,
@@ -95,7 +96,7 @@ const Resource = {
         resources.type,
         resources.columns,
         resources.description,
-        tags,
+        req.tags,
       )
     } else {
       data = {
@@ -104,11 +105,11 @@ const Resource = {
         type: req.type,
         createdDate: moment().format(),
       }
-      const check = await session.run('MATCH (r:Resource) WHERE r.type = {type} and r.url = {url} RETURN r', {
+      const isDuplicate = await session.run('MATCH (r:Resource) WHERE r.type = {type} and r.url = {url} RETURN r', {
         type: data.type,
         url: data.url,
       })
-      if (check.records.length === 0) {
+      if (isDuplicate.records.length === 0) {
         const result = await session
           .run('CREATE n = (resource:Resource {name:{name}, ' +
         'url:{url}, type:{type}, createdDate:{createdDate}, ' +
@@ -132,7 +133,7 @@ const Resource = {
           resources.name,
           resources.type,
           resources.url,
-          tags,
+          req.tags,
         )
       }
     }
@@ -161,9 +162,9 @@ const Resource = {
     const idResource = Number(id)
     const result = await session.run('MATCH n= ((m:Member)-[:created]->(r:Resource)) WHERE ID(r) = {idResource} RETURN n', { idResource })
     const resources = result.records.map(item => ({
-      memberID: item._fields[0].start.identity.low,
+      memberId: item._fields[0].start.identity.low,
       member: item._fields[0].start.properties.name,
-      resourceID: item._fields[0].end.identity.low,
+      resourceId: item._fields[0].end.identity.low,
       name: item._fields[0].end.properties.name,
       type: item._fields[0].end.properties.type,
       createdDate: moment(item._fields[0].end.properties.createdDate).format('MMM DD, YYYY'),
@@ -173,7 +174,7 @@ const Resource = {
   },
 
   getTypeResourceById: async (id) => {
-    const resource = await session.run('MATCH (s:Resource) WHERE ID(s) = {id} RETURN s.type', { id })
+    const resource = await session.run('MATCH (s:Resource) WHERE ID(s) = {id} RETURN s.type', { id: Number(id) })
     const type = resource.records[0]._fields[0]
     return type
   },
@@ -215,8 +216,7 @@ const Resource = {
 
   editResource: async (id, req) => {
     let data
-    let resources = []
-    const { tags } = req
+    let resources
     if (req.type === 'Database') {
       data = {
         id,
@@ -226,6 +226,7 @@ const Resource = {
         type: req.type,
         createdDate: req.createdDate,
         updatedDate: moment().format(),
+        check_url: req.check_url,
       }
       const result = await session
         .run('MATCH (n :Resource) WHERE ID(n) = {id} ' +
@@ -260,7 +261,7 @@ const Resource = {
         resources.type,
         resources.columns,
         resources.description,
-        tags,
+        req.tags,
       )
     } else {
       data = {
@@ -270,9 +271,17 @@ const Resource = {
         type: req.type,
         createdDate: req.createdDate,
         updatedDate: moment().format(),
+        check_url: req.check_url,
       }
-      const result = await session
-        .run('MATCH (n :Resource) WHERE ID(n) = {id} ' +
+      const isDuplicate = await session.run('MATCH (r:Resource) WHERE NOT (r.type =~ {type}) OR NOT (r.url =~ {check_url})' +
+      'WITH r as resource MATCH (resource) WHERE resource.type = {type} AND resource.url = {url}  RETURN resource', {
+        check_url: data.check_url,
+        type: data.type,
+        url: data.url,
+      })
+      if (isDuplicate.records.length === 0) {
+        const result = await session
+          .run('MATCH (n :Resource) WHERE ID(n) = {id} ' +
         'SET n = {' +
           'name:{name},' +
           'url:{url},' +
@@ -280,28 +289,29 @@ const Resource = {
           'createdDate:{createdDate},' +
           'updatedDate:{updatedDate}}' +
         'RETURN n', {
-          id: data.id,
-          name: data.name,
-          url: data.url,
-          type: data.type,
-          createdDate: data.createdDate,
-          updatedDate: data.updatedDate,
-        })
-      resources = {
-        id: Number(result.records[0]._fields[0].identity.low),
-        name: result.records[0]._fields[0].properties.name,
-        type: result.records[0]._fields[0].properties.type,
-        url: result.records[0]._fields[0].properties.url,
-        createdDate: result.records[0]._fields[0].properties.createdDate,
-        updatedDate: result.records[0]._fields[0].properties.updatedDate,
+            id: data.id,
+            name: data.name,
+            url: data.url,
+            type: data.type,
+            createdDate: data.createdDate,
+            updatedDate: data.updatedDate,
+          })
+        resources = {
+          id: Number(result.records[0]._fields[0].identity.low),
+          name: result.records[0]._fields[0].properties.name,
+          type: result.records[0]._fields[0].properties.type,
+          url: result.records[0]._fields[0].properties.url,
+          createdDate: result.records[0]._fields[0].properties.createdDate,
+          updatedDate: result.records[0]._fields[0].properties.updatedDate,
+        }
+        addIndex(
+          resources.id,
+          resources.name,
+          resources.type,
+          resources.url,
+          req.tags,
+        )
       }
-      addIndex(
-        resources.id,
-        resources.name,
-        resources.type,
-        resources.url,
-        tags,
-      )
     }
     return resources
   },
@@ -361,8 +371,108 @@ const Resource = {
     return data
   },
 
+  deleteResource: async (id) => {
+    const result = await session
+      .run('MATCH (r:Resource) WHERE ID(r) = {id} DETACH DELETE r', { id })
+    if (result.records.length === 0) {
+      return true
+    }
+    return false
+  },
+
+  isConsumedByMember: async (id, email) => {
+    const consumedDate = moment().format()
+    const result = await session
+      .run('MATCH n = (m:Member)-[:consumer]->(r:Resource) WHERE ID(r) = {id} AND m.email = {email}' +
+      'RETURN n', {
+        id: Number(id),
+        email,
+      })
+    if (result.records.length > 0) {
+      await session
+        .run('MATCH n = (m:Member)-[c:consumer]->(r:Resource) WHERE ID(r) =  {id} AND m.email = {email}' +
+        'SET c.consumedDate = {consumedDate} RETURN m', {
+          id: Number(id),
+          email,
+          consumedDate,
+        })
+    } else {
+      await session
+        .run('MATCH  (m:Member),(r:Resource) WHERE ID(r) = {id} AND m.email = {email}' +
+        'CREATE p=(m)-[:consumer {consumedDate: {consumedDate}}]->(r) RETURN p', {
+          id: Number(id),
+          email,
+          consumedDate,
+        })
+    }
+  },
+
+  getConsumersByResourceId: async (id) => {
+    const members = await session
+      .run('MATCH (m:Member)-[c:consumer]->(r:Resource) WHERE ID(r)= {id}  RETURN m', {
+        id: Number(id),
+      })
+    const result = members.records.map(member => ({
+      id: member._fields[0].identity.low,
+      avatar: member._fields[0].properties.avatar,
+    }))
+    return result
+  },
+
+  getResourceIdByRecomment: async (email) => {
+    const result = await session
+      .run('MATCH (member:Member)-[:favorite]->(resource:Resource)-[:hasTag]->(tag:Tag) ' +
+      'WHERE member.email = {email}' +
+      'RETURN resource ' +
+      'UNION ALL ' +
+      'MATCH (member:Member)-[:attend]->(team:Team)-[:pin]->(resource:Resource)-[:hasTag]->(tag:Tag) ' +
+      'WHERE member.email = {email} ' +
+      'RETURN resource', { email })
+    let resourceId = result.records.map(item => item._fields[0].identity.low)
+    resourceId = Array.from(new Set(resourceId))
+    return resourceId
+  },
+
+  getTagByRecomentId: async (resourcesId) => {
+    const tags = await session.run('WITH {resourcesId} AS resourceId ' +
+      'MATCH (resource:Resource)-[:hasTag]->(tag:Tag) ' +
+      'WHERE ID(resource) IN resourceId ' +
+      'RETURN tag.name, Count(*) As TagRecomment ' +
+      'ORDER BY TagRecomment DESC LIMIT 1', { resourcesId })
+    return tags.records.map(item => (
+      item._fields[0]
+    ))
+  },
+
+  getResourceByTagsName: async (tagsName, email) => {
+    const result = await session.run('WITH {tagsName} AS tags ' +
+    'MATCH (member:Member)-->(resource:Resource)-[:hasTag]->(tag:Tag) ' +
+    'WHERE tag.name IN tags ' +
+    'AND member.email <> {email} ' +
+    'AND (member)-[:created]->(resource) ' +
+    'RETURN DISTINCT(resource), Count(*) As RecommentCount ORDER BY resource.updatedDate DESC LIMIT 5', { tagsName, email })
+    const resources = result.records.map(item => ({
+      id: item._fields[0].identity.low,
+      name: item._fields[0].properties.name,
+      type: item._fields[0].properties.type,
+    }))
+    return resources
+  },
+
+  getTopFavorite: async (email) => {
+    console.log(email)
+    const result = await session.run('MATCH (m:Member)-[f:favorite]-(r:Resource) ' +
+    'WHERE m.email <> {email} ' +
+    'RETURN r, Count(*) As FavCount ORDER BY FavCount DESC LIMIT 3', {email})
+    const resources = result.records.map(item => ({
+      id: item._fields[0].identity.low,
+      name: item._fields[0].properties.name,
+      type: item._fields[0].properties.type,
+    }))
+    return resources
+  },
+
 }
 session.close()
 db.close()
 module.exports = Resource
-

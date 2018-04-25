@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
+import moment from 'moment'
 import PropTypes from 'prop-types'
 import Favorites from './Favorite'
 import DisplayFavorite from './DisplayFavorite'
+import ConsumerList from './ConsumerList'
 
 class DisplayDatabaseDetail extends Component {
   convertTable = () => {
@@ -16,7 +18,16 @@ class DisplayDatabaseDetail extends Component {
     return data
   }
 
+  handleColor = type => {
+    if (type === 'Database') {
+      return 'ui right floated database label'
+    } else if (type === 'Superset Dashboard') {
+      return 'ui right floated superset label'
+    } return 'ui right floated knowledge label'
+  }
+
   convertTags = () => this.props.data.tags.map(tag => (<span key={tag} className='ui left floated label'>{tag}</span>))
+
   render() {
     return (
       <div className='ui main container'>
@@ -39,11 +50,11 @@ class DisplayDatabaseDetail extends Component {
           <div className='five wide column'>
             <div className='ui segment'>
               <h3 className='ui header'>{ this.props.data.name }
-                { (this.props.data.auth.getEmail() === this.props.data.creator.email) &&
-                <a href={`/resources/${this.props.data.id}/edit/`}>
-                  {' '}<i className='edit icon' />
-                </a>
-              }
+                {(this.props.data.auth.getEmail() === this.props.data.creator.email) &&
+                  <a href={`/resources/${this.props.data.id}/edit/`}>
+                    {' '}<i className='edit icon' />
+                  </a>
+                }
               </h3>
               <div className='meta'>
                 {this.props.data.tags.map(tag => <span key={tag} className='ui left floated label'>{tag}</span>)}
@@ -65,8 +76,9 @@ class DisplayDatabaseDetail extends Component {
                     {this.props.data.creator.position}
                   </div>
                 </div>
-                <b>Created:</b> {this.props.data.createdDate}
+                <b>Created:</b> {moment(new Date(this.props.data.createdDate)).format('MMM DD, YYYY')}
                 <DisplayFavorite />
+                <ConsumerList id={this.props.data.id} />
               </div>
               <div className='ui row vertical segment'>
                 <h4 className='ui header'>
@@ -77,7 +89,7 @@ class DisplayDatabaseDetail extends Component {
                     <div className='item' key={item.id}>
                       <div className='header'>
                         <a className='content' href={`/resources/${item.id}/`}>{item.name}</a>
-                        <span className='ui right floated label'>{item.type}</span>
+                        <span className={this.handleColor(item.type)}>{item.type}</span>
                       </div>
                     </div>
                   ))}

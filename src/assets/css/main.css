@@ -13,16 +13,16 @@ body {
   max-height: 4rem;
 }
 .ui.menu {
-    margin: 0;
+  margin: 0;
 }
 .ui.secondary.menu.nav-item {
-    background: #e8e8e8;
+  background: #e8e8e8;
 }
 .search input {
-     width: 100%;
+  width: 100%;
 }
 .ui.input {
-    font-size: 1.3em;
+  font-size: 1.3em;
 }
 .meta {
   color: rgba(0, 0, 0, 0.4);
@@ -32,8 +32,8 @@ body {
   font-size: 0.8em;
 }
 .ui.secondary.pointing.menu .active.item {
-    border-color: #01adee;
-    border-width: 4;
+  border-color: #01adee;
+  border-width: 4;
 }
 .ui.list>.item .header {
     color: #01adee;
@@ -46,4 +46,19 @@ p.ui.sub.header {
 }
 .heart.icon {
   color: #f90909;
+}
+.ui.database.label {
+  background-color: #00b9ff;
+  color: white;
+}
+.ui.knowledge.label {
+  background-color: #01adee;
+  color: white;
+}
+.ui.superset.label {
+  background-color: #0099e2;
+  color: white;
+}
+a {
+  color: #0283c3fd;
 }
