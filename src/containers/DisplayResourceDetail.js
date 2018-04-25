@@ -6,7 +6,6 @@ import { Loader } from 'semantic-ui-react'
 import DisplayResourceDetailComponent from './../components/DisplayResourceDetail'
 import DisplayDatabaseDetail from './../components/DisplayDatabaseDetail'
 
-
 class DisplayResourceDetail extends Component {
   state = {
     id: 0,
@@ -23,16 +22,27 @@ class DisplayResourceDetail extends Component {
 
   componentDidMount() {
     const id = +this.props.match.params.id
-    const path = `${process.env.REACT_APP_API_URL}/resources/${id}/`
+    const email = this.props.auth.getEmail()
+    const URL = `${process.env.REACT_APP_API_URL}/resources/${id}/consumers/?memberEmail=${email}`
+    axios
+      .post(URL)
+      .then(() => {
+      })
+      .catch(() => {
+      })
+
+    const path = `${process.env.REACT_APP_API_URL}/resources/${id}/?memberEmail=${email}`
     axios
       .get(path)
       .then((result) => {
         this.setState({ id: +this.props.match.params.id })
         let { createdDate } = result.data.resource
-        createdDate = moment(createdDate).format('MMM DD, YYYY')
+        createdDate = moment(new Date(createdDate)).format('MMM DD, YYYY')
         const { name, type, creator } = result.data.resource
         const { tags } = result.data
-        this.setState({ relatedResources: result.data.relatedResources })
+        this.setState({
+          relatedResources: result.data.relatedResources,
+        })
         if (type === 'Database') {
           const { columns, description } = result.data.resource
           this.setState({

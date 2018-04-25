@@ -25,10 +25,24 @@ class AddDatabaseResource extends Component {
     columnDescription: '',
     isSubmit: false,
     options: [],
-    editID: '',
+    editId: '',
     editName: '',
     editType: '',
     editDescription: '',
+  }
+
+  componentDidMount() {
+    axios.get(`${process.env.REACT_APP_API_URL}/tags/`)
+      .then(res => {
+        res.data.tags.map(tag => (
+          this.setState({
+            options: [
+              { text: tag, value: tag },
+              ...this.state.options,
+            ],
+          })
+        ))
+      })
   }
 
   onSearchChange = (e, { searchQuery }) => {
@@ -117,7 +131,7 @@ class AddDatabaseResource extends Component {
 
   listColumns = () => (
     this.state.columns.map((item, id) => (
-      this.state.editID === id ? (
+      this.state.editId === id ? (
         this.handleShowEditColumn()
       ) : (
         <div
@@ -216,7 +230,7 @@ class AddDatabaseResource extends Component {
 
   handleEditColumn = (itemEdit, id) => {
     this.setState({
-      editID: id,
+      editId: id,
       editName: itemEdit[0],
       editType: itemEdit[1],
       editDescription: itemEdit[2],
@@ -227,13 +241,13 @@ class AddDatabaseResource extends Component {
 
   updateColumn = () => {
     const newColumns = this.state.columns
-    newColumns.splice(this.state.editID, 1, [
+    newColumns.splice(this.state.editId, 1, [
       this.state.editName,
       this.state.editType,
       this.state.editDescription])
     this.setState({
       columns: newColumns,
-      editID: '',
+      editId: '',
       editName: '',
       editType: '',
       editDescription: '',

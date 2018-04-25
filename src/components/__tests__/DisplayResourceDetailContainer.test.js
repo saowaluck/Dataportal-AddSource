@@ -1,6 +1,6 @@
 import React from 'react'
 import moxios from 'moxios'
-import { mount } from 'enzyme'
+import { shallow } from 'enzyme'
 import DisplayResourceDetailContainer from './../../containers/DisplayResourceDetail'
 
 describe('< DisplayResourceDetail />', () => {
@@ -20,7 +20,7 @@ describe('< DisplayResourceDetail />', () => {
     auth = {
       getEmail: () => 'test@pronto.com',
     }
-    const wrapper = mount(<DisplayResourceDetailContainer match={match} auth={auth} />)
+    const wrapper = shallow(<DisplayResourceDetailContainer match={match} auth={auth} />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
@@ -60,7 +60,7 @@ describe('< DisplayResourceDetail />', () => {
           ],
         },
       }).then(() => {
-        expect(request.url).toBe('http://localhost:5000/resources/0/')
+        expect(request.url).toBe('http://localhost:5000/resources/0/?memberEmail=test@pronto.com')
         expect(request.config.method).toBe('get')
         expect(wrapper.state().name).toBe('Accounts_Account')
         expect(wrapper.state().description).toBe('table in protoworld')
@@ -71,7 +71,10 @@ describe('< DisplayResourceDetail />', () => {
         expect(wrapper.state().creator.id).toEqual(105)
         expect(wrapper.state().creator.name).toEqual('kanokwan')
         expect(wrapper.state().creator.position).toEqual('Intern')
-        expect(wrapper.state().relatedResources).toEqual([{ id: '58', name: 'test 1', type: 'Database' }, { id: '52', name: 'test test table', type: 'Database' }])
+        expect(wrapper.state().relatedResources).toEqual([
+          { id: '58', name: 'test 1', type: 'Database' },
+          { id: '52', name: 'test test table', type: 'Database' },
+        ])
         done()
       })
     })
@@ -85,7 +88,7 @@ describe('< DisplayResourceDetail />', () => {
     auth = {
       getEmail: () => 'test@pronto.com',
     }
-    const wrapper = mount(<DisplayResourceDetailContainer match={match} auth={auth} />)
+    const wrapper = shallow(<DisplayResourceDetailContainer match={match} auth={auth} />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
@@ -121,7 +124,7 @@ describe('< DisplayResourceDetail />', () => {
           ],
         },
       }).then(() => {
-        expect(request.url).toBe('http://localhost:5000/resources/0/')
+        expect(request.url).toBe('http://localhost:5000/resources/0/?memberEmail=test@pronto.com')
         expect(request.config.method).toBe('get')
         expect(wrapper.state().name).toBe('pw_accounts_account')
         expect(wrapper.state().url).toBe('https://www.prontotools.io/')
@@ -145,7 +148,7 @@ describe('< DisplayResourceDetail />', () => {
     auth = {
       getEmail: () => 'test@pronto.com',
     }
-    const wrapper = mount(<DisplayResourceDetailContainer match={match} auth={auth} />)
+    const wrapper = shallow(<DisplayResourceDetailContainer match={match} auth={auth} />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
@@ -181,7 +184,7 @@ describe('< DisplayResourceDetail />', () => {
           ],
         },
       }).then(() => {
-        expect(request.url).toBe('http://localhost:5000/resources/0/')
+        expect(request.url).toBe('http://localhost:5000/resources/0/?memberEmail=test@pronto.com')
         expect(request.config.method).toBe('get')
         expect(wrapper.state().name).toBe('Robot Framework')
         expect(wrapper.state().url).toBe('https://www.prontotools.io/robot-framework-101-มาลองใช้กัน/')

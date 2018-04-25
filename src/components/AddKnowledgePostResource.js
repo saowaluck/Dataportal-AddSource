@@ -15,6 +15,20 @@ class AddKnowledgePostResource extends Component {
     message: false,
   }
 
+  componentDidMount() {
+    axios.get(`${process.env.REACT_APP_API_URL}/tags/`)
+      .then(res => {
+        res.data.tags.map(tag => (
+          this.setState({
+            options: [
+              { text: tag, value: tag },
+              ...this.state.options,
+            ],
+          })
+        ))
+      })
+  }
+
   onSearchChange = (e, { searchQuery }) => {
     if (searchQuery.match(',')) {
       const tag = searchQuery.substring(0, searchQuery.length - 1)
@@ -77,6 +91,8 @@ class AddKnowledgePostResource extends Component {
           })
         }
       })
+      .catch(() => {
+      })
   }
 
   render() {
@@ -129,7 +145,11 @@ class AddKnowledgePostResource extends Component {
           <hr />
           <button className='ui primary button' type='submit'>Add</button>
         </form>
-        { this.state.message && <div className='ui red message'>Data is Dublicate</div>}
+        { this.state.message &&
+          <div className='ui red message'>
+            The value was already entered. Type and URL must be unique. Please try again
+          </div>
+        }
         {this.state.isSubmit && (<Redirect to={`/resources/${this.state.id}/`} />)}
       </div>
     )

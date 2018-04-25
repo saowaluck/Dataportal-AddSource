@@ -18,13 +18,52 @@ router.post('/:id/join/', async (req, res) => {
   res.json({ joinRelationTeam })
 })
 
+router.get('/:id/pinned/', async (req, res) => {
+  const id = Number(req.params.id)
+  const pinnedResources = await Team.getResourceByPin(id)
+  res.json({ pinnedResources })
+})
+
+router.post('/:id/resources/:resourceId/pinned/', async (req, res) => {
+  const teamId = Number(req.params.id)
+  const resourceId = Number(req.params.resourceId)
+  await Team.pinResource(teamId, resourceId)
+  const resourceByCreated = await Team.getResourceByCreated(teamId)
+  const pinnedResources = await Team.getResourceByPin(teamId)
+  res.json({
+    resourceByCreated, pinnedResources,
+  })
+})
+
+router.post('/:id/resources/:resourceId/unpinned/', async (req, res) => {
+  const teamId = Number(req.params.id)
+  const resourceId = Number(req.params.resourceId)
+  await Team.unPinResource(teamId, resourceId)
+  const resourceByCreated = await Team.getResourceByCreated(teamId)
+  const pinnedResources = await Team.getResourceByPin(teamId)
+  res.json({
+    resourceByCreated, pinnedResources,
+  })
+})
+
+router.get('/:id/resources/', async (req, res) => {
+  const id = Number(req.params.id)
+  const resourceByCreated = await Team.getResourceByCreated(id)
+  const pinnedResources = await Team.getResourceByPin(id)
+  res.json({
+    resourceByCreated, pinnedResources,
+  })
+})
+
 router.get('/:id/', async (req, res) => {
   const id = Number(req.params.id)
   const email = req.query.memberEmail
   const team = await Team.getTeamById(id)
   const members = await Team.getMembersOfTeam(id)
   const isRelationTeam = await Team.isRelationTeam(id, email)
-  res.json({ isRelationTeam, team, members })
+  res.json({
+    isRelationTeam, team, members,
+  })
 })
 
 router.post('/', async (req, res) => {

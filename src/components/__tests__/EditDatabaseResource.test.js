@@ -147,7 +147,7 @@ describe('<EditDatabaseResource />', () => {
       createdDate={createdDate}
     />)
     const preventDefault = jest.fn()
-    wrapper.find('form[name="table"]').simulate('submit', { preventDefault })
+    wrapper.find('button[name="submit"]').simulate('click', { preventDefault })
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
       request.respondWith({

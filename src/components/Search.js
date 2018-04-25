@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
 import { Tab } from 'semantic-ui-react'
 import axios from 'axios'
-import ListAllResource from './ListAllResource'
+import AllResourceList from './AllResourceList'
+import DatabaseList from './DatabaseList'
+import KnowledgePostList from './KnowledgePostList'
+import SupersetList from './SupersetList'
 import CategoryTeam from './CategoryTeam'
-
+import NewsFeed from './NewsFeed'
+import RecommentData from './RecommenetData'
 class Search extends Component {
   state = {
     searchText: '',
-    resource: [],
-    favorite: [],
-    defaultresource: [],
+    resources: [],
+    defaultresources: [],
   }
 
   componentDidMount() {
@@ -18,8 +21,8 @@ class Search extends Component {
       .get(url)
       .then((res) => {
         this.setState({
-          resource: res.data.resources,
-          defaultresource: res.data.resources,
+          resources: res.data.resources,
+          defaultresources: res.data.resources,
         })
       })
       .catch(() => {
@@ -37,23 +40,20 @@ class Search extends Component {
       axios
         .get(url)
         .then((res) => {
-          this.setState({ resource: res.data.resources })
+          this.setState({ resources: res.data.resources })
         })
     }
     this.setState({
-      resource: this.state.defaultresource,
+      resources: this.state.defaultresources,
     })
   }
 
   panes = () => (
     [
-      {
-        menuItem: 'All',
-        render: () => (<ListAllResource
-          resource={this.state.resource}
-          favorite={this.state.favorite}
-        />),
-      },
+      { menuItem: 'All', render: () => (<AllResourceList searchText={this.state.searchText} resources={this.state.resources} />) },
+      { menuItem: 'Knowledge Post', render: () => <KnowledgePostList searchText={this.state.searchText} resources={this.state.resources.filter(item => item.resource.type === 'Knowledge Post')} /> },
+      { menuItem: 'Superset Dashboard', render: () => <SupersetList searchText={this.state.searchText} resources={this.state.resources.filter(item => item.resource.type === 'Superset Dashboard')} /> },
+      { menuItem: 'Database', render: () => <DatabaseList searchText={this.state.searchText} resources={this.state.resources.filter(item => item.resource.type === 'Database')} /> },
       { menuItem: 'Teams', render: () => <CategoryTeam teams={this.state.teams} /> },
     ]
   )
@@ -80,12 +80,15 @@ class Search extends Component {
               <div className='ui twelve wide column'>
                 <div className='ui row'>
                   <div className='meta'>
-                    <p>{this.state.resource.length} results found for {this.state.searchText}</p>
                     <Tab menu={{ secondary: true, pointing: true }} panes={this.panes()} />
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div className='five wide column'>
+          <NewsFeed />
+          <RecommentData  email={this.props.auth.getEmail()}/>
           </div>
         </div>
       </div>

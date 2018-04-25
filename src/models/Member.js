@@ -12,6 +12,7 @@ const Member = {
       email: result.records[0]._fields[0].properties.email,
       slack: result.records[0]._fields[0].properties.slack,
       avatar: result.records[0]._fields[0].properties.avatar,
+      role: result.records[0]._fields[0].properties.role,
     }
     return member
   },
@@ -23,6 +24,8 @@ const Member = {
       name: item._fields[0].properties.name,
       type: item._fields[0].properties.type,
       updatedDate: item._fields[0].properties.updatedDate,
+      role: item._fields[0].properties.role,
+
     }))
     return favorites
   },
@@ -36,6 +39,7 @@ const Member = {
       email: result.records[0]._fields[0].properties.email,
       slack: result.records[0]._fields[0].properties.slack,
       avatar: result.records[0]._fields[0].properties.avatar,
+      role: result.records[0]._fields[0].properties.role,
     }
     return member
   },
@@ -64,12 +68,13 @@ const Member = {
 
   createMember: async (data) => {
     const result = await session
-      .run('CREATE n = (member:Member {name:{name}, position:{position}, email:{email}, slack:{slack}, avatar:{avatar}}) RETURN n', {
+      .run('CREATE n = (member:Member {name:{name}, position:{position}, email:{email}, slack:{slack}, avatar:{avatar}, role:{role}}) RETURN n', {
         name: data.name,
         position: data.position,
         email: data.email,
         slack: data.slack,
         avatar: data.avatar,
+        role: data.role,
       })
     const member = {
       id: result.records[0]._fields[0].start.identity.low,
@@ -78,6 +83,7 @@ const Member = {
       email: result.records[0]._fields[0].start.properties.email,
       slack: result.records[0]._fields[0].start.properties.slack,
       avatar: result.records[0]._fields[0].start.properties.avatar,
+      role: result.records[0]._fields[0].start.properties.role,
     }
     return member
   },
