@@ -143,6 +143,18 @@ const Team = {
     }))
     return pinnedResources
   },
+
+  searchTeams: async (text) => {
+    const searchText = `.*(?i)${text}.*`
+    const result = await session.run('MATCH (team:Team) WHERE team.name =~ {searchText} RETURN team ' +
+    'UNION MATCH (team:Team) WHERE team.description =~ {searchText} RETURN team', { searchText })
+    const teams = result.records.map(item => ({
+      id: item._fields[0].identity.low,
+      name: item._fields[0].properties.name,
+      description: item._fields[0].properties.description,
+    }))
+    return teams
+  },
 }
 
 session.close()
