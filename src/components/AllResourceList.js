@@ -27,12 +27,12 @@ class AllResourceList extends Component {
     }
   }
 
-  handleColor = type => {
+  handleIcon = type => {
     if (type === 'Database') {
-      return 'ui right floated database big label'
+      return 'database icon'
     } else if (type === 'Superset Dashboard') {
-      return 'ui right floated superset big label'
-    } return 'ui right floated knowledge big label'
+      return 'chart bar outline icon'
+    } return 'wpforms icon'
   }
 
   render() {
@@ -46,10 +46,12 @@ class AllResourceList extends Component {
                 <div className='content'>
                   <div className='ui row vertical'>
                     <h3 className='ui header'>
-                      <a href={`/resources/${item.resource.resourceId}/`}>{item.resource.name}</a>
-                      <div className={this.handleColor(item.resource.type)}>
-                        <div className='visible content'>{item.resource.type}</div>
-                      </div>
+                      <a href={`/resources/${item.resource.resourceId}/`}>
+                        { item.resource.name.length > 80
+                          ? `${item.resource.name.substring(0, 80)}...`
+                          : item.resource.name
+                        }
+                      </a>
                     </h3>
                   </div>
                   <br />
@@ -59,6 +61,9 @@ class AllResourceList extends Component {
                       <a href={`/members/${item.resource.memberId}/`}>
                         <i className='user icon people' />{item.resource.member}
                       </a>
+                    </span>&nbsp;&nbsp;
+                    <span><i className={this.handleIcon(item.resource.type)} />
+                      {item.resource.type}
                     </span>&nbsp;&nbsp;
                     <span><i className='wait icon' />{moment(new Date(item.resource.createdDate)).format('MMM DD, YYYY')}</span>&nbsp;&nbsp;
                     <span><i className='history icon' />{moment(new Date(item.resource.updatedDate)).format('MMM DD, YYYY')}</span>&nbsp;&nbsp;

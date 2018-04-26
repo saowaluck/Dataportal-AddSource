@@ -25,15 +25,10 @@ router.get('/recomment/', async (req, res) => {
   let resources = []
   const email = req.query.memberEmail
   const resourcesId = await Resource.getResourceIdByRecomment(email)
-  console.log('resourceId', resourcesId)
   const tagsName = await Resource.getTagByRecomentId(resourcesId)
-  console.log('tagsName', tagsName)
   resources = await Resource.getResourceByTagsName(tagsName, email)
-  console.log('resources', resources)
   if (resources.length === 0) {
-    console.log('!!!!!!!!!!')
     resources = await Resource.getTopFavorite(email)
-    console.log(resources)
   }
   res.json(resources)
 })
@@ -129,15 +124,12 @@ router.post('/:id/consumers/', async req => {
 })
 
 router.get('/search/:text/', async (req, res) => {
-  console.log(req.query.checked)
   const { text } = req.params
   let data = []
-  console.log(text)
-  if(req.query.checked){
+  if (req.query.checked) {
     const result = await Resource.searchResource(text)
     data = await Promise.all(result.map(async (item) => {
       const results = await Resource.getResourceById(Number(item.id))
-      console.log(results)
       return results
     }))
   } else {
@@ -147,9 +139,7 @@ router.get('/search/:text/', async (req, res) => {
       return results
     }))
   }
-  console.log(data)
   const resources = await Promise.all(data.map(async (item) => {
-    console.log('item',item)
     const favorites = await Resource.getFavoriteByResourceId(Number(item[0].resourceId))
     return { resource: item[0], favorite: favorites.length }
   }))
