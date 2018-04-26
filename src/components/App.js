@@ -10,6 +10,7 @@ import history from './history'
 
 import rootReducer from './../reducers/'
 
+import DisplayTeams from './DisplayTeams'
 import AddResourceForm from './AddResourceForm'
 import DisplayResourceDetail from './../containers/DisplayResourceDetail'
 import Search from './Search'
@@ -71,6 +72,7 @@ const App = () => (
                 <Route path='/resources/:id/edit/' component={EditResource} />
                 <Route path='/resources/add/' render={props => <AddResourceForm auth={auth} {...props} />} />
                 <Route path='/resources/:id/' render={props => <DisplayResourceDetail auth={auth} {...props} />} />
+                <Route path='/teams/manage/' render={props => <DisplayTeams auth={auth} {...props} />} />
                 <Route path='/teams/:id/' render={props => <TeamProfile auth={auth} {...props} />} />
                 <Route path='/members/:id/edit/' render={props => <EditProfile auth={auth} {...props} />} />
                 <Route path='/members/:id/' component={MemberProfile} />

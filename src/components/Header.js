@@ -9,7 +9,7 @@ class Header extends Component {
     id: '',
     name: this.props.auth.getName(),
     avatar: this.props.auth.getAvatar(),
-    role: 'employee'
+    role: 'employee',
   }
 
   componentDidMount() {

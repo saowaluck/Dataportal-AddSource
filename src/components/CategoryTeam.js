@@ -12,7 +12,7 @@ class CategoryTeam extends Component {
       .get(url)
       .then((res) => {
         this.setState({
-          teams: res.data.teams,
+          teams: res.data,
         })
       })
       .catch(() => {
@@ -22,12 +22,12 @@ class CategoryTeam extends Component {
   render() {
     return (
       <div className='ui row vertical segment'>
-        {this.state.teams.map(team => (
-          <div className='ui segment' key={team.id}>
+        {this.state.teams.map(item => (
+          <div className='ui segment' key={item.team.id}>
             <div className='ui row vertical segment'>
               <div className='ui item'>
                 <h3 className='ui header'>
-                  <a href={`/teams/${team.id}/`}>{team.name}</a>
+                  <a href={`/teams/${item.team.id}/`}>{item.team.name}</a>
                 </h3>
               </div>
             </div>
