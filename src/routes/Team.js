@@ -77,4 +77,10 @@ router.get('/', async (req, res) => {
   res.json({ teams })
 })
 
+router.get('/search/:text/', async (req, res) => {
+  const { text } = req.params
+  const teams = await Team.searchTeams(text)
+  res.status(200).json(teams)
+})
+
 module.exports = router

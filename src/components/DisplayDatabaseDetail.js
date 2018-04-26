@@ -18,12 +18,12 @@ class DisplayDatabaseDetail extends Component {
     return data
   }
 
-  handleColor = type => {
+  handleIcon = type => {
     if (type === 'Database') {
-      return 'ui right floated database label'
+      return 'database icon'
     } else if (type === 'Superset Dashboard') {
-      return 'ui right floated superset label'
-    } return 'ui right floated knowledge label'
+      return 'chart bar outline icon'
+    } return 'wpforms icon'
   }
 
   convertTags = () => this.props.data.tags.map(tag => (<span key={tag} className='ui left floated label'>{tag}</span>))
@@ -88,8 +88,13 @@ class DisplayDatabaseDetail extends Component {
                   {this.props.data.relatedResources.map(item => (
                     <div className='item' key={item.id}>
                       <div className='header'>
-                        <a className='content' href={`/resources/${item.id}/`}>{item.name}</a>
-                        <span className={this.handleColor(item.type)}>{item.type}</span>
+                        <a className='content' href={`/resources/${item.id}/`}>
+                          { item.name.length > 50
+                            ? `${item.name.substring(0, 45)}...`
+                            : item.name
+                          }
+                        </a>
+                        <span className='ui mini right floated' ><i className={this.handleIcon(item.type)} /></span>
                       </div>
                     </div>
                   ))}

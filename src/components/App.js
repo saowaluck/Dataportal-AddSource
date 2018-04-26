@@ -22,6 +22,8 @@ import Logout from './Logout'
 import NotFoundPage from './NotFoundPage'
 import MemberProfile from './../components/MemberProfile'
 import EditProfile from './../components/EditProfile'
+import AllTeamList from './../components/AllTeamList'
+import AllMemberList from './AllMemberList'
 import './../assets/css/main.css'
 
 const auth = new Auth()
@@ -74,6 +76,8 @@ const App = () => (
                 <Route path='/teams/:id/' render={props => <TeamProfile auth={auth} {...props} />} />
                 <Route path='/members/:id/edit/' render={props => <EditProfile auth={auth} {...props} />} />
                 <Route path='/members/:id/' component={MemberProfile} />
+                <Route exact path='/teams/' render={props => <AllTeamList auth={auth} {...props} />} />
+                <Route exact path='/members/' component={AllMemberList} />
               </Switch>
             </PrivateRoute>
           </Switch>

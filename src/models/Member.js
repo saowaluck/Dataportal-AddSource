@@ -136,6 +136,27 @@ const Member = {
     }
     return member
   },
+
+  getAllMember: async () => {
+    const result = await session.run('MATCH (n:Member) RETURN n')
+    const members = result.records.map(item => ({
+      id: item._fields[0].identity.low,
+      name: item._fields[0].properties.name,
+      avatar: item._fields[0].properties.avatar,
+    }))
+    return members
+  },
+
+  searchMember: async (text) => {
+    const searchText = `.*(?i)${text}.*`
+    const result = await session.run('MATCH (member:Member) WHERE member.name =~ {searchText} RETURN member', { searchText })
+    const members = result.records.map(item => ({
+      id: item._fields[0].identity.low,
+      name: item._fields[0].properties.name,
+      avatar: item._fields[0].properties.avatar,
+    }))
+    return members
+  },
 }
 
 session.close()

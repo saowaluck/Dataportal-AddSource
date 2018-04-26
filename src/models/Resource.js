@@ -460,14 +460,26 @@ const Resource = {
   },
 
   getTopFavorite: async (email) => {
-    console.log(email)
     const result = await session.run('MATCH (m:Member)-[f:favorite]-(r:Resource) ' +
     'WHERE m.email <> {email} ' +
-    'RETURN r, Count(*) As FavCount ORDER BY FavCount DESC LIMIT 3', {email})
+    'RETURN r, Count(*) As FavCount ORDER BY FavCount DESC LIMIT 3', { email })
     const resources = result.records.map(item => ({
       id: item._fields[0].identity.low,
       name: item._fields[0].properties.name,
       type: item._fields[0].properties.type,
+    }))
+    return resources
+  },
+
+  searchResource: async (text) => {
+    const searchText = `.*(?i)${text}.*`
+    const result = await session.run('MATCH (resource:Resource) WHERE resource.name =~ {searchText} RETURN resource ' +
+    'UNION MATCH (resource:Resource)-[:hasTag]->(tag:Tag) WHERE tag.name =~ {searchText} RETURN resource ' +
+    'UNION MATCH (resource:Resource) WHERE resource.description =~ {searchText} RETURN resource ' +
+    'UNION MATCH (resource:Resource) WHERE resource.url =~ {searchText} RETURN resource ' +
+    'UNION MATCH (resource:Resource) WHERE resource.columns =~ {searchText} RETURN resource', { searchText })
+    const resources = result.records.map(item => ({
+      id: item._fields[0].identity.low,
     }))
     return resources
   },

@@ -5,7 +5,6 @@ import AllResourceList from './AllResourceList'
 import DatabaseList from './DatabaseList'
 import KnowledgePostList from './KnowledgePostList'
 import SupersetList from './SupersetList'
-import CategoryTeam from './CategoryTeam'
 import NewsFeed from './NewsFeed'
 import RecommentData from './RecommenetData'
 class Search extends Component {
@@ -13,6 +12,7 @@ class Search extends Component {
     searchText: '',
     resources: [],
     defaultresources: [],
+    checked:false,
   }
 
   componentDidMount() {
@@ -36,9 +36,7 @@ class Search extends Component {
   handleSubmit = e => {
     if (e.key === 'Enter' && this.state.searchText.trim() !== '') {
       e.preventDefault()
-      const url = `${process.env.REACT_APP_API_URL}/resources/search/${this.state.searchText}/`
-      axios
-        .get(url)
+      axios.get(`${process.env.REACT_APP_API_URL}/resources/search/${this.state.searchText}/?checked=${this.state.checked}`)
         .then((res) => {
           this.setState({ resources: res.data.resources })
         })
@@ -48,13 +46,24 @@ class Search extends Component {
     })
   }
 
+  handleChecked = () => {
+    if(this.state.checked) {
+      this.setState({
+        checked: false,
+      })
+    } else {
+      this.setState({
+        checked: true,
+      })
+    }
+  }
+
   panes = () => (
     [
       { menuItem: 'All', render: () => (<AllResourceList searchText={this.state.searchText} resources={this.state.resources} />) },
       { menuItem: 'Knowledge Post', render: () => <KnowledgePostList searchText={this.state.searchText} resources={this.state.resources.filter(item => item.resource.type === 'Knowledge Post')} /> },
       { menuItem: 'Superset Dashboard', render: () => <SupersetList searchText={this.state.searchText} resources={this.state.resources.filter(item => item.resource.type === 'Superset Dashboard')} /> },
       { menuItem: 'Database', render: () => <DatabaseList searchText={this.state.searchText} resources={this.state.resources.filter(item => item.resource.type === 'Database')} /> },
-      { menuItem: 'Teams', render: () => <CategoryTeam teams={this.state.teams} /> },
     ]
   )
 
@@ -75,6 +84,11 @@ class Search extends Component {
                     onKeyPress={this.handleSubmit}
                   />
                   <i className='search icon' />
+                </div>
+                <br />
+                <div className='ui checkbox' onClick={this.handleChecked} >
+                  <input type='checkbox' name='checked' />
+                  <label>Basic Search</label>
                 </div>
               </div>
               <div className='ui twelve wide column'>
