@@ -11,6 +11,7 @@ const addIndex = (id, name, type, url, tags) => (
   client.index({
     index: 'dataportal',
     type: 'resource',
+    analyzer: 'standard',
     id,
     body: {
       name, type, url, tags,
