@@ -5,7 +5,6 @@ import AllResourceList from './AllResourceList'
 import DatabaseList from './DatabaseList'
 import KnowledgePostList from './KnowledgePostList'
 import SupersetList from './SupersetList'
-import CategoryTeam from './CategoryTeam'
 import NewsFeed from './NewsFeed'
 import RecommentData from './RecommenetData'
 class Search extends Component {
@@ -65,7 +64,6 @@ class Search extends Component {
       { menuItem: 'Knowledge Post', render: () => <KnowledgePostList searchText={this.state.searchText} resources={this.state.resources.filter(item => item.resource.type === 'Knowledge Post')} /> },
       { menuItem: 'Superset Dashboard', render: () => <SupersetList searchText={this.state.searchText} resources={this.state.resources.filter(item => item.resource.type === 'Superset Dashboard')} /> },
       { menuItem: 'Database', render: () => <DatabaseList searchText={this.state.searchText} resources={this.state.resources.filter(item => item.resource.type === 'Database')} /> },
-      { menuItem: 'Teams', render: () => <CategoryTeam teams={this.state.teams} /> },
     ]
   )
 

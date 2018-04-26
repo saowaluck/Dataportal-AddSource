@@ -6,12 +6,12 @@ import DisplayFavorite from './DisplayFavorite'
 import ConsumerList from './ConsumerList'
 
 class DisplayResourceDetail extends Component {
-  handleColor = type => {
+  handleIcon = type => {
     if (type === 'Database') {
-      return 'ui right floated database label'
+      return 'database icon'
     } else if (type === 'Superset Dashboard') {
-      return 'ui right floated superset label'
-    } return 'ui right floated knowledge label'
+      return 'chart bar outline icon'
+    } return 'wpforms icon'
   }
 
   render() {
@@ -74,8 +74,13 @@ class DisplayResourceDetail extends Component {
                   {this.props.data.relatedResources.map(item => (
                     <div className='item' key={item.id}>
                       <div className='header'>
-                        <a className='content' href={`/resources/${item.id}/`}>{item.name}</a>
-                        <span className={this.handleColor(item.type)}>{item.type}</span>
+                        <a className='content' href={`/resources/${item.id}/`}>
+                          { item.name.length > 40
+                            ? `${item.name.substring(0, 40)}...`
+                            : item.name
+                          }
+                        </a>
+                        <span className='ui mini right floated' ><i className={this.handleIcon(item.type)} /></span>
                       </div>
                     </div>
                   ))}
