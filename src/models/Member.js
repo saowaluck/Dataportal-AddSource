@@ -17,6 +17,20 @@ const Member = {
     return member
   },
 
+  getAllMember: async () => {
+    const result = await session.run('MATCH (m:Member) RETURN m')
+    const member = result.records.map(item => ({
+      id: item._fields[0].identity.low,
+      name: item._fields[0].properties.name,
+      position: item._fields[0].properties.position,
+      email: item._fields[0].properties.email,
+      slack: item._fields[0].properties.slack,
+      avatar: item._fields[0].properties.avatar,
+      role: item._fields[0].properties.role,
+    }))
+    return member
+  },
+
   getFavoriteByMember: async (id) => {
     const result = await session.run('MATCH p=(m:Member)-[f:favorite]->(r:Resource) WHERE ID(m)={id}  RETURN r', { id: Number(id) })
     const favorites = result.records.map(item => ({
@@ -117,7 +131,7 @@ const Member = {
     }
     const result = await session
       .run('MATCH (m :Member) WHERE ID(m) = {id} ' +
-    'SET m = {' +
+      'SET m = {' +
       'name:{name},' +
       'slack:{slack},' +
       'position:{position},' +

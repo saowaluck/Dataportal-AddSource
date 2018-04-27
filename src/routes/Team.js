@@ -73,8 +73,13 @@ router.post('/', async (req, res) => {
 })
 
 router.get('/', async (req, res) => {
+  let members = [{ name: '' }]
   const teams = await Team.getTeam()
-  res.json({ teams })
+  const result = await Promise.all(teams.map(async team => {
+    members = await Team.getMembersOfTeam(team.id)
+    return { team, members }
+  }))
+  res.json(result)
 })
 
 router.get('/search/:text/', async (req, res) => {
