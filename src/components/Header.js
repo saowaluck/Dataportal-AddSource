@@ -17,7 +17,7 @@ class Header extends Component {
     axios
       .get(`${process.env.REACT_APP_API_URL}/members/?memberEmail=${memberEmail}`)
       .then(result => {
-        this.setState({ 
+        this.setState({
           id: result.data.id,
           role: result.data.role,
         })
@@ -36,6 +36,12 @@ class Header extends Component {
             Dataportal
           </a>
           <div className='right menu'>
+            <div className='ui simple right item'>
+              <a href='/teams/'>Teams</a>
+            </div>
+            <div className='ui simple right item'>
+              <a href='/members/'>Members</a>
+            </div>
             <div className='ui simple right item'>
               <a href='/resources/add/'>Add New Resource</a>
             </div>

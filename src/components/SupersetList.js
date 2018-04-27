@@ -39,9 +39,6 @@ class SupersetList extends Component {
                   <div className='ui row vertical'>
                     <h3 className='ui header'>
                       <a href={`/resources/${item.resource.resourceId}/`}>{item.resource.name}</a>
-                      <div className='ui right floated superset big label'>
-                        <div className='visible content'>{item.resource.type}</div>
-                      </div>
                     </h3>
                   </div>
                   <br />

@@ -20,8 +20,8 @@ class DisplayFavorite extends Component {
       <Accordion>
         <Accordion.Title active={this.state.activeIndex === 0} index={0} onClick={this.handleClick}>
           <Icon className='ui heart icon' />
-          favorited by {this.props.thisResource.members.length} protons
-          <Icon className='angle down icon' />
+          favorited by {this.props.thisResource.members.length} {this.props.thisResource.members.length > 1 ? 'protons' : 'proton'}
+          {this.props.thisResource.members.length > 0 && <Icon className='angle down icon' />}
         </Accordion.Title>
         <Accordion.Content active={this.state.activeIndex === 0}>
           <div className='ui horizontal list'>
