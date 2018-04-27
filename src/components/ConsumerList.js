@@ -35,8 +35,8 @@ class ConsumerList extends Component {
       <Accordion>
         <Accordion.Title active={this.state.activeIndex === 0} index={0} onClick={this.handleClick}>
           <Icon className='user icon people' />
-            recently comsumed by {this.state.consumed.length} protons
-          <Icon className='angle down icon' />
+          recently comsumed by {this.state.consumed.length} {this.state.consumed.length > 1 ? 'protons' : 'proton'}
+          {this.state.consumed.length > 0 && <Icon className='angle down icon' />}
         </Accordion.Title>
         <Accordion.Content active={this.state.activeIndex === 0}>
           <div className='ui horizontal list'>
