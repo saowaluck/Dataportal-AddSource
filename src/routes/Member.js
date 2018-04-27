@@ -10,6 +10,11 @@ router.get('/', async (req, res) => {
   res.json(member)
 })
 
+router.get('/all', async (req, res) => {
+  const member = await Member.getAllMember()
+  res.json(member)
+})
+
 router.get('/:id/', async (req, res) => {
   const id = Number(req.params.id)
   const member = await Member.getMemberById(id)
