@@ -104,8 +104,13 @@ router.get('/', async (req, res) => {
 
 router.get('/search/:text/', async (req, res) => {
   const { text } = req.params
+  let members = [{ name: '' }]
   const teams = await Team.searchTeams(text)
-  res.status(200).json(teams)
+  const result = await Promise.all(teams.map(async team => {
+    members = await Team.getMembersOfTeam(team.id)
+    return { team, members }
+  }))
+  res.status(200).json(result)
 })
 
 module.exports = router
