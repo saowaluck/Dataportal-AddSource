@@ -3,7 +3,7 @@ import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 import { Button, Modal, Form, Dropdown, Icon } from 'semantic-ui-react'
 
-class ModalAddTeam extends Component {
+class ModalEditTeam extends Component {
   state = {
     open: false,
     name: '',
@@ -14,6 +14,17 @@ class ModalAddTeam extends Component {
   }
 
   componentDidMount() {
+    axios.get(`${process.env.REACT_APP_API_URL}/teams/${this.props.id}/?memberEmail=${this.props.email}`)
+      .then(res => {
+        const { team, members } = res.data
+        this.setState({
+          name: team.name,
+          description: team.description,
+        })
+        members.map(member => this.setState({
+          currentValues: [member.name],
+        }))
+      })
     axios.get(`${process.env.REACT_APP_API_URL}/members/all`)
       .then(res => {
         res.data.map(member => (
@@ -23,7 +34,6 @@ class ModalAddTeam extends Component {
                 text: member.name,
                 value: member.name,
                 image: { avatar: true, src: member.avatar },
-                key: member.id,
               },
               ...this.state.options,
             ],
@@ -38,7 +48,7 @@ class ModalAddTeam extends Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    axios.post(`${process.env.REACT_APP_API_URL}/teams/`, {
+    axios.post(`${process.env.REACT_APP_API_URL}/teams/${this.props.id}/edit`, {
       name: this.state.name,
       description: this.state.description,
       members: this.state.currentValues,
@@ -63,16 +73,17 @@ class ModalAddTeam extends Component {
     this.setState({ currentValues: value })
   }
 
+  allTagOption = e => { this.dropdown = e }
+
   render() {
     const { open, dimmer } = this.state
     return (
       <div>
-        <Button onClick={this.show('blurring')} className='button primary bright floated'>
-          <Icon name='plus' />
-          Create Team
+        <Button onClick={this.show('blurring')} className='ui circular primary icon button'>
+          <Icon name='edit' />
         </Button>
         <Modal dimmer={dimmer} open={open} onClose={this.close} size='small'>
-          <Modal.Header>Create Team</Modal.Header>
+          <Modal.Header>Edit Team</Modal.Header>
           <Modal.Content>
             <Form onSubmit={this.handleSubmit}>
               <Form.Field>
@@ -101,6 +112,7 @@ class ModalAddTeam extends Component {
               <Form.Field>
                 <label htmlFor='members'>Members
                   <Dropdown
+                    ref={this.allTagOption}
                     options={this.state.options}
                     placeholder='Choose Member'
                     search
@@ -133,4 +145,4 @@ class ModalAddTeam extends Component {
   }
 }
 
-export default ModalAddTeam
+export default ModalEditTeam

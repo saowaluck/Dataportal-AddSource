@@ -4,6 +4,26 @@ const router = express.Router()
 
 const Team = require('./../models/Team')
 
+router.post('/:id/edit/', async (req, res) => {
+  const id = Number(req.params.id)
+  const { name, description, members } = req.body
+  const data = {
+    id,
+    name,
+    description,
+    members,
+  }
+  await Team.clearRelationchipWithMember(id)
+  const team = await Team.editTeam(data)
+  res.json(team)
+})
+
+router.post('/:id/delete/', async (req, res) => {
+  const id = Number(req.params.id)
+  const deleteTeam = await Team.deleteTeam(id)
+  res.json({ deleteTeam })
+})
+
 router.post('/:id/leave/', async (req, res) => {
   const id = Number(req.params.id)
   const email = req.body.memberEmail
@@ -67,8 +87,8 @@ router.get('/:id/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  const { name, description } = req.body
-  const team = await Team.createTeams(name, description)
+  const { name, description, members } = req.body
+  const team = await Team.createTeams(name, description, members)
   res.json({ team })
 })
 
@@ -84,8 +104,13 @@ router.get('/', async (req, res) => {
 
 router.get('/search/:text/', async (req, res) => {
   const { text } = req.params
+  let members = [{ name: '' }]
   const teams = await Team.searchTeams(text)
-  res.status(200).json(teams)
+  const result = await Promise.all(teams.map(async team => {
+    members = await Team.getMembersOfTeam(team.id)
+    return { team, members }
+  }))
+  res.status(200).json(result)
 })
 
 module.exports = router
