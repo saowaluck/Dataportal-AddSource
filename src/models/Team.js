@@ -4,20 +4,17 @@ const db = require('./db')
 const session = db.session()
 
 const Team = {
-  createTeams: async (name, description) => {
+  createTeams: async (name, description, members) => {
     const createdDate = moment().format()
     const team = await session
-      .run('CREATE n = (teams:Team {name:{name}, ' +
-      'description:{description}, ' +
-      'createdDate:{createdDate}}) RETURN n', {
-        name, description, createdDate,
+      .run('CREATE (team:Team{name:{name}, description:{description}, createdDate:{createdDate}}) ' +
+      'WITH {members} As memberAttends,team ' +
+      'MATCH (member:Member) WHERE member.name IN memberAttends ' +
+      'CREATE p = (member)-[:attend]->(team) ' +
+      'RETURN p', {
+        name, description, createdDate, members,
       })
-    const result = {
-      id: team.records[0]._fields[0].start.identity.low,
-      name: team.records[0]._fields[0].start.properties.name,
-      description: team.records[0]._fields[0].start.properties.description,
-    }
-    return result
+    return team
   },
 
   getTeamById: async id => {
@@ -155,7 +152,39 @@ const Team = {
     }))
     return teams
   },
+
+  clearRelationchipWithMember: async (id) => {
+    await session.run('MATCH (member:Member)-[attend:attend]->(team:Team) WHERE ID(team) = {id} ' +
+  'DELETE attend', { id })
+  },
+
+  editTeam: async (data) => {
+    console.log(data)
+    const team = await session.run("MATCH (team:Team) WHERE ID(team) = {id} " +
+    "SET team = {name:{name}, description:{description}} " +
+    "WITH team " +
+    "UNWIND {members} AS memberInTeam " +
+    "MATCH (n:Member{name:memberInTeam}) " +
+    "CREATE p = (n)-[:attend]->(team) " +
+    "RETURN p", {
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      members: data.members,
+    })
+    return team
+  },
+
+  deleteTeam: async (id) => {
+    const result = await session
+      .run('MATCH (t:Team) WHERE ID(t) = {id} DETACH DELETE t', { id })
+    if (result.records.length === 0) {
+      return true
+    }
+    return false
+  },
 }
+
 
 session.close()
 db.close()

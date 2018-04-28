@@ -42,13 +42,9 @@ router.get('/search/:text/', async (req, res) => {
 })
 
 router.get('/', async (req, res) => {
-  console.log('get Member')
   const email = req.query.memberEmail
   const members = await Member.getMemberByEmail(email)
   res.json(members)
 })
-
-
-
 
 module.exports = router

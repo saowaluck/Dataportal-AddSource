@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import ModalAddTeam from './ModalAddTeam'
+import ModalEditTeam from './ModalEditTeam'
+import DeleteTeam from './DeleteTeam'
 
 class DisplayTeams extends Component {
   state = {
@@ -65,17 +67,18 @@ class DisplayTeams extends Component {
                     <tr key={item.team.id} >
                       <td><a href={`/teams/${item.team.id}/`}>{item.team.name}</a></td>
                       <td>{item.team.description}</td>
-
-                      {item.members.length > 0 ? (item.members.map(member => (
-                        <td>
+                      <td>
+                        {item.members.length > 0 ? (item.members.map(member => (
                           <a href={`member/${member.id}`}>
                             <img className='ui avatar image' src={member.avatar} alt='logo' />
                           </a>
-                        </td>
-                      ))) : <td>Not have member</td>}
+                      ))) : 'Not have member'}
+                      </td>
                       <td>
-                        <a href=''><i className='large pencil alternate icon' /></a>
-                        <a href=''><i className='large trash outline icon' /></a>
+                        <div className='ui labeled button' tabIndex='0'>
+                          <ModalEditTeam id={item.team.id} email='pop@prontomarketing.com' />
+                          <DeleteTeam id={item.team.id} />
+                        </div>
                       </td>
                     </tr>
                 ))}
