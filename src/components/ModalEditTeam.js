@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 import { Button, Modal, Form, Dropdown, Icon } from 'semantic-ui-react'
+import PropTypes from 'prop-types'
 
 class ModalEditTeam extends Component {
   state = {
@@ -143,6 +144,11 @@ class ModalEditTeam extends Component {
       </div>
     )
   }
+}
+
+ModalEditTeam.propTypes = {
+  id: PropTypes.number.isRequired,
+  email: PropTypes.number.isRequired,
 }
 
 export default ModalEditTeam
