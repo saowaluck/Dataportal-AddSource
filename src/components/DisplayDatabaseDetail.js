@@ -49,16 +49,18 @@ class DisplayDatabaseDetail extends Component {
           </div>
           <div className='five wide column'>
             <div className='ui segment'>
-              <h3 className='ui header'>{this.props.data.name}</h3>
+              <h3 className='ui header'>{this.props.data.name}
+                {(this.props.data.auth.getEmail() !== this.props.data.creator.email) &&
+                <Favorites id={this.props.data.id} memberEmail={this.props.data.auth.getEmail()} />}
+              </h3>
               <span className='meta'>
                 <i className='tags large icon' />
                 {this.props.data.tags.map(tag => <span key={tag} className='ui left floated label'>{tag}</span>)}
               </span>
-              <h5>{(this.props.data.auth.getEmail() === this.props.data.creator.email) ?
+              <h5>{(this.props.data.auth.getEmail() === this.props.data.creator.email) &&
                 <a href={`/resources/${this.props.data.id}/edit/`}>
                   <i className='edit icon' />Edit resource
-                </a> :
-                <Favorites id={this.props.data.id} memberEmail={this.props.data.auth.getEmail()} />
+                </a>
                 }
               </h5>
               <hr />

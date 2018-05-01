@@ -54,4 +54,16 @@ router.post('/', async (req, res) => {
   res.json(member)
 })
 
+router.get('/search/:text/', async (req, res) => {
+  const { text } = req.params
+  const members = await Member.searchMember(text)
+  res.status(200).json(members)
+})
+
+router.get('/', async (req, res) => {
+  const email = req.query.memberEmail
+  const members = await Member.getMemberByEmail(email)
+  res.json(members)
+})
+
 module.exports = router

@@ -18,7 +18,7 @@ class AllTeamList extends Component {
       .get(url)
       .then((res) => {
         this.setState({
-          teams: res.data.teams,
+          teams: res.data,
         })
       })
       .catch(() => {
@@ -75,13 +75,13 @@ class AllTeamList extends Component {
           <br />
           <div className='ui four column grid'>
             {this.state.teams.slice(this.state.beginList, this.state.endList).map(item => (
-              <div className='column' key={item.id}>
+              <div className='column' key={item.team.id}>
                 <div className='ui card'>
                   <div className='content'>
                     <div className='header'>
-                      <a href={`/teams/${item.id}/`}>
+                      <a href={`/teams/${item.team.id}/`}>
                         <div className='center aligned'>
-                          {item.name}
+                          {item.team.name}
                         </div>
                       </a>
                     </div>
@@ -91,7 +91,7 @@ class AllTeamList extends Component {
                       <div className='event'>
                         <div className='content'>
                           <div className='description'>
-                            {item.description}
+                            {item.team.description}
                           </div>
                         </div>
                       </div>
