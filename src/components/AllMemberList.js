@@ -46,8 +46,12 @@ class AllMemberList extends Component {
   }
 
   handleSubmit = e => {
-    if (e.key === 'Enter' && this.state.searchText.trim() !== '') {
-      e.preventDefault()
+    if (e.key === 'Enter' && this.state.searchText.trim() === '') {
+      axios.get(`${process.env.REACT_APP_API_URL}/members/all/`)
+        .then((res) => {
+          this.setState({ members: res.data })
+        })
+    } else if (e.key === 'Enter' && this.state.searchText.trim() !== '') {
       axios.get(`${process.env.REACT_APP_API_URL}/members/search/${this.state.searchText}`)
         .then((res) => {
           this.setState({ members: res.data })

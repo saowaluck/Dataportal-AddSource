@@ -4,7 +4,8 @@ const session = db.session()
 
 const Member = {
   getMemberById: async (id) => {
-    const result = await session.run('MATCH (n :Member) WHERE ID(n) = {id} RETURN n', { id })
+    const cql = `MATCH (n :Member) WHERE ID(n) = ${id} RETURN n`
+    const result = await session.run(cql)
     const member = {
       id: result.records[0]._fields[0].identity.low,
       name: result.records[0]._fields[0].properties.name,
@@ -18,7 +19,8 @@ const Member = {
   },
 
   getAllMember: async () => {
-    const result = await session.run('MATCH (m:Member) RETURN m')
+    const cql = 'MATCH (m:Member) RETURN m'
+    const result = await session.run(cql)
     const member = result.records.map(item => ({
       id: item._fields[0].identity.low,
       name: item._fields[0].properties.name,
@@ -32,7 +34,8 @@ const Member = {
   },
 
   getFavoriteByMember: async (id) => {
-    const result = await session.run('MATCH p=(m:Member)-[f:favorite]->(r:Resource) WHERE ID(m)={id}  RETURN r', { id: Number(id) })
+    const cql = `MATCH p=(m:Member)-[f:favorite]->(r:Resource) WHERE ID(m)=${id} RETURN r`
+    const result = await session.run(cql)
     const favorites = result.records.map(item => ({
       id: item._fields[0].identity.low,
       name: item._fields[0].properties.name,
@@ -45,7 +48,8 @@ const Member = {
   },
 
   getMemberByEmail: async (email) => {
-    const result = await session.run('MATCH (n :Member) WHERE n.email = {email} RETURN n', { email })
+    const cql = `MATCH (n :Member) WHERE n.email = "${email}" RETURN n`
+    const result = await session.run(cql)
     const member = {
       id: result.records[0]._fields[0].identity.low,
       name: result.records[0]._fields[0].properties.name,
@@ -59,7 +63,8 @@ const Member = {
   },
 
   getTeamsByMember: async (id) => {
-    const result = await session.run('MATCH (member:Member)-[:attend]->(team:Team) WHERE ID(member) = {id} RETURN team', { id })
+    const cql = `MATCH (member:Member)-[:attend]->(team:Team) WHERE ID(member) = ${id} RETURN team`
+    const result = await session.run(cql)
     const teams = result.records.map(item => ({
       id: item._fields[0].identity.low,
       name: item._fields[0].properties.name,
@@ -70,7 +75,8 @@ const Member = {
   },
 
   getResourceByMember: async (id) => {
-    const result = await session.run('MATCH (member:Member)-[r:created]->(resource:Resource) WHERE ID(member) = {id} RETURN resource', { id })
+    const cql = `MATCH (member:Member)-[r:created]->(resource:Resource) WHERE ID(member) = ${id} RETURN resource`
+    const result = await session.run(cql)
     const createds = result.records.map(item => ({
       id: item._fields[0].identity.low,
       name: item._fields[0].properties.name,
@@ -81,15 +87,8 @@ const Member = {
   },
 
   createMember: async (data) => {
-    const result = await session
-      .run('CREATE n = (member:Member {name:{name}, position:{position}, email:{email}, slack:{slack}, avatar:{avatar}, role:{role}}) RETURN n', {
-        name: data.name,
-        position: data.position,
-        email: data.email,
-        slack: data.slack,
-        avatar: data.avatar,
-        role: data.role,
-      })
+    const cql = `CREATE n = (member:Member {name:"${data.name}", position:"${data.position}", email:"${data.email}", slack:"${data.slack}", avatar:"${data.avatar}", role:"${data.role}"}) RETURN n`
+    const result = await session.run(cql)
     const member = {
       id: result.records[0]._fields[0].start.identity.low,
       name: result.records[0]._fields[0].start.properties.name,
@@ -103,17 +102,17 @@ const Member = {
   },
 
   memberAttendTeam: async () => {
-    await session.run('MATCH (member:Member),(team:Team) ' +
+    const cql = 'MATCH (member:Member),(team:Team) ' +
     'WHERE ID(member) = {memberId} and ID(team) = {teamId} ' +
     'CREATE (member)-[:attend]->(team) ' +
     'WITH team as t  ' +
-    'MATCH n=(member)-[:attend]->(team) RETURN n')
+    'MATCH n=(member)-[:attend]->(team) RETURN n'
+    await session.run(cql)
   },
 
   isMember: async (email) => {
-    const member = await session.run('MATCH (member:Member) WHERE member.email = {email} RETURN member', {
-      email,
-    })
+    const cql = `MATCH (member:Member) WHERE member.email = "${email}" RETURN member`
+    const member = await session.run(cql)
     if (member.records.length === 0) {
       return false
     }
@@ -129,22 +128,10 @@ const Member = {
       email: req.email,
       avatar: req.avatar,
     }
-    const result = await session
-      .run('MATCH (m :Member) WHERE ID(m) = {id} ' +
-      'SET m = {' +
-      'name:{name},' +
-      'slack:{slack},' +
-      'position:{position},' +
-      'email:{email},' +
-      'avatar:{avatar}}' +
-    'RETURN m', {
-        id: data.id,
-        name: data.name,
-        slack: data.slack,
-        position: data.position,
-        email: data.email,
-        avatar: data.avatar,
-      })
+    const cql = `MATCH (m :Member) WHERE ID(m) = ${data.id} ` +
+    `SET m = { name:"${data.name}", slack:"${data.slack}", position:"${data.position}", ` +
+    `email:"${data.email}", avatar:"${data.avatar}" } RETURN m`
+    const result = await session.run(cql)
     const member = {
       id: result.records[0]._fields[0].identity.low,
     }
