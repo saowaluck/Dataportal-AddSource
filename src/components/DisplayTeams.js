@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import axios from 'axios'
 import { Pagination } from 'semantic-ui-react'
 import ModalAddTeam from './ModalAddTeam'
@@ -59,7 +60,6 @@ class DisplayTeams extends Component {
       e.preventDefault()
       axios.get(`${process.env.REACT_APP_API_URL}/teams/search/${this.state.searchText}`)
         .then((res) => {
-          console.log(res.data)
           this.setState({ teams: res.data })
         })
     }
@@ -112,7 +112,7 @@ class DisplayTeams extends Component {
                       </td>
                       <td>
                         <div className='ui labeled button'>
-                          <ModalEditTeam id={item.team.id} email='pop@prontomarketing.com' />
+                          <ModalEditTeam id={item.team.id} email={this.props.auth.getEmail()} />
                           <DeleteTeam id={item.team.id} />
                         </div>
                       </td>
@@ -135,6 +135,10 @@ class DisplayTeams extends Component {
       </div>
     )
   }
+}
+
+DisplayTeams.propTypes = {
+  auth: PropTypes.objectOf(PropTypes.any).isRequired,
 }
 
 export default DisplayTeams

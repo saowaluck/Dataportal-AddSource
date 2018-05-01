@@ -46,8 +46,12 @@ class AllTeamList extends Component {
   }
 
   handleSubmit = e => {
-    if (e.key === 'Enter' && this.state.searchText.trim() !== '') {
-      e.preventDefault()
+    if (e.key === 'Enter' && this.state.searchText.trim() === '') {
+      axios.get(`${process.env.REACT_APP_API_URL}/teams/`)
+        .then((res) => {
+          this.setState({ teams: res.data })
+        })
+    } else if (e.key === 'Enter' && this.state.searchText.trim() !== '') {
       axios.get(`${process.env.REACT_APP_API_URL}/teams/search/${this.state.searchText}`)
         .then((res) => {
           this.setState({ teams: res.data })
