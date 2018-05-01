@@ -12,12 +12,12 @@ class PinnedResourceList extends Component {
     })
   }
 
-  handleColor = type => {
+  handleIcon = type => {
     if (type === 'Database') {
-      return 'ui database label'
+      return 'database icon'
     } else if (type === 'Superset Dashboard') {
-      return 'ui superset label'
-    } return 'ui knowledge label'
+      return 'chart bar outline icon'
+    } return 'wpforms icon'
   }
 
   render() {
@@ -25,6 +25,13 @@ class PinnedResourceList extends Component {
       <div className='ui three cards link'>
         {this.props.pinnedResources.map(item => (
           <div key={item.id} className='ui fluid card'>
+            {this.props.actionsDisplay &&
+            <span className='ui corner label'>
+              <Icon.Group onClick={this.handleUnPinResource}>
+                <i className='pin blue icon' id={item.id} />
+              </Icon.Group>
+            </span>
+            }
             { item.type !== 'Database' &&
               <iframe
                 src={item.url}
@@ -36,17 +43,12 @@ class PinnedResourceList extends Component {
               />
             }
             <div className='content'>
-              <div className='meta'>
-                <span className={this.handleColor(item.type)}>{item.type}</span>
-                {this.props.actionsDisplay &&
-                <Icon.Group onClick={this.handleUnPinResource}>
-                  <i className='pin blue icon' id={item.id} />
-                </Icon.Group>
-              }
-              </div>
               <div className='header'>
                 <a href={`/resources/${item.id}/`}><h3>{item.name}</h3></a>
               </div>
+              <span className='meta'><i className={this.handleIcon(item.type)} />
+                {item.type}
+              </span>
             </div>
           </div>
         ))}

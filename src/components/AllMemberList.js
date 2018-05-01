@@ -13,7 +13,7 @@ class AllMemberList extends Component {
   }
 
   componentDidMount() {
-    const url = `${process.env.REACT_APP_API_URL}/members/`
+    const url = `${process.env.REACT_APP_API_URL}/members/all/`
     axios
       .get(url)
       .then((res) => {

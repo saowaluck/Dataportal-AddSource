@@ -31,17 +31,20 @@ class DisplayResourceDetail extends Component {
           </div>
           <div className='five wide column'>
             <div className='ui segment'>
-              <h3 className='ui header'>{this.props.data.name}&nbsp;&nbsp;
-                {(this.props.data.auth.getEmail() === this.props.data.creator.email) &&
+              <h3 className='ui header'>{this.props.data.name}
+                {(this.props.data.auth.getEmail() !== this.props.data.creator.email) &&
+                <Favorites id={this.props.data.id} memberEmail={this.props.data.auth.getEmail()} />}
+              </h3>
+              <span className='meta'>
+                <i className='tags large icon' />
+                {this.props.data.tags.map(tag => <span key={tag} className='ui left floated label'>{tag}</span>)}
+              </span>
+              <h5>{(this.props.data.auth.getEmail() === this.props.data.creator.email) &&
                 <a href={`/resources/${this.props.data.id}/edit/`}>
-                  <i className='edit icon' />
+                  <i className='edit icon' />Edit resource
                 </a>
                 }
-              </h3>
-              <div className='meta'>
-                {this.props.data.tags.map(tag => <span key={tag} className='ui left floated label'>{tag}</span>)}
-                <Favorites id={this.props.data.id} memberEmail={this.props.data.auth.getEmail()} />
-              </div>
+              </h5>
               <hr />
               <div className='ui list meta'>
                 <div className='item'>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Tab } from 'semantic-ui-react'
+import PropTypes from 'prop-types'
 import axios from 'axios'
 import AllResourceList from './AllResourceList'
 import DatabaseList from './DatabaseList'
@@ -7,12 +8,12 @@ import KnowledgePostList from './KnowledgePostList'
 import SupersetList from './SupersetList'
 import NewsFeed from './NewsFeed'
 import RecommentData from './RecommenetData'
+
 class Search extends Component {
   state = {
     searchText: '',
     resources: [],
     defaultresources: [],
-    checked:false,
   }
 
   componentDidMount() {
@@ -47,7 +48,7 @@ class Search extends Component {
   }
 
   handleChecked = () => {
-    if(this.state.checked) {
+    if (this.state.checked) {
       this.setState({
         checked: false,
       })
@@ -85,11 +86,6 @@ class Search extends Component {
                   />
                   <i className='search icon' />
                 </div>
-                <br />
-                <div className='ui checkbox' onClick={this.handleChecked} >
-                  <input type='checkbox' name='checked' />
-                  <label>Basic Search</label>
-                </div>
               </div>
               <div className='ui twelve wide column'>
                 <div className='ui row'>
@@ -101,13 +97,17 @@ class Search extends Component {
             </div>
           </div>
           <div className='five wide column'>
-          <NewsFeed />
-          <RecommentData  email={this.props.auth.getEmail()}/>
+            <NewsFeed />
+            <RecommentData email={this.props.auth.getEmail()} />
           </div>
         </div>
       </div>
     )
   }
+}
+
+Search.propTypes = {
+  auth: PropTypes.objectOf(PropTypes.func).isRequired,
 }
 
 export default Search

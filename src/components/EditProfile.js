@@ -62,7 +62,7 @@ class EditProfile extends Component {
               <img className='ui small circular image' src={this.state.avatar} alt='' />
               <h2 className='ui header'>{this.state.name}</h2>
               <div className='item'>
-                <i className='envelope outline blue icon' />
+                <i className='envelope outline blue small icon' />
                 {this.state.email}
               </div>
             </div>
