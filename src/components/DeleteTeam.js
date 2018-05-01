@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { Button, Icon, Confirm } from 'semantic-ui-react'
+import PropTypes from 'prop-types'
 
 class DeleteTeam extends Component {
   state = {
@@ -38,6 +39,10 @@ class DeleteTeam extends Component {
       </div>
     )
   }
+}
+
+DeleteTeam.propTypes = {
+  id: PropTypes.number.isRequired,
 }
 
 export default DeleteTeam

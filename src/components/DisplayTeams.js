@@ -59,7 +59,6 @@ class DisplayTeams extends Component {
       e.preventDefault()
       axios.get(`${process.env.REACT_APP_API_URL}/teams/search/${this.state.searchText}`)
         .then((res) => {
-          console.log(res.data)
           this.setState({ teams: res.data })
         })
     }
