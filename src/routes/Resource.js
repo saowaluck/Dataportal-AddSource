@@ -161,6 +161,7 @@ router.post('/', async (req, res) => {
   resources = await Resource.createResource(req.body)
   if (resources.length !== 0) {
     const resourceId = Number(resources.id)
+    await Resource.addRelationFavorite(resourceId, req.body.email)
     const memberId = Number(member.id)
     resources = await Resource.memberCreatedResource(resourceId, memberId)
     const { tags } = req.body

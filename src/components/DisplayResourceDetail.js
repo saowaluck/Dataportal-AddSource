@@ -32,8 +32,12 @@ class DisplayResourceDetail extends Component {
           <div className='five wide column'>
             <div className='ui segment'>
               <h3 className='ui header'>{this.props.data.name}
-                {(this.props.data.auth.getEmail() !== this.props.data.creator.email) &&
-                <Favorites id={this.props.data.id} memberEmail={this.props.data.auth.getEmail()} />}
+                {
+                  <Favorites
+                    id={this.props.data.id}
+                    memberEmail={this.props.data.auth.getEmail()}
+                    creatorEmail={this.props.data.creator.email}
+                  />}
               </h3>
               <span className='meta'>
                 <i className='tags large icon' />
