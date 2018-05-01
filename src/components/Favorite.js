@@ -22,10 +22,13 @@ class Favorite extends Component {
   }
 
   render() {
-    if (this.props.thisResource.isFavorite) {
-      return <Icon onClick={this.toggleFavorite} className='ui heart icon large' />
+    if (this.props.memberEmail !== this.props.creatorEmail) {
+      if (this.props.thisResource.isFavorite) {
+        return <Icon onClick={this.toggleFavorite} className='ui heart icon large' />
+      }
+      return <Icon onClick={this.toggleFavorite} className='ui heart outline icon large' />
     }
-    return <Icon onClick={this.toggleFavorite} className='ui heart outline icon large' />
+    return <p />
   }
 }
 
@@ -40,6 +43,7 @@ const mapDispatchToProps = dispatch => ({
 Favorite.propTypes = {
   toggleFavorite: PropTypes.func.isRequired,
   memberEmail: PropTypes.string.isRequired,
+  creatorEmail: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   thisResource: PropTypes.objectOf(PropTypes.any).isRequired,
 }
