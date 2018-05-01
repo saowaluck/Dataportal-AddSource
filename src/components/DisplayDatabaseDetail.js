@@ -49,34 +49,41 @@ class DisplayDatabaseDetail extends Component {
           </div>
           <div className='five wide column'>
             <div className='ui segment'>
-              <h3 className='ui header'>{ this.props.data.name }
-                {(this.props.data.auth.getEmail() === this.props.data.creator.email) &&
-                  <a href={`/resources/${this.props.data.id}/edit/`}>
-                    {' '}<i className='edit icon' />
-                  </a>
-                }
+              <h3 className='ui header'>{this.props.data.name}
+                {(this.props.data.auth.getEmail() !== this.props.data.creator.email) &&
+                <Favorites id={this.props.data.id} memberEmail={this.props.data.auth.getEmail()} />}
               </h3>
-              <div className='meta'>
+              <span className='meta'>
+                <i className='tags large icon' />
                 {this.props.data.tags.map(tag => <span key={tag} className='ui left floated label'>{tag}</span>)}
-                <Favorites id={this.props.data.id} memberEmail={this.props.data.auth.getEmail()} />
-              </div>
-              <p>{this.props.data.description}</p>
+              </span>
+              <h5>{(this.props.data.auth.getEmail() === this.props.data.creator.email) &&
+                <a href={`/resources/${this.props.data.id}/edit/`}>
+                  <i className='edit icon' />Edit resource
+                </a>
+                }
+              </h5>
               <hr />
               <div className='ui list meta'>
                 <div className='item'>
                   <img className='ui mini circular image' src={this.props.data.creator.avatar} alt='' />
                   <div className='content'>
                     <a href={`/members/${this.props.data.creator.id}/`}>
-                      <h3>
-                        <div className='ui sub header'>
-                          {this.props.data.creator.name}
-                        </div>
-                      </h3>
+                      <div className='ui sub header'>
+                        {this.props.data.creator.name}
+                      </div>
                     </a>
                     {this.props.data.creator.position}
                   </div>
                 </div>
-                <b>Created:</b> {moment(new Date(this.props.data.createdDate)).format('MMM DD, YYYY')}
+                <div className='item'>
+                  <b>Created:</b> {moment(new Date(this.props.data.createdDate)).format('MMM DD, YYYY')}
+                </div>
+                <div className='item'>
+                  <a href={this.props.data.url}>
+                    <i className='external share icon' /> View Original
+                  </a>
+                </div>
                 <DisplayFavorite />
                 <ConsumerList id={this.props.data.id} />
               </div>
@@ -89,8 +96,8 @@ class DisplayDatabaseDetail extends Component {
                     <div className='item' key={item.id}>
                       <div className='header'>
                         <a className='content' href={`/resources/${item.id}/`}>
-                          { item.name.length > 50
-                            ? `${item.name.substring(0, 45)}...`
+                          { item.name.length > 40
+                            ? `${item.name.substring(0, 40)}...`
                             : item.name
                           }
                         </a>

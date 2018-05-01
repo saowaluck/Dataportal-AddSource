@@ -3,14 +3,14 @@ import { mount } from 'enzyme'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import ListResourceByCreated from './../ListResourceByCreated'
+import ListresourceBySelected from './../ListresourceBySelected'
 
 const mockStore = configureMockStore([thunk])
 const storeStateMock = {
   thisResourceByTeam: {
-    resourceByCreated: [
+    resourceBySelected: [
       {
-        createdResource: {
+        selectedResource: {
           id: '0',
           name: 'test',
           type: 'Database',
@@ -31,11 +31,11 @@ const storeStateMock = {
 }
 const store = mockStore(storeStateMock)
 
-describe('<ListResourceByCreated />', () => {
+describe('<ListresourceBySelected />', () => {
   it('should display list of resources according to its props', () => {
     const id = 0
     const actionsDisplay = true
-    const component = <ListResourceByCreated id={id} actionsDisplay={actionsDisplay} />
+    const component = <ListresourceBySelected id={id} actionsDisplay={actionsDisplay} />
     const wrapper = mount(<Provider store={store}>{component}</Provider>)
     const expected = '<div class="ui row vertical segment"><div class="ui three cards link"><div class="ui fluid card">' +
     '<iframe src="www.prontotools.io" frame-ancestors="none" width="100%" height="170px" frameborder="0" title="test pin"></iframe>' +

@@ -62,14 +62,29 @@ const Team = {
     return false
   },
 
-  addAttendTeam: async (id, email) => {
+  addAttendTeam: async (id, email, selected) => {
     const result = await session.run('MATCH (m:Member),(t:Team) WHERE ID(t) = {id}' +
-    'AND m.email = {email} CREATE result=(m)-[:attend]->(t)' +
-    'RETURN result', {
+    'AND m.email = {email} CREATE result=(m)-[attend:attend { selectedResource: {selected} }]->(t)' +
+    'RETURN attend', {
       id: Number(id),
       email,
+      selected,
     })
-    return result
+    const results = result.records.map(req => ({
+      relationId: req._fields[0].identity.low,
+      resourceId: req._fields[0].properties.selectedResource,
+    }))
+    const data = await Promise.all(results.map(async (item) => {
+      const cql = `MATCH (r:Resource) WHERE ID(r) = ${item.resourceId[0]} RETURN r`
+      const res = await session.run(cql)
+      const resource = res.records.map(element => ({
+        id: element._fields[0].identity.low,
+        name: element._fields[0].properties.name,
+        type: element._fields[0].properties.type,
+      }))
+      return { selectedResource: resource, relationId: item.relationId }
+    }))
+    return data
   },
 
   deleteAttendTeam: async (id, email) => {
@@ -81,24 +96,54 @@ const Team = {
     return result
   },
 
-  getResourceByCreated: async id => {
-    const result = await session.run('MATCH (member:Member)-[:attend]->(team:Team)' +
-    'WHERE ID(team) = {id} WITH member AS m MATCH (m)-[c:created]->(r:Resource)' +
-    'RETURN r ORDER By r.updatedDate DESC', { id: Number(id) })
-    const createdResource = result.records.map(item => ({
-      id: item._fields[0].identity.low,
-      name: item._fields[0].properties.name,
-      type: item._fields[0].properties.type,
-      url: item._fields[0].properties.url,
+  manageResource: async (id, email, selectedId) => {
+    const cql = 'MATCH (m:Member)-[a:attend]->(t:Team)' +
+      ` WHERE m.email = "${email}" and ID(t) = ${id} SET a.selectedResource = [${selectedId}] RETURN m`
+    const result = await session.run(cql)
+    return result
+  },
+
+  getResourceSelectedByMember: async (id, email) => {
+    const getSelectedResourceId = `MATCH (m:Member)-[attend:attend]->(t:Team) WHERE m.email = "${email}" and ID(t) = ${id} RETURN attend`
+    const result = await session.run(getSelectedResourceId)
+    const resourceId = result.records[0]._fields[0].properties.selectedResource
+    const data = await Promise.all(resourceId.map(async (item) => {
+      const getSelectedResource = `MATCH (r:Resource) WHERE ID(r) = ${item} RETURN r`
+      const res = await session.run(getSelectedResource)
+      const resource = res.records.map(element => ({
+        id: element._fields[0].identity.low,
+        name: element._fields[0].properties.name,
+        type: element._fields[0].properties.type,
+      }))
+      return resource
     }))
-    const data = await Promise.all(createdResource.map(async (item) => {
+    return data
+  },
+
+  getResourceBySelected: async id => {
+    const result = await session.run('MATCH (member:Member)-[attend:attend]->(team:Team)' +
+    'WHERE ID(team) = {id} RETURN {id :attend.selectedResource}', { id: Number(id) })
+    const resourcesId = result.records.map(item => item._fields[0].id)
+    const selectedResourceId = [].concat(...resourcesId)
+    const selectedResource = await Promise.all(selectedResourceId.map(async (item) => {
+      const cql = `MATCH (r:Resource) WHERE ID(r) = ${item} RETURN r`
+      const results = await session.run(cql)
+      const data = results.records.map(req => ({
+        id: req._fields[0].identity.low,
+        name: req._fields[0].properties.name,
+        type: req._fields[0].properties.type,
+        url: req._fields[0].properties.url,
+      }))
+      return data
+    }))
+    const data = await Promise.all(selectedResource.map(async (item) => {
       const results = await session.run('MATCH (t:Team)-[:pin]-(r:Resource) WHERE ID(r) = {resourceId} and ID(t) = {teamId} RETURN r', {
         teamId: Number(id),
-        resourceId: item.id,
+        resourceId: Number(item[0].id),
       })
       if (results.records.length !== 0) {
-        return { createdResource: item, isPinned: true }
-      } return { createdResource: item, isPinned: false }
+        return { selectedResource: item, isPinned: true }
+      } return { selectedResource: item, isPinned: false }
     }))
     return data
   },
@@ -115,17 +160,17 @@ const Team = {
   },
 
   pinResource: async (teamId, resourceId) => {
+    const cql = `MATCH (t:Team),(r:Resource) WHERE ID(t) = ${teamId} AND ID(r)= ${resourceId} CREATE p=(t)-[:pin]->(r) RETURN p`
     const result = await session
-      .run('MATCH (t:Team),(r:Resource) WHERE ID(t) = {teamId} AND ID(r)= {resourceId} CREATE p=(t)-[:pin]->(r) RETURN p', {
-        teamId, resourceId,
-      })
+      .run(cql)
     return result
   },
 
   unPinResource: async (teamId, resourceId) => {
     const result = await session
       .run('MATCH (t:Team)-[p:pin]->(r:Resource) WHERE ID(r) = {resourceId} AND ID(t) = {teamId} DELETE p', {
-        teamId, resourceId,
+        teamId: Number(teamId),
+        resourceId: Number(resourceId),
       })
     return result
   },
@@ -159,14 +204,13 @@ const Team = {
   },
 
   editTeam: async (data) => {
-    console.log(data)
-    const team = await session.run("MATCH (team:Team) WHERE ID(team) = {id} " +
-    "SET team = {name:{name}, description:{description}} " +
-    "WITH team " +
-    "UNWIND {members} AS memberInTeam " +
-    "MATCH (n:Member{name:memberInTeam}) " +
-    "CREATE p = (n)-[:attend]->(team) " +
-    "RETURN p", {
+    const team = await session.run('MATCH (team:Team) WHERE ID(team) = {id} ' +
+    'SET team = {name:{name}, description:{description}} ' +
+    'WITH team ' +
+    'UNWIND {members} AS memberInTeam ' +
+    'MATCH (n:Member{name:memberInTeam}) ' +
+    'CREATE p = (n)-[:attend]->(team) ' +
+    'RETURN p', {
       id: data.id,
       name: data.name,
       description: data.description,

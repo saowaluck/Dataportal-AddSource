@@ -1,14 +1,14 @@
 import { FETCH_RESOURCE } from './../actions/types'
 
 const initailState = {
-  resourceByCreated: [
+  resourceBySelected: [
     {
-      createdResource: {
+      selectedResource: [{
         id: '',
         name: '',
         type: '',
         url: '',
-      },
+      }],
       isPinned: true,
     },
   ],

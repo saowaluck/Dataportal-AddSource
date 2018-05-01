@@ -1,21 +1,21 @@
 import axios from 'axios'
 import { FETCH_RESOURCE } from './types'
 
-const fetchResourcesCreatedByTeamSuccess = thisResourceByTeam => ({
+const fetchResourcesSelectedByTeamSuccess = thisResourceByTeam => ({
   type: FETCH_RESOURCE,
   payload: {
     thisResourceByTeam,
   },
 })
 
-export const fetchResourcesCreatedByTeam = item => dispatch => {
+export const fetchResourcesSelectedByTeam = item => dispatch => {
   const { id } = item
   const path = `${process.env.REACT_APP_API_URL}/teams/${id}/resources/`
   axios
     .get(path)
     .then(team => {
       const thisResourceByTeam = team.data
-      dispatch(fetchResourcesCreatedByTeamSuccess(thisResourceByTeam))
+      dispatch(fetchResourcesSelectedByTeamSuccess(thisResourceByTeam))
     })
     .catch(() => {
     })
@@ -28,7 +28,7 @@ export const handlePinnedResource = item => dispatch => {
     .post(path)
     .then(team => {
       const thisResourceByTeam = team.data
-      dispatch(fetchResourcesCreatedByTeamSuccess(thisResourceByTeam))
+      dispatch(fetchResourcesSelectedByTeamSuccess(thisResourceByTeam))
     })
     .catch(() => {
     })
@@ -41,7 +41,7 @@ export const handleUnPinResource = item => dispatch => {
     .post(path)
     .then(team => {
       const thisResourceByTeam = team.data
-      dispatch(fetchResourcesCreatedByTeamSuccess(thisResourceByTeam))
+      dispatch(fetchResourcesSelectedByTeamSuccess(thisResourceByTeam))
     })
     .catch(() => {
     })

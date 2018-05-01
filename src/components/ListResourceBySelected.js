@@ -3,21 +3,21 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Accordion, Icon } from 'semantic-ui-react'
 import PinnedResourceList from './PinnedResourceList'
-import { fetchResourcesCreatedByTeam, handlePinnedResource, handleUnPinResource } from './../actions/togglePin'
+import { fetchResourcesSelectedByTeam, handlePinnedResource, handleUnPinResource } from './../actions/togglePin'
 
-class ListResourceByCreated extends Component {
+class ListResourceBySelected extends Component {
   state = {
     activeIndex: 0,
   }
 
   componentWillMount() {
-    this.props.fetchResourcesCreatedByTeam({
+    this.props.fetchResourcesSelectedByTeam({
       id: this.props.id,
     })
   }
 
-  fetchResourceByCreated = () => {
-    this.props.fetchResourcesCreatedByTeam({
+  fetchresourceBySelected = () => {
+    this.props.fetchResourcesSelectedByTeam({
       id: this.props.id,
     })
   }
@@ -46,22 +46,26 @@ class ListResourceByCreated extends Component {
   handleCheckAuth = (isPinned, id) => {
     if (isPinned) {
       return (
-        <Icon.Group onClick={this.handleUnPinResource}>
-          <i className='pin blue icon' id={id} />
-        </Icon.Group>)
+        <span className='ui corner label'>
+          <Icon.Group onClick={this.handleUnPinResource}>
+            <i className='pin blue icon' id={id} />
+          </Icon.Group>
+        </span>)
     } return (
-      <Icon.Group onClick={this.handlePinnedResource} >
-        <i className='pin icon' id={id} />
-      </Icon.Group>
+      <span className='ui corner label'>
+        <Icon.Group onClick={this.handlePinnedResource} >
+          <i className='pin icon' id={id} />
+        </Icon.Group>
+      </span>
     )
   }
 
-  handleColor = type => {
+  handleIcon = type => {
     if (type === 'Database') {
-      return 'ui database label'
+      return 'database icon'
     } else if (type === 'Superset Dashboard') {
-      return 'ui superset label'
-    } return 'ui knowledge label'
+      return 'chart bar outline icon'
+    } return 'wpforms icon'
   }
 
   render() {
@@ -87,11 +91,13 @@ class ListResourceByCreated extends Component {
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === 0}>
                   <div className='ui three cards link'>
-                    {this.props.thisResourceByTeam.resourceByCreated.map(item => (
-                      <div key={item.createdResource.id} className='ui fluid card'>
-                        { item.createdResource.type !== 'Database' &&
+                    {this.props.thisResourceByTeam.resourceBySelected.map(item => (
+                      <div key={item.selectedResource[0].id} className='ui fluid card'>
+                        {this.props.actionsDisplay &&
+                          this.handleCheckAuth(item.isPinned, item.selectedResource[0].id)}
+                        { item.selectedResource[0].type !== 'Database' &&
                           <iframe
-                            src={item.createdResource.url}
+                            src={item.selectedResource[0].url}
                             frame-ancestors='none'
                             width='100%'
                             height='170px'
@@ -100,16 +106,12 @@ class ListResourceByCreated extends Component {
                           />
                         }
                         <div className='content'>
-                          <div className='meta'>
-                            <span className={this.handleColor(item.createdResource.type)}>
-                              {item.createdResource.type}
-                            </span>
-                            {this.props.actionsDisplay &&
-                              this.handleCheckAuth(item.isPinned, item.createdResource.id)}
-                          </div>
                           <div className='header'>
-                            <a href={`/resources/${item.createdResource.id}/`}><h3>{item.createdResource.name}</h3></a>
+                            <a href={`/resources/${item.selectedResource[0].id}/`}><h3>{item.selectedResource[0].name}</h3></a>
                           </div>
+                          <span className='meta'><i className={this.handleIcon(item.selectedResource[0].type)} />
+                            {item.selectedResource[0].type}
+                          </span>
                         </div>
                       </div>
                     ))}
@@ -131,14 +133,14 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchResourcesCreatedByTeam: item => dispatch(fetchResourcesCreatedByTeam(item)),
+  fetchResourcesSelectedByTeam: item => dispatch(fetchResourcesSelectedByTeam(item)),
   handlePinnedResource: item => dispatch(handlePinnedResource(item)),
   handleUnPinResource: item => dispatch(handleUnPinResource(item)),
 })
 
 
-ListResourceByCreated.propTypes = {
-  fetchResourcesCreatedByTeam: PropTypes.func.isRequired,
+ListResourceBySelected.propTypes = {
+  fetchResourcesSelectedByTeam: PropTypes.func.isRequired,
   handlePinnedResource: PropTypes.func.isRequired,
   handleUnPinResource: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
@@ -146,4 +148,4 @@ ListResourceByCreated.propTypes = {
   thisResourceByTeam: PropTypes.objectOf(PropTypes.any).isRequired,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListResourceByCreated)
+export default connect(mapStateToProps, mapDispatchToProps)(ListResourceBySelected)

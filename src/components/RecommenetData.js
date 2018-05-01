@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import axios from 'axios'
 
 class RecommentData extends Component {
@@ -19,12 +20,12 @@ class RecommentData extends Component {
       })
   }
 
-  handleColor = type => {
+  handleIcon = type => {
     if (type === 'Database') {
-      return 'ui right floated database label'
+      return 'database icon'
     } else if (type === 'Superset Dashboard') {
-      return 'ui right floated superset label'
-    } return 'ui right floated knowledge label'
+      return 'chart bar outline icon'
+    } return 'wpforms icon'
   }
 
   render() {
@@ -38,8 +39,13 @@ class RecommentData extends Component {
             {this.state.resources.map(item => (
               <div className='item' key={item.id}>
                 <div className='header'>
-                  <a className='content' href={`/resources/${item.id}/`}>{item.name}</a>
-                  <span className={this.handleColor(item.type)}>{item.type}</span>
+                  <a className='content' href={`/resources/${item.id}/`}>
+                    { item.name.length > 40
+                      ? `${item.name.substring(0, 40)}...`
+                      : item.name
+                    }
+                  </a>
+                  <span className='ui mini right floated' ><i className={this.handleIcon(item.type)} /></span>
                 </div>
               </div>
           ))}
@@ -48,6 +54,10 @@ class RecommentData extends Component {
       </div>
     )
   }
+}
+
+RecommentData.propTypes = {
+  email: PropTypes.string.isRequired,
 }
 
 export default RecommentData

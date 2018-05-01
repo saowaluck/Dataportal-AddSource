@@ -57,8 +57,8 @@ class NewsFeed extends Component {
                   <div className='summary'>
                     {this.processAction(item.resource.createdDate, item.resource.updatedDate)}
                     <a href={`/resources/${item.resource.resourceId}`}>
-                      { item.resource.name.length > 28
-                        ? `${item.resource.name.substring(0, 28)}...`
+                      { item.resource.name.length > 24
+                        ? `${item.resource.name.substring(0, 24)}...`
                         : item.resource.name
                       }
                     </a>
