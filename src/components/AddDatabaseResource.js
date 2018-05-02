@@ -258,27 +258,26 @@ class AddDatabaseResource extends Component {
     return (
       <div>
         <form name='table' onSubmit={this.handleSubmit}>
-          <div className='field'>
-            <label htmlFor='name'>Table Name
-              <input
-                type='text'
-                name='name'
-                placeholder='Table Name'
-                value={this.state.name}
-                required
-                onChange={this.handleChange}
-              />
-            </label>
+          <div className='required field'>
+            <label htmlFor='name'>Table Name</label>
+            <input
+              type='text'
+              name='name'
+              placeholder='Table Name'
+              value={this.state.name}
+              required
+              onChange={this.handleChange}
+            />
           </div>
-          <div className='field'>
-            <label htmlFor='name'>Table Description
-              <textarea
-                type='text'
-                name='description'
-                value={this.state.description}
-                onChange={this.handleChange}
-              />
-            </label>
+          <div className='required field'>
+            <label htmlFor='name'>Table Description</label>
+            <textarea
+              type='textarea'
+              required
+              name='description'
+              value={this.state.description}
+              onChange={this.handleChange}
+            />
           </div>
           <div className='field'>
             <label htmlFor='name'>Tags

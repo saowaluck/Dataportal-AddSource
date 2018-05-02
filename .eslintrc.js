@@ -7,6 +7,13 @@ module.exports = {
     "no-underscore-dangle": [2, { "allow": ["_fields","_source","_id"] }],
     "jsx-quotes": [2, "prefer-single"],
     "arrow-parens": [0, "as-needed"],
+    "jsx-a11y/label-has-for": [ 2, {
+      "components": [ "label" ],
+      "required": {
+          "some": [ "nesting", "id" ]
+      },
+      "allowChildren": false,
+  }],
   },
   env: {
     "es6": true,
