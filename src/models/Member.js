@@ -4,7 +4,7 @@ const session = db.session()
 
 const Member = {
   getMemberById: async (id) => {
-    const result = await session.run('MATCH (n :Member) WHERE ID(n) = {id} RETURN n', { id })
+    const result = await session.run(`MATCH (n :Member) WHERE ID(n) = ${id} RETURN n`)
     const member = {
       id: result.records[0]._fields[0].identity.low,
       name: result.records[0]._fields[0].properties.name,
@@ -32,7 +32,7 @@ const Member = {
   },
 
   getFavoriteByMember: async (id) => {
-    const result = await session.run('MATCH p=(m:Member)-[f:favorite]->(r:Resource) WHERE ID(m)={id}  RETURN r', { id: Number(id) })
+    const result = await session.run(`MATCH p=(m:Member)-[f:favorite]->(r:Resource) WHERE ID(m)=${id}  RETURN r`)
     const favorites = result.records.map(item => ({
       id: item._fields[0].identity.low,
       name: item._fields[0].properties.name,
@@ -59,7 +59,7 @@ const Member = {
   },
 
   getTeamsByMember: async (id) => {
-    const result = await session.run('MATCH (member:Member)-[:attend]->(team:Team) WHERE ID(member) = {id} RETURN team', { id })
+    const result = await session.run(`MATCH (member:Member)-[:attend]->(team:Team) WHERE ID(member) = ${id} RETURN team`)
     const teams = result.records.map(item => ({
       id: item._fields[0].identity.low,
       name: item._fields[0].properties.name,
@@ -70,7 +70,7 @@ const Member = {
   },
 
   getResourceByMember: async (id) => {
-    const result = await session.run('MATCH (member:Member)-[r:created]->(resource:Resource) WHERE ID(member) = {id} RETURN resource', { id })
+    const result = await session.run(`MATCH (member:Member)-[r:created]->(resource:Resource) WHERE ID(member) = ${id} RETURN resource`)
     const createds = result.records.map(item => ({
       id: item._fields[0].identity.low,
       name: item._fields[0].properties.name,
@@ -130,7 +130,7 @@ const Member = {
       avatar: req.avatar,
     }
     const result = await session
-      .run('MATCH (m :Member) WHERE ID(m) = {id} ' +
+      .run(`MATCH (m :Member) WHERE ID(m) = ${data.id} ` +
       'SET m = {' +
       'name:{name},' +
       'slack:{slack},' +
@@ -138,7 +138,6 @@ const Member = {
       'email:{email},' +
       'avatar:{avatar}}' +
     'RETURN m', {
-        id: data.id,
         name: data.name,
         slack: data.slack,
         position: data.position,

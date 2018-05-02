@@ -92,12 +92,12 @@ class ListResourceBySelected extends Component {
                 <Accordion.Content active={activeIndex === 0}>
                   <div className='ui three cards link'>
                     {this.props.thisResourceByTeam.resourceBySelected.map(item => (
-                      <div key={item.selectedResource[0].id} className='ui fluid card'>
+                      <div key={item.selectedResource.id} className='ui fluid card'>
                         {this.props.actionsDisplay &&
-                          this.handleCheckAuth(item.isPinned, item.selectedResource[0].id)}
-                        { item.selectedResource[0].type !== 'Database' &&
+                          this.handleCheckAuth(item.isPinned, item.selectedResource.id)}
+                        { item.selectedResource.type !== 'Database' &&
                           <iframe
-                            src={item.selectedResource[0].url}
+                            src={item.selectedResource.url}
                             frame-ancestors='none'
                             width='100%'
                             height='170px'
@@ -107,10 +107,10 @@ class ListResourceBySelected extends Component {
                         }
                         <div className='content'>
                           <div className='header'>
-                            <a href={`/resources/${item.selectedResource[0].id}/`}><h3>{item.selectedResource[0].name}</h3></a>
+                            <a href={`/resources/${item.selectedResource.id}/`}><h3>{item.selectedResource.name}</h3></a>
                           </div>
-                          <span className='meta'><i className={this.handleIcon(item.selectedResource[0].type)} />
-                            {item.selectedResource[0].type}
+                          <span className='meta'><i className={this.handleIcon(item.selectedResource.type)} />
+                            {item.selectedResource.type}
                           </span>
                         </div>
                       </div>

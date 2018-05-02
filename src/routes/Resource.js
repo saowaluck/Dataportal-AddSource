@@ -129,13 +129,13 @@ router.get('/search/:text/', async (req, res) => {
   if (req.query.checked) {
     const result = await Resource.searchResource(text)
     data = await Promise.all(result.map(async (item) => {
-      const results = await Resource.getResourceById(Number(item.id))
+      const results = await Resource.getResourceById(item.id)
       return results
     }))
   } else {
     const result = await client.search({ q: text })
     data = await Promise.all(result.hits.hits.map(async (item) => {
-      const results = await Resource.getResourceById(Number(item._id))
+      const results = await Resource.getResourceById(item._id)
       return results
     }))
   }
