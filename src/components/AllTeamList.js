@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import axios from 'axios'
 import { Pagination } from 'semantic-ui-react'
 
@@ -13,7 +14,8 @@ class AllTeamList extends Component {
   }
 
   componentDidMount() {
-    const url = `${process.env.REACT_APP_API_URL}/teams/`
+    const memberEmail = this.props.auth.getEmail()
+    const url = `${process.env.REACT_APP_API_URL}/teams/?memberEmail=${memberEmail}`
     axios
       .get(url)
       .then((res) => {
@@ -82,6 +84,12 @@ class AllTeamList extends Component {
               <div className='column' key={item.team.id}>
                 <div className='ui card'>
                   <div className='content'>
+                    {item.joined &&
+                      <span className='ui blue right ribbon small label'>
+                        <i className='check icon' />
+                        Joined
+                      </span>
+                    }
                     <div className='header'>
                       <a href={`/teams/${item.team.id}/`}>
                         <div className='center aligned'>
@@ -118,6 +126,10 @@ class AllTeamList extends Component {
       </div>
     )
   }
+}
+
+AllTeamList.propTypes = {
+  auth: PropTypes.objectOf(PropTypes.any).isRequired,
 }
 
 export default AllTeamList

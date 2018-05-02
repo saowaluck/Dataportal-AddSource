@@ -35,13 +35,15 @@ class Header extends Component {
             <img className='ui mini image' src={logo} alt='' />
             Dataportal
           </a>
+          <div className='left menu'>
+            <div className='ui simple left item'>
+              <a href='/teams/'>All Teams</a>
+            </div>
+            <div className='ui simple left item'>
+              <a href='/members/'>All Members</a>
+            </div>
+          </div>
           <div className='right menu'>
-            <div className='ui simple right item'>
-              <a href='/teams/'>Teams</a>
-            </div>
-            <div className='ui simple right item'>
-              <a href='/members/'>Members</a>
-            </div>
             <div className='ui simple right item'>
               <a href='/resources/add/'>Add New Resource</a>
             </div>

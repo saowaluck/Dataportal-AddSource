@@ -20,6 +20,16 @@ class TeamProfile extends Component {
   componentDidMount() {
     const id = +this.props.match.params.id
     const email = this.props.auth.getEmail()
+    const url = `${process.env.REACT_APP_API_URL}/members/resources/?memberEmail=${email}`
+    axios
+      .get(url)
+      .then(res => {
+        this.setState({
+          resources: res.data.resources,
+        })
+      })
+      .catch(() => {
+      })
     const path = `${process.env.REACT_APP_API_URL}/teams/${id}/?memberEmail=${email}`
     axios
       .get(path)
@@ -29,16 +39,6 @@ class TeamProfile extends Component {
           description: team.data.team.description,
           members: team.data.members,
           actionsDisplay: team.data.isRelationTeam,
-        })
-      })
-      .catch(() => {
-      })
-    const url = `${process.env.REACT_APP_API_URL}/members/resources/?memberEmail=${email}`
-    axios
-      .get(url)
-      .then(res => {
-        this.setState({
-          resources: res.data.resources,
         })
       })
       .catch(() => {

@@ -44,14 +44,8 @@ router.get('/:id/', async (req, res) => {
   if (status) {
     tags = await Tag.getTagsByResourceId(id)
   }
-  const text = resource.name
-  const result = await client.search({ q: text, size: 5 })
-  const related = result.hits.hits.filter(item => Number(item._id) !== Number(id))
-  relatedResources = related.map(item => ({
-    id: item._id,
-    name: item._source.name,
-    type: item._source.type,
-  }))
+  const related = await Resource.getRelatedResource(tags)
+  relatedResources = related.filter(item => Number(item.id) !== Number(id))
   res.json({
     resource, tags, relatedResources,
   })
