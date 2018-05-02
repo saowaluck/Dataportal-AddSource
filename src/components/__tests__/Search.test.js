@@ -13,20 +13,29 @@ describe('< Search />', () => {
   })
 
   it('should have text box to do search', () => {
-    const wrapper = shallow(<Search />)
+    const auth = {
+      getEmail: () => 'test@pronto.com',
+    }
+    const wrapper = shallow(<Search auth={auth} />)
     const inputSearch = wrapper.find('input[name="search"]')
 
     expect(inputSearch.length).toBe(1)
   })
 
   it('should change search text when change value', () => {
-    const wrapper = shallow(<Search />)
+    const auth = {
+      getEmail: () => 'test@pronto.com',
+    }
+    const wrapper = shallow(<Search auth={auth} />)
     wrapper.find('input[name="search"]').simulate('change', { target: { value: 'Pronto' } })
     expect(wrapper.state().searchText).toBe('Pronto')
   })
 
   it('should default resource when call API properly', (done) => {
-    const wrapper = shallow(<Search />)
+    const auth = {
+      getEmail: () => 'test@pronto.com',
+    }
+    const wrapper = shallow(<Search auth={auth} />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
@@ -61,7 +70,10 @@ describe('< Search />', () => {
   })
 
   it('should have data when the search is found value', (done) => {
-    const wrapper = shallow(<Search />)
+    const auth = {
+      getEmail: () => 'test@pronto.com',
+    }
+    const wrapper = shallow(<Search auth={auth} />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
@@ -96,7 +108,10 @@ describe('< Search />', () => {
   })
 
   it('should not have data when the search is not found value', (done) => {
-    const wrapper = shallow(<Search />)
+    const auth = {
+      getEmail: () => 'test@pronto.com',
+    }
+    const wrapper = shallow(<Search auth={auth} />)
 
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()

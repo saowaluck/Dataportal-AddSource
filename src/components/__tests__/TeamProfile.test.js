@@ -10,14 +10,14 @@ import TeamProfile from './../TeamProfile'
 const mockStore = configureMockStore([thunk])
 const storeStateMock = {
   thisResourceByTeam: {
-    resourceByCreated: [
+    resourceBySelected: [
       {
-        createdResource: {
+        selectedResource: [{
           id: '0',
           name: 'test',
           type: 'Database',
           url: '',
-        },
+        }],
         isPinned: true,
       },
     ],
@@ -101,24 +101,25 @@ describe('<TeamProfile />', () => {
     })
     expect(wrapper.state().name).toBe('Simpleset')
     expect(wrapper.state().description).toBe('The best satisfaction system')
-    const expected = '<div class="ui container grid segment"><div class="ui five wide column"><div class="ui basic row segment">' +
-    '<div class="ui header"><h1></h1></div><div class="sub header"></div></div><div class="ui basic row segment">' +
-    '<div class="ui header"><h1>Members</h1><div class="ui img"></div></div></div><div class="ui basic row segment">' +
-    '<div class="ui header"><h1>Actions</h1><div class="ui item"><a href="/teams/10/join"><i class="icons">' +
-    '<i aria-hidden="true" class="user plus icon"></i>Join group</i></a></div></div></div></div><div class="ui eleven wide column">' +
-    '<div class="ui row"><div><div class="ui pointing secondary menu"><a class="active item">Pinned</a>' +
-    '<a class="item">Members</a></div><div class="ui row vertical segment"><div class="ui three cards link">' +
-    '<div class="ui fluid card"><iframe src="www.prontotools.io" frame-ancestors="none" width="100%" ' +
-    'height="170px" frameborder="0" title="test pin"></iframe><div class="content"><div class="meta">' +
-    '<span class="ui knowledge label">Knowlege post</span></div><div class="header">' +
-    '<a href="/resources/1/"><h3>test pin</h3></a></div></div></div></div><div class="ui row vertical segment">' +
-    '<div class="ui basic accordion"><div class="accordion ui"><div class="ui divider item"></div>' +
-    '<div class="title"><div class="active title"><h3 class="ui header">All Resources<i position="right" class="icons">' +
-    '<i aria-hidden="true" class="angle down icon"></i></i></h3></div><div class="content active">' +
-    '<div class="ui three cards link"><div class="ui fluid card"><div class="content"><div class="meta">' +
-    '<span class="ui database label">Database</span></div><div class="header"><a href="/resources/0/">' +
-    '<h3>test</h3></a></div></div></div></div></div><div class="ui divider item"></div></div></div></div>' +
-    '</div></div></div></div></div></div>'
+    const expected = '<div><div class="ui container grid segment"><div class="ui five wide column">' +
+    '<div class="ui basic row segment"><div class="ui header"><h1></h1></div><div class="sub header">' +
+    '</div></div><div class="ui basic row segment"><div class="ui header"><h1>Members</h1><div class="ui img">' +
+    '</div></div></div><div class="ui basic row segment"><div class="ui header"><h1>Actions</h1>' +
+    '<div class="ui item"><span style="color: rgb(14, 110, 184);" role="button" tabindex="0"><i class="icons">' +
+    '<i aria-hidden="true" class="user plus icon"></i>Join group</i></span></div></div></div></div>' +
+    '<div class="ui eleven wide column"><div class="ui row"><div><div class="ui pointing secondary menu">' +
+    '<a class="active item">Pinned</a><a class="item">Members</a></div><div class="ui row vertical segment">' +
+    '<div class="ui three cards link"><div class="ui fluid card"><iframe src="www.prontotools.io" ' +
+    'frame-ancestors="none" width="100%" height="170px" frameborder="0" title="test pin"></iframe>' +
+    '<div class="content"><div class="header"><a href="/resources/1/"><h3>test pin</h3></a></div>' +
+    '<span class="meta"><i class="wpforms icon"></i>Knowlege post</span></div></div></div>' +
+    '<div class="ui row vertical segment"><div class="ui basic accordion"><div class="accordion ui">' +
+    '<div class="ui divider item"></div><div class="title"><div class="active title">' +
+    '<h3 class="ui header">All Resources<i position="right" class="icons"><i aria-hidden="true" class="angle down icon">' +
+    '</i></i></h3></div><div class="content active"><div class="ui three cards link"><div class="ui fluid card">' +
+    '<div class="content"><div class="header"><a href="/resources/0/"><h3>test</h3></a></div><span class="meta">' +
+    '<i class="database icon"></i>Database</span></div></div></div></div><div class="ui divider item"></div></div>' +
+    '</div></div></div></div></div></div></div></div></div>'
     expect(wrapper.html()).toEqual(expected)
   })
 })
