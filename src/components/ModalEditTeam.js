@@ -23,7 +23,7 @@ class ModalEditTeam extends Component {
           description: team.description,
         })
         members.map(member => this.setState({
-          currentValues: [member.name],
+          currentValues: [...this.state.currentValues, member.name],
         }))
       })
     axios.get(`${process.env.REACT_APP_API_URL}/members/all`)
