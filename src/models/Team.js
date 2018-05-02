@@ -128,6 +128,7 @@ const Team = {
     const selectedResource = await Promise.all(selectedResourceId.map(async (item) => {
       const cql = `MATCH (r:Resource) WHERE ID(r) = ${item} RETURN r`
       const results = await session.run(cql)
+      console.log(result)
       const data = results.records.map(req => ({
         id: req._fields[0].identity.low,
         name: req._fields[0].properties.name,
@@ -136,10 +137,11 @@ const Team = {
       }))
       return data
     }))
-    const data = await Promise.all(selectedResource.map(async (item) => {
+    console.log(selectedResource[0].map(item => item.id))
+    const data = await Promise.all(selectedResource[0].map(async (item) => {
       const results = await session.run('MATCH (t:Team)-[:pin]-(r:Resource) WHERE ID(r) = {resourceId} and ID(t) = {teamId} RETURN r', {
         teamId: Number(id),
-        resourceId: Number(item[0].id),
+        resourceId: Number(item.id),
       })
       if (results.records.length !== 0) {
         return { selectedResource: item, isPinned: true }
