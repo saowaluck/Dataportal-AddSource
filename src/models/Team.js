@@ -125,29 +125,26 @@ const Team = {
     'WHERE ID(team) = {id} RETURN {id :attend.selectedResource}', { id: Number(id) })
     const resourcesId = result.records.map(item => item._fields[0].id)
     const selectedResourceId = [].concat(...resourcesId)
-    const selectedResource = await Promise.all(selectedResourceId.map(async (item) => {
-      const cql = `MATCH (r:Resource) WHERE ID(r) = ${item} RETURN r`
-      const results = await session.run(cql)
-      console.log(result)
-      const data = results.records.map(req => ({
-        id: req._fields[0].identity.low,
-        name: req._fields[0].properties.name,
-        type: req._fields[0].properties.type,
-        url: req._fields[0].properties.url,
+    if (selectedResourceId[0] !== null) {
+      const selectedResource = await Promise.all(selectedResourceId.map(async (item) => {
+        const cql = `MATCH (r:Resource) WHERE ID(r) = ${item} RETURN r`
+        const results = await session.run(cql)
+        const data = results.records.map(req => ({
+          id: req._fields[0].identity.low,
+          name: req._fields[0].properties.name,
+          type: req._fields[0].properties.type,
+          url: req._fields[0].properties.url,
+        }))
+        return data
+      }))
+      const data = await Promise.all(selectedResource.map(async (item) => {
+        const results = await session.run(`MATCH (t:Team)-[:pin]-(r:Resource) WHERE ID(r) = ${item[0].id} and ID(t) = ${id} RETURN r`)
+        if (results.records.length !== 0) {
+          return { selectedResource: item, isPinned: true }
+        } return { selectedResource: item, isPinned: false }
       }))
       return data
-    }))
-    console.log(selectedResource[0].map(item => item.id))
-    const data = await Promise.all(selectedResource[0].map(async (item) => {
-      const results = await session.run('MATCH (t:Team)-[:pin]-(r:Resource) WHERE ID(r) = {resourceId} and ID(t) = {teamId} RETURN r', {
-        teamId: Number(id),
-        resourceId: Number(item.id),
-      })
-      if (results.records.length !== 0) {
-        return { selectedResource: item, isPinned: true }
-      } return { selectedResource: item, isPinned: false }
-    }))
-    return data
+    } return ''
   },
 
   isPinResource: async id => {

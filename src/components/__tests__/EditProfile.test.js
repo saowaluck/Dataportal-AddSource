@@ -64,14 +64,13 @@ describe('<EditProfile />', () => {
         expect(wrapper.state().name).toBe('kanokwan meekaew')
         expect(wrapper.state().position).toBe('intern')
         expect(wrapper.state().slack).toBe('kmk')
-        const expected = ('<div class="ui main container"><div class="ui stackable grid segment">' +
-        '<div class="ui four wide column"><div class="ui row basic segment aligned page">' +
-        '<img class="ui small circular image" src="" alt=""/><h2 class="ui header">kanokwan meekaew</h2>' +
-        '<div class="item"><i class="envelope outline blue icon"></i></div></div></div>' +
-        '<div class="ui twelve wide column"><h2>Edit Profile</h2><form class="ui form">' +
-        '<div class="field"><label for="url">Position<input type="text" name="position" placeholder="position" value="intern"/>' +
-        '</label></div><div class="field"><label for="slack">Slack<input type="text" name="slack" placeholder="Slack" value="kmk"/>' +
-        '</label></div><hr/><button class="ui primary button" type="submit">Update profile</button></form></div></div></div>')
+        const expected = ('<div class="ui main container"><div class="ui stackable grid segment"><div class="ui four wide column">' +
+        '<div class="ui row basic segment aligned page"><img class="ui small circular image" src="" alt=""/><h2 class="ui header">' +
+        'kanokwan meekaew</h2><div class="item"><i class="envelope outline blue small icon"></i></div></div></div>' +
+        '<div class="ui twelve wide column"><h2>Edit Profile</h2><form class="ui form"><div class="field"><label for="url">Position' +
+        '<input type="text" name="position" placeholder="position" value="intern"/></label></div><div class="field">' +
+        '<label for="slack">Slack<input type="text" name="slack" placeholder="Slack" value="kmk"/></label></div><hr/><' +
+        'button class="ui primary button" type="submit">Update profile</button></form></div></div></div>')
         expect(wrapper.html()).toEqual(expected)
         done()
       })

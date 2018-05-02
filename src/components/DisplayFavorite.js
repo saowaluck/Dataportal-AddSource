@@ -15,23 +15,33 @@ class DisplayFavorite extends Component {
     this.setState({ activeIndex: newIndex })
   }
 
+  handelMember = member => {
+    if (member.id !== this.props.id) {
+      return (
+        <div className='item' key={member.id}>
+          <a href={`/members/${member.id}/`}>
+            <img className='ui mini circular image' src={member.avatar} alt='' />
+          </a>
+        </div>
+      )
+    }
+    return true
+  }
+
   render() {
     return (
       <Accordion>
         <Accordion.Title active={this.state.activeIndex === 0} index={0} onClick={this.handleClick}>
           <Icon className='ui heart icon' />
-          favorited by {this.props.thisResource.members.length} {this.props.thisResource.members.length > 1 ? 'protons' : 'proton'}
+          favorited by {this.props.thisResource.members.some(item => item.id !== this.props.id) ?
+            this.props.thisResource.members.length :
+            this.props.thisResource.members.length - 1 }
+          {this.props.thisResource.members.length > 1 ? ' protons' : ' proton'}
           {this.props.thisResource.members.length > 0 && <Icon className='angle down icon' />}
         </Accordion.Title>
         <Accordion.Content active={this.state.activeIndex === 0}>
           <div className='ui horizontal list'>
-            { this.props.thisResource.members.map(member => (
-              <div className='item' key={member.id}>
-                <a href={`/members/${member.id}/`}>
-                  <img className='ui mini circular image' src={member.avatar} alt='' />
-                </a>
-              </div>
-            ))}
+            { this.props.thisResource.members.map(member => (this.handelMember(member)))}
           </div>
         </Accordion.Content>
       </Accordion>
@@ -44,6 +54,7 @@ const mapStateToProps = (state) => ({
 
 DisplayFavorite.propTypes = {
   thisResource: PropTypes.objectOf(PropTypes.any).isRequired,
+  id: PropTypes.number.isRequired,
 }
 
 export default connect(mapStateToProps)(DisplayFavorite)

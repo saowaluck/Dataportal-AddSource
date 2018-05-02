@@ -16,8 +16,9 @@ describe('<ConsumersList />', () => {
     ]
 
     const wrapper = shallow(<ConsumerList id={10} consumed={consumed} />)
-    const expected = '<div class="accordion ui"><div class="title"><i aria-hidden="true" class="icon user icon people">' +
-    '</i>recently comsumed by 0 protons<i aria-hidden="true" class="icon angle down icon"></i></div><div class="content">' +
+    const expected = '<div class="accordion ui"><div class="title">' +
+    '<i aria-hidden="true" class="icon user icon people">' +
+    '</i>recently comsumed by 0 proton</div><div class="content">' +
     '<div class="ui horizontal list"></div></div></div>'
     expect(wrapper.html()).toEqual(expected)
   })

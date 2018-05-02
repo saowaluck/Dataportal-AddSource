@@ -89,34 +89,36 @@ class ListResourceBySelected extends Component {
                     </Icon.Group>
                   </h3>
                 </Accordion.Title>
-                <Accordion.Content active={activeIndex === 0}>
-                  <div className='ui three cards link'>
-                    {this.props.thisResourceByTeam.resourceBySelected.map(item => (
-                      <div key={item.selectedResource.id} className='ui fluid card'>
-                        {this.props.actionsDisplay &&
-                          this.handleCheckAuth(item.isPinned, item.selectedResource.id)}
-                        { item.selectedResource.type !== 'Database' &&
-                          <iframe
-                            src={item.selectedResource.url}
-                            frame-ancestors='none'
-                            width='100%'
-                            height='170px'
-                            frameBorder='0'
-                            title={item.name}
-                          />
-                        }
-                        <div className='content'>
-                          <div className='header'>
-                            <a href={`/resources/${item.selectedResource.id}/`}><h3>{item.selectedResource.name}</h3></a>
+                {this.props.thisResourceByTeam.resourceBySelected !== '' &&
+                  <Accordion.Content active={activeIndex === 0}>
+                    <div className='ui three cards link'>
+                      {this.props.thisResourceByTeam.resourceBySelected.map(item => (
+                        <div key={item.selectedResource[0].id} className='ui fluid card'>
+                          {this.props.actionsDisplay &&
+                            this.handleCheckAuth(item.isPinned, item.selectedResource[0].id)}
+                          { item.selectedResource[0].type !== 'Database' &&
+                            <iframe
+                              src={item.selectedResource[0].url}
+                              frame-ancestors='none'
+                              width='100%'
+                              height='170px'
+                              frameBorder='0'
+                              title={item.selectedResource[0].name}
+                            />
+                          }
+                          <div className='content'>
+                            <div className='header'>
+                              <a href={`/resources/${item.selectedResource[0].id}/`}><h3>{item.selectedResource[0].name}</h3></a>
+                            </div>
+                            <span className='meta'><i className={this.handleIcon(item.selectedResource[0].type)} />
+                              {item.selectedResource[0].type}
+                            </span>
                           </div>
-                          <span className='meta'><i className={this.handleIcon(item.selectedResource.type)} />
-                            {item.selectedResource.type}
-                          </span>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </Accordion.Content>
+                      ))}
+                    </div>
+                  </Accordion.Content>
+                }
                 <div className='ui divider item' />
               </div>
             </Accordion>

@@ -50,11 +50,11 @@ describe('<PinnedResourceList />', () => {
         pinnedResources={pinnedResources}
       />)
     const wrapper = mount(<Provider store={store}>{component}</Provider>)
-    const expected = '<div class="ui three cards link"><div class="ui fluid card">' +
-    '<iframe src="www.prontotools.io" frame-ancestors="none" width="100%" height="170px" frameborder="0" title="test pin">' +
-    '</iframe><div class="content"><div class="meta"><span class="ui knowledge label">Knowlege post</span>' +
-    '<i class="icons"><i class="pin blue icon" id="1"></i></i></div><div class="header"><a href="/resources/1/">' +
-    '<h3>test pin</h3></a></div></div></div></div>'
+    const expected = '<div class="ui three cards link"><div class="ui fluid card"><span class="ui corner label">' +
+    '<i class="icons"><i class="pin blue icon" id="1"></i></i></span><iframe src="www.prontotools.io" ' +
+    'frame-ancestors="none" width="100%" height="170px" frameborder="0" title="test pin"></iframe>' +
+    '<div class="content"><div class="header"><a href="/resources/1/"><h3>test pin</h3></a></div>' +
+    '<span class="meta"><i class="wpforms icon"></i>Knowlege post</span></div></div></div>'
     expect(wrapper.html()).toEqual(expected)
   })
 })

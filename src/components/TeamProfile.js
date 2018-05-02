@@ -20,6 +20,16 @@ class TeamProfile extends Component {
   componentDidMount() {
     const id = +this.props.match.params.id
     const email = this.props.auth.getEmail()
+    const url = `${process.env.REACT_APP_API_URL}/members/resources/?memberEmail=${email}`
+    axios
+      .get(url)
+      .then(res => {
+        this.setState({
+          resources: res.data.resources,
+        })
+      })
+      .catch(() => {
+      })
     const path = `${process.env.REACT_APP_API_URL}/teams/${id}/?memberEmail=${email}`
     axios
       .get(path)
@@ -29,16 +39,6 @@ class TeamProfile extends Component {
           description: team.data.team.description,
           members: team.data.members,
           actionsDisplay: team.data.isRelationTeam,
-        })
-      })
-      .catch(() => {
-      })
-    const url = `${process.env.REACT_APP_API_URL}/members/resources/?memberEmail=${email}`
-    axios
-      .get(url)
-      .then(res => {
-        this.setState({
-          resources: res.data.resources,
         })
       })
       .catch(() => {
@@ -255,11 +255,11 @@ class TeamProfile extends Component {
                   { this.state.actionsDisplay ?
                     <span>
                       <p>
-                        <a href>
+                        <span style={{ color: '#0E6EB8' }}>
                           <Icon.Group onClick={this.modalSelectManage}>
                             <Icon name='cogs' />Manage resource
                           </Icon.Group>
-                        </a>
+                        </span>
                       </p>
                       <p>
                         <a href={`/teams/${this.props.match.params.id}/leave/`}>
@@ -269,11 +269,17 @@ class TeamProfile extends Component {
                         </a>
                       </p>
                     </span> :
-                    <a href onClick={this.modalSelectIn}>
+                    <span
+                      style={{ color: '#0E6EB8' }}
+                      onKeyPress={this.modalSelectIn}
+                      role='button'
+                      tabIndex='0'
+                      onClick={this.modalSelectIn}
+                    >
                       <Icon.Group>
                         <Icon name='user plus' />Join group
                       </Icon.Group>
-                    </a>
+                    </span>
                   }
                 </div>
               </div>
