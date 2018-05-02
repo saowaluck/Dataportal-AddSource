@@ -40,12 +40,11 @@ describe('<NewsFeed />', () => {
 
         },
       }).then(() => {
-        expect(wrapper.html()).toEqual('<div class="five wide column">' +
-        '<div class="ui segments"><div class="ui segment"><h3 class="ui header">News Feed</h3>' +
-        '</div><div class="ui segment"><div class="ui feed"><div class="event"><div class="label">' +
-        '<a href="/members/48"><img src="photo.jpg" alt=""></a></div><div class="content">' +
-        '<div class="date">2 days</div><div class="summary"> create <a href="/resources/49">Knokwan</a>' +
-        '</div></div></div></div></div></div></div>')
+        expect(wrapper.html()).toEqual('<div class="ui segments"><div class="ui segment">' +
+        '<h3 class="ui header">News Feed</h3></div><div class="ui segment"><div class="ui feed">' +
+        '<div class="event"><div class="label"><a href="/members/48"><img src="photo.jpg" alt=""></a></div>' +
+        '<div class="content"><div class="date">2 days</div><div class="summary"> create ' +
+        '<a href="/resources/49">Knokwan</a></div></div></div></div></div></div>')
         expect(request.url).toBe('http://localhost:5000/resources/')
         expect(request.config.method).toBe('get')
         done()
@@ -79,14 +78,11 @@ describe('<NewsFeed />', () => {
           ],
         },
       }).then(() => {
-        expect(wrapper.html()).toEqual('<div class="five wide column">' +
-        '<div class="ui segments"><div class="ui segment">' +
-        '<h3 class="ui header">News Feed</h3></div><div class="ui segment">' +
-        '<div class="ui feed"><div class="event"><div class="label">' +
-        '<a href="/members/48"><img src="photo.jpg" alt=""></a></div>' +
-        '<div class="content"><div class="date">a month</div>' +
-        '<div class="summary"> update <a href="/resources/49">Knokwan</a>' +
-        '</div></div></div></div></div></div></div>')
+        expect(wrapper.html()).toEqual('<div class="ui segments"><div class="ui segment">' +
+        '<h3 class="ui header">News Feed</h3></div><div class="ui segment"><div class="ui feed">' +
+        '<div class="event"><div class="label"><a href="/members/48"><img src="photo.jpg" alt=""></a></div>' +
+        '<div class="content"><div class="date">a month</div><div class="summary"> update ' +
+        '<a href="/resources/49">Knokwan</a></div></div></div></div></div></div>')
         expect(request.url).toBe('http://localhost:5000/resources/')
         expect(request.config.method).toBe('get')
         done()
@@ -120,14 +116,12 @@ describe('<NewsFeed />', () => {
           ],
         },
       }).then(() => {
-        expect(wrapper.html()).toEqual('<div class="five wide column">' +
-        '<div class="ui segments"><div class="ui segment">' +
-        '<h3 class="ui header">News Feed</h3></div><div class="ui segment">' +
-        '<div class="ui feed"><div class="event"><div class="label">' +
-        '<a href="/members/48"><img src="photo.jpg" alt=""></a></div>' +
-        '<div class="content"><div class="date">an hour</div>' +
-        '<div class="summary"> create <a href="/resources/49">Knokwan</a>' +
-        '</div></div></div></div></div></div></div>')
+        const expected = '<div class="ui segments"><div class="ui segment">' +
+        '<h3 class="ui header">News Feed</h3></div><div class="ui segment"><div class="ui feed">' +
+        '<div class="event"><div class="label"><a href="/members/48"><img src="photo.jpg" alt=""></a></div>' +
+        '<div class="content"><div class="date">an hour</div><div class="summary"> create ' +
+        '<a href="/resources/49">Knokwan</a></div></div></div></div></div></div>'
+        expect(wrapper.html()).toEqual(expected)
         expect(request.url).toBe('http://localhost:5000/resources/')
         expect(request.config.method).toBe('get')
         done()
@@ -161,13 +155,12 @@ describe('<NewsFeed />', () => {
           ],
         },
       }).then(() => {
-        expect(wrapper.html()).toEqual('<div class="five wide column">' +
-        '<div class="ui segments"><div class="ui segment">' +
-        '<h3 class="ui header">News Feed</h3></div><div class="ui segment">' +
-        '<div class="ui feed"><div class="event"><div class="label"><a href="/members/48">' +
-        '<img src="photo.jpg" alt=""></a></div><div class="content"><div class="date">2 months</div>' +
-        '<div class="summary"> create <a href="/resources/49">Knokwan</a></div></div></div></div></div></div></div>')
-        expect(request.url).toBe('http://localhost:5000/resources/')
+        const expected = '<div class="ui segments"><div class="ui segment">' +
+        '<h3 class="ui header">News Feed</h3></div><div class="ui segment"><div class="ui feed">' +
+        '<div class="event"><div class="label"><a href="/members/48"><img src="photo.jpg" alt=""></a></div>' +
+        '<div class="content"><div class="date">2 months</div><div class="summary"> create ' +
+        '<a href="/resources/49">Knokwan</a></div></div></div></div></div></div>'
+        expect(wrapper.html()).toEqual(expected)
         expect(request.config.method).toBe('get')
         done()
       })
@@ -200,11 +193,11 @@ describe('<NewsFeed />', () => {
           ],
         },
       }).then(() => {
-        expect(wrapper.html()).toEqual('<div class="five wide column">' +
-        '<div class="ui segments"><div class="ui segment"><h3 class="ui header">News Feed</h3>' +
-        '</div><div class="ui segment"><div class="ui feed"><div class="event"><div class="label">' +
-        '<a href="/members/48"><img src="photo.jpg" alt=""></a></div><div class="content"><div class="date">a year</div>' +
-        '<div class="summary"> create <a href="/resources/49">Knokwan</a></div></div></div></div></div></div></div>')
+        expect(wrapper.html()).toEqual('<div class="ui segments"><div class="ui segment">' +
+        '<h3 class="ui header">News Feed</h3></div><div class="ui segment"><div class="ui feed">' +
+        '<div class="event"><div class="label"><a href="/members/48"><img src="photo.jpg" alt=""></a></div>' +
+        '<div class="content"><div class="date">a year</div><div class="summary"> create ' +
+        '<a href="/resources/49">Knokwan</a></div></div></div></div></div></div>')
         expect(request.url).toBe('http://localhost:5000/resources/')
         expect(request.config.method).toBe('get')
         done()

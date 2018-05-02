@@ -54,7 +54,7 @@ const mapStateToProps = (state) => ({
 
 DisplayFavorite.propTypes = {
   thisResource: PropTypes.objectOf(PropTypes.any).isRequired,
-  id: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
 }
 
 export default connect(mapStateToProps)(DisplayFavorite)

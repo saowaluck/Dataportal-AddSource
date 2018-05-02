@@ -21,18 +21,22 @@ describe('<AllResourceList />', () => {
     const searchText = 'Track Reseller'
 
     const wrapper = shallow(<AllResourceList resources={resources} searchText={searchText} />)
-    const expected = '<div><div class="ui row vertical segment"><p>1 results found for Track Reseller</p>' +
-    '<div class="ui divided items"><div class="item"><div class="content"><div class="ui row vertical">' +
-    '<h3 class="ui header"><a href="/resources/137/">Track Reseller</a><div class="ui right floated knowledge big label">' +
-    '<div class="visible content">Knowledge Post</div></div></h3></div><br/><p><span><i class="heart icon"></i>1</span>  <span>' +
-    '<a href="/members/136/"><i class="user icon people"></i>saowaluck</a></span>  <span><i class="wait icon"></i>Mar 23, 2018</span>  <span>' +
-    '<i class="history icon"></i>Mar 23, 2018</span>  </p></div></div></div></div><div class="ui center aligned basic segment">' +
-    '<div aria-label="Pagination Navigation" role="navigation" class="ui pagination menu">' +
-    '<a aria-current="false" tabindex="0" value="1" aria-label="First item" type="firstItem" class="item">«</a>' +
-    '<a aria-current="false" tabindex="0" value="1" aria-label="Previous item" type="prevItem" class="item">⟨</a>' +
-    '<a aria-current="true" tabindex="0" value="1" type="pageItem" class="active item">1</a>' +
-    '<a aria-current="false" tabindex="0" value="1" aria-label="Next item" type="nextItem" class="item">⟩</a>' +
-    '<a aria-current="false" tabindex="0" value="1" aria-label="Last item" type="lastItem" class="item">»</a></div></div></div>'
+    const expected = '<div><div class="ui row vertical segment">' +
+    '<p>1 results found for Track Reseller</p><div class="ui divided items">' +
+    '<div class="item"><div class="content"><div class="ui row vertical">' +
+    '<h3 class="ui header"><a href="/resources/137/">Track Reseller</a></h3>' +
+    '</div><br/><p><span><i class="heart icon"></i>1</span>  <span>' +
+    '<a href="/members/136/"><i class="user icon people"></i>saowaluck</a>' +
+    '</span>  <span><i class="wpforms icon"></i>Knowledge Post</span>  <span>' +
+    '<i class="wait icon"></i>Mar 23, 2018</span>  <span><i class="history icon">' +
+    '</i>Mar 23, 2018</span>  </p></div></div></div></div>' +
+    '<div class="ui center aligned basic segment"><div aria-label="Pagination Navigation" ' +
+    'igation" class="ui pagination menu"><a value="1" aria-current="false" ' +
+    'aria-label="First item" tabindex="0" class="item">«</a><a value="1" ' +
+    'aria-current="false" aria-label="Previous item" tabindex="0" class="item">⟨</a>' +
+    '<a value="1" aria-current="true" tabindex="0" class="active item">1</a>' +
+    '<a value="1" aria-current="false" aria-label="Next item" tabindex="0" class="item">⟩</a>' +
+    '<a value="1" aria-current="false" aria-label="Last item" tabindex="0" class="item">»</a></div></div></div>'
     expect(wrapper.html()).toEqual(expected)
   })
 })

@@ -9,14 +9,14 @@ describe('<togglePinReducer />', () => {
       payload: {},
     }
     const expected = {
-      resourceByCreated: [
+      resourceBySelected: [
         {
-          createdResource: {
+          selectedResource: [{
             id: '',
             name: '',
             type: '',
             url: '',
-          },
+          }],
           isPinned: true,
         },
       ],
@@ -38,14 +38,14 @@ describe('<togglePinReducer />', () => {
       type: FETCH_RESOURCE,
       payload: {
         thisResourceByTeam: {
-          resourceByCreated: [
+          resourceBySelected: [
             {
-              createdResource: {
+              selectedResource: [{
                 id: '0',
                 name: 'test',
                 type: 'Database',
                 url: '',
-              },
+              }],
               isPinned: true,
             },
           ],
@@ -61,14 +61,14 @@ describe('<togglePinReducer />', () => {
       },
     }
     const expected = {
-      resourceByCreated: [
+      resourceBySelected: [
         {
-          createdResource: {
+          selectedResource: [{
             id: '0',
             name: 'test',
             type: 'Database',
             url: '',
-          },
+          }],
           isPinned: true,
         },
       ],

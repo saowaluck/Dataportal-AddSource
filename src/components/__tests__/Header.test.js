@@ -14,14 +14,12 @@ describe('<Header />', () => {
     }
 
     const wrapper = shallow(<Header auth={auth} />)
-    const expected = '<div class="ui stackable menu">' +
-    '<div class="ui container">' +
-    '<a href="/search/" class="header item">' +
-    '<img class="ui mini image" src="logo-mark.png" alt=""/>Dataportal</a>' +
-    '<div class="right menu"><div class="ui simple right item">' +
-    '<a href="/resources/add/">Add New Resource</a></div>' +
-    '<div class="ui active centered inline loader"></div>' +
-    '</div></div></div>'
+    const expected = '<div class="ui stackable menu"><div class="ui container">' +
+    '<a href="/search/" class="header item"><img class="ui mini image" src="logo-mark.png" alt=""/>' +
+    'Dataportal</a><div class="left menu"><div class="ui simple left item"><a href="/teams/">All Teams</a>' +
+    '</div><div class="ui simple left item"><a href="/members/">All Members</a></div></div>' +
+    '<div class="right menu"><div class="ui simple right item"><a href="/resources/add/">Add New Resource' +
+    '</a></div><div class="ui active centered inline loader"></div></div></div></div>'
 
     expect(wrapper.html()).toEqual(expected)
   })
