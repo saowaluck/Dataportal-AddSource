@@ -13,6 +13,7 @@ class AddKnowledgePostResource extends Component {
     isSubmit: false,
     options: [],
     message: false,
+    messageTags: false,
   }
 
   componentDidMount() {
@@ -30,36 +31,48 @@ class AddKnowledgePostResource extends Component {
   }
 
   onSearchChange = (e, { searchQuery }) => {
-    if (searchQuery.match(',')) {
-      const tag = searchQuery.substring(0, searchQuery.length - 1)
-      if (this.state.tags.every(currentTags => currentTags !== tag)) {
-        this.setState({
-          options: [{ text: tag, value: tag }, ...this.state.options],
-          tags: [
-            ...this.state.tags,
-            tag,
-          ],
-        }, () => {
-          this.dropdown.clearSearchQuery()
-        })
-      } else {
-        this.setState(() => {
-          this.dropdown.clearSearchQuery()
-        })
+    if (this.state.tags.length < 10) {
+      this.setState({ messageTags: false })
+      if (searchQuery.match(',')) {
+        const tag = searchQuery.substring(0, searchQuery.length - 1)
+        if (this.state.tags.every(currentTags => currentTags !== tag)) {
+          this.setState({
+            options: [{ text: tag, value: tag }, ...this.state.options],
+            tags: [
+              ...this.state.tags,
+              tag,
+            ],
+          }, () => {
+            this.dropdown.clearSearchQuery()
+          })
+        } else {
+          this.setState(() => {
+            this.dropdown.clearSearchQuery()
+          })
+        }
       }
+    } else {
+      this.setState({ messageTags: true })
     }
   }
 
   handleAddition = (e, { value }) => {
-    this.setState({
-      options: [{ text: value, value }, ...this.state.options],
-    })
+    if (value.length < 11) {
+      this.setState({
+        options: [{ text: value, value }, ...this.state.options],
+      })
+    }
   }
 
   handleTagsChange = (e, { value }) => {
-    this.setState({
-      tags: value,
-    })
+    if (value.length < 11) {
+      this.setState({
+        tags: value,
+        messageTags: false,
+      })
+    } else {
+      this.setState({ messageTags: true })
+    }
   }
 
   allTagOption = e => { this.dropdown = e }
@@ -123,8 +136,14 @@ class AddKnowledgePostResource extends Component {
               />
             </label>
           </div>
+          {this.state.messageTags &&
+            <div className='ui red message'>
+              Can not input tags more than 10.
+            </div>
+          }
           <div className='field'>
             <label htmlFor='name'>Tags
+              <span className='meta'>(limit:10)</span>
               <Dropdown
                 name='tags'
                 ref={this.allTagOption}

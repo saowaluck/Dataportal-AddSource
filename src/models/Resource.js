@@ -160,6 +160,20 @@ const Resource = {
     return resource
   },
 
+  getRelatedResource: async (tags) => {
+    const result = await session.run('WITH {tags} AS tags ' +
+    'MATCH (resource:Resource)-[:hasTag]->(tag:Tag) WHERE tag.name IN tags ' +
+    'RETURN resource, Count(*) As recoment ORDER BY recoment DESC LIMIT 5', { tags })
+    const resource = result.records.map(item => ({
+      id: item._fields[0].identity.low,
+      name: item._fields[0].properties.name,
+      type: item._fields[0].properties.type,
+      createdDate: moment(item._fields[0].properties.createdDate).format('MMM DD, YYYY'),
+      updatedDate: moment(item._fields[0].properties.updatedDate).format('MMM DD, YYYY'),
+    }))
+    return resource
+  },
+
   getResourceById: async (id) => {
     const result = await session.run(`MATCH n= ((m:Member)-[:created]->(r:Resource)) WHERE ID(r) = ${id} RETURN n`)
     const resources = result.records.map(item => ({

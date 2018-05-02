@@ -70,7 +70,7 @@ class DisplayResourceDetail extends Component {
                     <i className='external share icon' /> View Original
                   </a>
                 </div>
-                <DisplayFavorite />
+                <DisplayFavorite id={this.props.data.creator.id} />
                 <ConsumerList id={this.props.data.id} />
               </div>
               <div className='ui row vertical segment'>

@@ -70,9 +70,9 @@ router.post('/:id/resources/:resourceId/unpinned/', async (req, res) => {
 router.get('/:id/', async (req, res) => {
   const id = Number(req.params.id)
   const email = req.query.memberEmail
+  const isRelationTeam = await Team.isRelationTeam(id, email)
   const team = await Team.getTeamById(id)
   const members = await Team.getMembersOfTeam(id)
-  const isRelationTeam = await Team.isRelationTeam(id, email)
   res.json({
     isRelationTeam, team, members,
   })
@@ -80,8 +80,8 @@ router.get('/:id/', async (req, res) => {
 
 router.get('/:id/resources/', async (req, res) => {
   const id = Number(req.params.id)
-  const resourceBySelected = await Team.getResourceBySelected(id)
   const pinnedResources = await Team.getResourceByPin(id)
+  const resourceBySelected = await Team.getResourceBySelected(id)
   res.json({
     resourceBySelected, pinnedResources,
   })
@@ -109,11 +109,16 @@ router.post('/', async (req, res) => {
 })
 
 router.get('/', async (req, res) => {
+  const email = req.query.memberEmail
   let members = [{ name: '' }]
   const teams = await Team.getTeam()
   const result = await Promise.all(teams.map(async team => {
     members = await Team.getMembersOfTeam(team.id)
-    return { team, members }
+    const joined = members.map(item => item.email === email)
+    if (joined.some(item => item === true)) {
+      return { team, members, joined: true }
+    }
+    return { team, members, joined: false }
   }))
   res.json(result)
 })
