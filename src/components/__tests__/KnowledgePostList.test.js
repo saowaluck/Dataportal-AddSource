@@ -27,12 +27,14 @@ describe('<KnowledgePostList />', () => {
     '<i class="heart icon"></i>1</span>  <span><a href="/members/136/"><i class="user icon people">' +
     '</i>saowaluck</a></span>  <span><i class="wait icon"></i>Mar 23, 2018</span>  <span>' +
     '<i class="history icon"></i>Mar 23, 2018</span>  </p></div></div></div></div>' +
-    '<div class="ui center aligned basic segment"><div aria-label="Pagination Navigation" role="navigation"' +
-    'class="ui pagination menu"><a value="1" aria-current="false" aria-label="First item" tabindex="0" ' +
-    'class="item">«</a><a value="1" aria-current="false" aria-label="Previous item" tabindex="0" class="item">' +
-    '⟨</a><a value="1" aria-current="true" tabindex="0" class="active item">1</a><a value="1" aria-current="false" ' +
-    'aria-label="Next item" tabindex="0" class="item">⟩</a><a value="1" aria-current="false" aria-label="Last item" ' +
-    'tabindex="0" class="item">»</a></div></div></div>'
+    '<div class="ui center aligned basic segment">' +
+    '<div aria-label="Pagination Navigation" role="navigation" class="ui pagination menu">' +
+    '<a value="1" aria-current="false" aria-label="First item" tabindex="0" class="item">«</a>' +
+    '<a value="1" aria-current="false" aria-label="Previous item" tabindex="0" class="item">⟨</a>' +
+    '<a value="1" aria-current="true" tabindex="0" class="active item">1</a>' +
+    '<a value="1" aria-current="false" aria-label="Next item" tabindex="0" class="item">⟩</a>' +
+    '<a value="1" aria-current="false" aria-label="Last item" tabindex="0" class="item">»</a>' +
+    '</div></div></div>'
     expect(wrapper.html()).toEqual(expected)
   })
 })
