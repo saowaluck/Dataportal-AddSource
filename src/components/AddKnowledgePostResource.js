@@ -112,8 +112,8 @@ class AddKnowledgePostResource extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <div className='field'>
-            <label htmlFor='name'>Name
+          <div className='required field'>
+            <label htmlFor='name'>Name</label>
               <input
                 type='text'
                 name='name'
@@ -122,10 +122,9 @@ class AddKnowledgePostResource extends Component {
                 required
                 onChange={this.handleChange}
               />
-            </label>
           </div>
-          <div className='field'>
-            <label htmlFor='url'>URL
+          <div className='required field'>
+            <label htmlFor='url'>URL</label>
               <input
                 type='url'
                 name='url'
@@ -134,7 +133,6 @@ class AddKnowledgePostResource extends Component {
                 required
                 onChange={this.handleChange}
               />
-            </label>
           </div>
           {this.state.messageTags &&
             <div className='ui red message'>

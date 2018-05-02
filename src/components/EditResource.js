@@ -129,29 +129,27 @@ class EditResource extends Component {
             <div className='ui segment'>
               <h1>Edit Resource</h1>
               <form className='ui form'>
-                <div className='field'>
-                  <label htmlFor='name'>Name
-                    <input
-                      type='text'
-                      name='name'
-                      placeholder='Name'
-                      value={this.state.name}
-                      required
-                      onChange={this.handleChange}
-                    />
-                  </label>
+                <div className='required field'>
+                  <label htmlFor='name'>Name</label>
+                  <input
+                    type='text'
+                    name='name'
+                    placeholder='Name'
+                    value={this.state.name}
+                    required
+                    onChange={this.handleChange}
+                  />
                 </div>
-                <div className='field'>
-                  <label htmlFor='url'>URL
-                    <input
-                      type='url'
-                      name='url'
-                      placeholder='URL'
-                      value={this.state.url}
-                      required
-                      onChange={this.handleChange}
-                    />
-                  </label>
+                <div className='required field'>
+                  <label htmlFor='url'>URL</label>
+                  <input
+                    type='url'
+                    name='url'
+                    placeholder='URL'
+                    value={this.state.url}
+                    required
+                    onChange={this.handleChange}
+                  />
                 </div>
                 <div className='field'>
                   <label htmlFor='name'>Tags

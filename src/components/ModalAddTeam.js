@@ -75,46 +75,46 @@ class ModalAddTeam extends Component {
           <Modal.Header>Create Team</Modal.Header>
           <Modal.Content>
             <Form onSubmit={this.handleSubmit}>
-              <Form.Field>
-                <label htmlFor='name'>Name
-                  <input
-                    placeholder='team name'
-                    name='name'
-                    value={this.state.name}
-                    required
-                    onChange={this.handleChange}
-                  />
-                </label>
+              <Form.Field required>
+                <label htmlFor='name'>Name</label>
+                <input
+                  placeholder='team name'
+                  name='name'
+                  type='text'
+                  value={this.state.name}
+                  required
+                  onChange={this.handleChange}
+                />
               </Form.Field>
               <Form.Field required>
-                <label htmlFor='description'>Description
-                  <textarea
-                    name='description'
-                    rows='3'
-                    placeholder='description of team'
-                    value={this.state.description}
-                    required
-                    onChange={this.handleChange}
-                  />
-                </label>
+                <label htmlFor='description'>Description</label>
+                <textarea
+                  name='description'
+                  rows='3'
+                  type='text'
+                  placeholder='description of team'
+                  value={this.state.description}
+                  required
+                  onChange={this.handleChange}
+                />
               </Form.Field>
-              <Form.Field>
-                <label htmlFor='members'>Members
-                  <Dropdown
-                    options={this.state.options}
-                    placeholder='Choose Member'
-                    search
-                    inline
-                    selection
-                    fluid
-                    multiple
-                    name='members'
-                    allowAdditions
-                    value={this.state.currentValues}
-                    onAddItem={this.handleAddition}
-                    onChange={this.handleOptionChange}
-                  />
-                </label>
+              <Form.Field required>
+                <label htmlFor='members'>Members</label>
+                <Dropdown
+                  options={this.state.options}
+                  placeholder='Choose Member'
+                  search
+                  inline
+                  selection
+                  fluid
+                  required
+                  multiple
+                  name='members'
+                  allowAdditions
+                  value={this.state.currentValues}
+                  onAddItem={this.handleAddition}
+                  onChange={this.handleOptionChange}
+                />
               </Form.Field>
             </Form>
           </Modal.Content>

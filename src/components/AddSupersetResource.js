@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 import axios from 'axios'
-import { Dropdown } from 'semantic-ui-react'
+import { Dropdown, Label } from 'semantic-ui-react'
 
 class AddSupersetResource extends Component {
   state = {
@@ -110,29 +110,29 @@ class AddSupersetResource extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <div className='field'>
-            <label htmlFor='name'>Name
-              <input
-                type='text'
-                name='name'
-                placeholder='Name'
-                value={this.state.name}
-                required
-                onChange={this.handleChange}
-              />
-            </label>
+          <div className='required field'>
+            <label htmlFor='name'>Name</label>
+            <input
+              type='text'
+              name='name'
+              placeholder='Name'
+              required
+              value={this.state.name}
+              onChange={this.handleChange}
+            />
+            {this.state.nameEror === 'error' && <Label basic color='red' pointing>Please enter a name</Label>}
           </div>
-          <div className='field'>
-            <label htmlFor='url'>URL
-              <input
-                type='url'
-                name='url'
-                placeholder='URL'
-                value={this.state.url}
-                required
-                onChange={this.handleChange}
-              />
-            </label>
+          <div className='required field'>
+            <label htmlFor='url'>URL</label>
+            <input
+              type='url'
+              name='url'
+              required
+              placeholder='URL'
+              value={this.state.url}
+              onChange={this.handleChange}
+            />
+            {this.state.url === 'er' && <Label basic color='red' pointing>Please enter url</Label>}
           </div>
           {this.state.messageTags &&
             <div className='ui red message'>
