@@ -65,10 +65,12 @@ class TeamProfile extends Component {
 
   modalSelectIn = () => this.setState({ openSelectIn: true })
   modalSelectManage = () => {
-    this.setState({
-      openSelectManage: true,
-      selected: this.state.selectedResourceId.map(item => item),
-    })
+    this.setState({ openSelectManage: true })
+    if (this.state.selectedResourceId !== undefined) {
+      this.setState({
+        selected: this.state.selectedResourceId.map(item => item),
+      })
+    }
   }
 
   close = () => this.setState({ openSelectIn: false, openSelectManage: false })
@@ -150,6 +152,7 @@ class TeamProfile extends Component {
         <Modal dimmer open={this.state.openSelectIn} onClose={this.close}>
           <Modal.Header>Select resource to this team.</Modal.Header>
           <Modal.Content>
+            {this.state.resources.length === 0 ? <h2>Not have resource</h2> :
             <div className='ui row vertical segment'>
               <p><input type='checkbox' name='checked' onClick={this.handleSelectAll} />Select All</p>
               <div className='ui middle aligned divided list'>
@@ -172,19 +175,26 @@ class TeamProfile extends Component {
                 ))}
               </div>
             </div>
+            }
           </Modal.Content>
           <Modal.Actions>
             <Button color='red' onClick={this.close}>
               Cancel
             </Button>
-            <a href={`/teams/${this.props.match.params.id}/join`}>
-              <Button positive icon='checkmark' labelPosition='right' content='Confirm' onClick={this.handleJoin} />
-            </a>
+            {this.state.resources.length !== 0 ?
+              <a href={`/teams/${this.props.match.params.id}/join`}>
+                <Button positive icon='checkmark' labelPosition='right' content='Confirm' onClick={this.handleJoin} />
+              </a> :
+              <a href={`/teams/${this.props.match.params.id}/join`}>
+                <Button primary icon='checkmark' labelPosition='right' content='Join' onClick={this.handleJoin} />
+              </a>
+            }
           </Modal.Actions>
         </Modal>
         <Modal dimmer open={this.state.openSelectManage} onClose={this.close}>
           <Modal.Header>Select resource to this team.</Modal.Header>
           <Modal.Content>
+            {this.state.resources.length === 0 ? <h2>Not have resource</h2> :
             <div className='ui row vertical segment'>
               <p><input type='checkbox' name='checked' onClick={this.handleSelectAll} />Select All</p>
               <div className='ui middle aligned divided list'>
@@ -207,12 +217,14 @@ class TeamProfile extends Component {
                 ))}
               </div>
             </div>
+            }
           </Modal.Content>
           <Modal.Actions>
             <Button color='red' onClick={this.close}>
               Cancel
             </Button>
-            <Button positive icon='checkmark' labelPosition='right' content='Confirm' onClick={this.handleManageResource} />
+            {this.state.resources.length !== 0 &&
+              <Button positive icon='checkmark' labelPosition='right' content='Confirm' onClick={this.handleManageResource} />}
           </Modal.Actions>
         </Modal>
         <div className='ui container grid segment'>

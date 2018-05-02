@@ -9,9 +9,7 @@ const Tags = {
   },
 
   getTagsByResourceId: async (id) => {
-    let tags = await session.run('MATCH (s:Resource)-[:hasTag]->(t:Tag) ' +
-      'WHERE ID(s) = {id} ' +
-      'RETURN t', { id })
+    let tags = await session.run(`MATCH (s:Resource)-[:hasTag]->(t:Tag) WHERE ID(s) = ${id} RETURN t`)
     tags = tags.records.map(item => item._fields[0].properties.name)
     return tags
   },

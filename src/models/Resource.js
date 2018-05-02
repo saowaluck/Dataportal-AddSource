@@ -53,10 +53,11 @@ const Resource = {
   },
 
   memberCreatedResource: async (resourceId, memberId) => {
-    await session.run('MATCH (resource:Resource),(member:Member) ' +
-    'WHERE ID(resource) = {resourceId} and ID(member) = {memberId} ' +
+    const cql = `${'MATCH (resource:Resource),(member:Member) ' +
+    'WHERE ID(resource) = '}${resourceId} and ID(member) = ${memberId} ` +
     'CREATE (member)-[:created]->(resource) ' +
-    'WITH resource as s MATCH n=()-[:created]->() RETURN n', { resourceId, memberId })
+    'WITH resource as s MATCH n=()-[:created]->() RETURN n'
+    await session.run(cql)
   },
 
   createResource: async (req) => {
@@ -143,25 +144,24 @@ const Resource = {
 
   createResourceHasTag: async (id, tag) => {
     const resource = await session
-      .run('MATCH (resource:Resource) WHERE ID(resource) = {id} ' +
-      'CREATE (resource)-[:hasTag]->(:Tag{name:{tag}}) ' +
-      'WITH resource as s MATCH n=()-[:hasTag]->() RETURN n', { id, tag })
+      .run(`MATCH (resource:Resource) WHERE ID(resource) = ${id} ` +
+      `CREATE (resource)-[:hasTag]->(:Tag{name:"${tag}"}) ` +
+      'WITH resource as s MATCH n=()-[:hasTag]->() RETURN n')
     return resource
   },
 
   createResourceHasTagDuplicate: async (idresource, idTag) => {
     const resource = await session
-      .run('MATCH (resource:Resource) WHERE ID(resource) = {idresource} ' +
-        'MATCH (tag:Tag) WHERE ID(tag) = {idTag} ' +
+      .run(`MATCH (resource:Resource) WHERE ID(resource) = ${idresource} ` +
+        `MATCH (tag:Tag) WHERE ID(tag) = ${idTag} ` +
         'CREATE (resource)-[:hasTag]->(tag) ' +
         'WITH resource AS s ' +
-        'MATCH n = (s)-[:hasTag]->(tag)  RETURN n', { idresource, idTag })
+        'MATCH n = (s)-[:hasTag]->(tag)  RETURN n')
     return resource
   },
 
   getResourceById: async (id) => {
-    const idResource = Number(id)
-    const result = await session.run('MATCH n= ((m:Member)-[:created]->(r:Resource)) WHERE ID(r) = {idResource} RETURN n', { idResource })
+    const result = await session.run(`MATCH n= ((m:Member)-[:created]->(r:Resource)) WHERE ID(r) = ${id} RETURN n`)
     const resources = result.records.map(item => ({
       memberId: item._fields[0].start.identity.low,
       member: item._fields[0].start.properties.name,
@@ -175,14 +175,14 @@ const Resource = {
   },
 
   getTypeResourceById: async (id) => {
-    const resource = await session.run('MATCH (s:Resource) WHERE ID(s) = {id} RETURN s.type', { id: Number(id) })
+    const resource = await session.run(`MATCH (s:Resource) WHERE ID(s) = ${id} RETURN s.type`)
     const type = resource.records[0]._fields[0]
     return type
   },
 
   getResourceByType: async (id, type) => {
-    const resource = await session.run('MATCH (s:Resource) WHERE ID(s) = {id} RETURN s', { id })
-    const result = await session.run('MATCH (member:Member)-[r:created]->(resource:Resource) WHERE ID(resource) = {id} RETURN member', { id })
+    const resource = await session.run(`MATCH (s:Resource) WHERE ID(s) = ${id} RETURN s`)
+    const result = await session.run(`MATCH (member:Member)-[r:created]->(resource:Resource) WHERE ID(resource) = ${id} RETURN member`)
     const creator = {
       id: result.records[0]._fields[0].identity.low,
       name: result.records[0]._fields[0].properties.name,
@@ -207,8 +207,7 @@ const Resource = {
   },
 
   hasTags: async (id) => {
-    const resource = await session.run('MATCH (s:Resource)-[r:hasTag]->(t:Tag) ' +
-    'WHERE ID(s) = {id} RETURN t.name', { id })
+    const resource = await session.run(`MATCH (s:Resource)-[r:hasTag]->(t:Tag) WHERE ID(s) = ${id} RETURN t.name`)
     if (resource.records.length !== 0) {
       return true
     }
@@ -230,22 +229,14 @@ const Resource = {
         check_url: req.check_url,
       }
       const result = await session
-        .run('MATCH (n :Resource) WHERE ID(n) = {id} ' +
-      'SET n = {' +
-        'name:{name},' +
+        .run(`MATCH (n :Resource) WHERE ID(n) = ${data.id} ` +
+      `SET n = { name:"${data.name}",` +
         'columns:{columns},' +
-        'type:{type},' +
-        'description:{description},' +
-        'createdDate:{createdDate},' +
-        'updatedDate:{updatedDate}}' +
-      'RETURN n', {
-          id: data.id,
-          name: data.name,
+        `type:"${data.type}",` +
+        `description:"${data.description}",` +
+        `createdDate:"${data.createdDate}",` +
+        `updatedDate:"${data.updatedDate}"} RETURN n`, {
           columns: data.columns,
-          type: data.type,
-          description: data.description,
-          createdDate: data.createdDate,
-          updatedDate: data.updatedDate,
         })
       resources = {
         id: Number(result.records[0]._fields[0].identity.low),
@@ -274,29 +265,16 @@ const Resource = {
         updatedDate: moment().format(),
         check_url: req.check_url,
       }
-      const isDuplicate = await session.run('MATCH (r:Resource) WHERE NOT (r.type =~ {type}) OR NOT (r.url =~ {check_url})' +
-      'WITH r as resource MATCH (resource) WHERE resource.type = {type} AND resource.url = {url}  RETURN resource', {
-        check_url: data.check_url,
-        type: data.type,
-        url: data.url,
-      })
+      const isDuplicate = await session.run(`MATCH (r:Resource) WHERE NOT (r.type =~ "${data.type}") OR NOT (r.url =~ "${data.check_url}")` +
+      `WITH r as resource MATCH (resource) WHERE resource.type = "${data.type}" AND resource.url = "${data.url}" RETURN resource`)
       if (isDuplicate.records.length === 0) {
         const result = await session
-          .run('MATCH (n :Resource) WHERE ID(n) = {id} ' +
-        'SET n = {' +
-          'name:{name},' +
-          'url:{url},' +
-          'type:{type},' +
-          'createdDate:{createdDate},' +
-          'updatedDate:{updatedDate}}' +
-        'RETURN n', {
-            id: data.id,
-            name: data.name,
-            url: data.url,
-            type: data.type,
-            createdDate: data.createdDate,
-            updatedDate: data.updatedDate,
-          })
+          .run(`MATCH (n :Resource) WHERE ID(n) = ${data.id} ` +
+        `SET n = { name:"${data.name}",` +
+          `url:"${data.url}",` +
+          `type:"${data.type}",` +
+          `createdDate:"${data.createdDate}",` +
+          `updatedDate:"${data.updatedDate}"} RETURN n`)
         resources = {
           id: Number(result.records[0]._fields[0].identity.low),
           name: result.records[0]._fields[0].properties.name,
@@ -320,17 +298,13 @@ const Resource = {
   clearRelationchip: async (id) => {
     await session
       .run('MATCH (resource:Resource)-[r:hasTag]->() ' +
-      'WHERE ID(resource) = {id} DELETE r ' +
-      'RETURN ID(resource)', {
-        id,
-      })
+      `WHERE ID(resource) = ${id} DELETE r RETURN ID(resource)`)
     return id
   },
 
   isRelationFavorite: async (id, email) => {
     const result = await session
-      .run('MATCH n = (m:Member)-[:favorite]->(r:Resource) WHERE ID(r) = {id} AND m.email = {email} RETURN n', {
-        id: Number(id),
+      .run(`MATCH n = (m:Member)-[:favorite]->(r:Resource) WHERE ID(r) = ${id} AND m.email = {email} RETURN n`, {
         email,
       })
     if (result.records.length > 0) {
@@ -341,27 +315,21 @@ const Resource = {
 
   addRelationFavorite: async (id, email) => {
     await session
-      .run('MATCH  (m:Member),(r:Resource) WHERE ID(r) = {id} AND m.email = {email} ' +
-      'CREATE p=(m)-[:favorite]->(r) RETURN p', {
-        id: Number(id),
-        email,
-      })
+      .run(`MATCH  (m:Member),(r:Resource) WHERE ID(r) = ${id} AND m.email = {email} ` +
+      'CREATE p=(m)-[:favorite]->(r) RETURN p', { email })
   },
 
   deleteRelationFavorite: async (id, email) => {
     await session
       .run('MATCH (m:Member)-[f:favorite]->(r:Resource) ' +
-      'WHERE ID(r) = {id} AND m.email = {email} DELETE f', {
-        id: Number(id),
+      `WHERE ID(r) = ${id} AND m.email = {email} DELETE f`, {
         email,
       })
   },
 
   getFavoriteByResourceId: async (id) => {
     const members = await session
-      .run('MATCH (m:Member)-[f:favorite]->(r:Resource) WHERE ID(r)= {id} RETURN m', {
-        id: Number(id),
-      })
+      .run(`MATCH (m:Member)-[f:favorite]->(r:Resource) WHERE ID(r)= ${id} RETURN m`)
     const data = members.records.map(member => ({
       id: member._fields[0].identity.low,
       name: member._fields[0].properties.name,
@@ -374,7 +342,7 @@ const Resource = {
 
   deleteResource: async (id) => {
     const result = await session
-      .run('MATCH (r:Resource) WHERE ID(r) = {id} DETACH DELETE r', { id })
+      .run(`MATCH (r:Resource) WHERE ID(r) = ${id} DETACH DELETE r`)
     if (result.records.length === 0) {
       return true
     }
@@ -384,24 +352,20 @@ const Resource = {
   isConsumedByMember: async (id, email) => {
     const consumedDate = moment().format()
     const result = await session
-      .run('MATCH n = (m:Member)-[:consumer]->(r:Resource) WHERE ID(r) = {id} AND m.email = {email}' +
-      'RETURN n', {
-        id: Number(id),
+      .run(`MATCH n = (m:Member)-[:consumer]->(r:Resource) WHERE ID(r) = ${id} AND m.email = {email} RETURN n`, {
         email,
       })
     if (result.records.length > 0) {
       await session
-        .run('MATCH n = (m:Member)-[c:consumer]->(r:Resource) WHERE ID(r) =  {id} AND m.email = {email}' +
+        .run(`MATCH n = (m:Member)-[c:consumer]->(r:Resource) WHERE ID(r) =  ${id} AND m.email = {email}` +
         'SET c.consumedDate = {consumedDate} RETURN m', {
-          id: Number(id),
           email,
           consumedDate,
         })
     } else {
       await session
-        .run('MATCH  (m:Member),(r:Resource) WHERE ID(r) = {id} AND m.email = {email}' +
+        .run(`MATCH  (m:Member),(r:Resource) WHERE ID(r) = ${id} AND m.email = {email}` +
         'CREATE p=(m)-[:consumer {consumedDate: {consumedDate}}]->(r) RETURN p', {
-          id: Number(id),
           email,
           consumedDate,
         })
@@ -410,9 +374,7 @@ const Resource = {
 
   getConsumersByResourceId: async (id) => {
     const members = await session
-      .run('MATCH (m:Member)-[c:consumer]->(r:Resource) WHERE ID(r)= {id}  RETURN m', {
-        id: Number(id),
-      })
+      .run(`MATCH (m:Member)-[c:consumer]->(r:Resource) WHERE ID(r)= ${id} RETURN m`)
     const result = members.records.map(member => ({
       id: member._fields[0].identity.low,
       avatar: member._fields[0].properties.avatar,
