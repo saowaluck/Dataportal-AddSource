@@ -15,6 +15,8 @@ class EditResource extends Component {
     options: [],
     message: false,
     open: false,
+    favorite: '',
+    pin: '',
   }
 
   componentDidMount = () => {
@@ -36,6 +38,17 @@ class EditResource extends Component {
             ],
           })
         ))
+      })
+      .catch(() => {
+      })
+    axios.get(`${process.env.REACT_APP_API_URL}/resources/${this.props.id}/relation/`)
+      .then(res => {
+        this.setState({
+          favorite: res.data.favorite,
+          pin: res.data.pin,
+        })
+      })
+      .catch(() => {
       })
   }
 
@@ -89,7 +102,9 @@ class EditResource extends Component {
       })
   }
 
-  show = () => this.setState({ open: true })
+  show = () => {
+    this.setState({ open: true })
+  }
   handleCancel = () => this.setState({ open: false })
 
   handleSubmit = e => {
@@ -119,6 +134,17 @@ class EditResource extends Component {
       })
       .catch(() => {
       })
+  }
+
+  content = () => {
+    if (this.state.pin > 0 && this.state.favorite > 0) {
+      return 'This resource has pin by team and favorite by member.'
+    } else if (this.state.pin > 0) {
+      return 'This resource has pin by team.'
+    } else if (this.state.favorite > 0) {
+      return 'This resource has favorite by member.'
+    }
+    return true
   }
 
   render() {
@@ -186,7 +212,8 @@ class EditResource extends Component {
         </div>
         <Confirm
           open={this.state.open}
-          content='Are you sure to delete this resource ?'
+          header='Are you sure to delete this resource ?'
+          content={this.content()}
           cancelButton='Not right now'
           confirmButton='Yes, delete resource'
           onCancel={this.handleCancel}

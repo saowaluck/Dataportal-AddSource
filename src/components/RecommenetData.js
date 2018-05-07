@@ -32,7 +32,7 @@ class RecommentData extends Component {
     return (
       <div className='ui segments'>
         <div className='ui segment'>
-          <h3 className='ui header'>Recommented</h3>
+          <h3 className='ui header'>Recommend</h3>
         </div>
         <div className='ui segment'>
           <div className='ui middle aligned list'>

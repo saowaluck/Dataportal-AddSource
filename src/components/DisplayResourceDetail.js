@@ -39,6 +39,10 @@ class DisplayResourceDetail extends Component {
                     creatorEmail={this.props.data.creator.email}
                   />}
               </h3>
+              <h4 className='meta'>
+                <i className={this.handleIcon(this.props.data.type)} />
+                &nbsp;&nbsp;{this.props.data.type}
+              </h4>
               <span className='meta'>
                 <i className='tags large icon' />
                 {this.props.data.tags.map(tag => <span key={tag} className='ui left floated label'>{tag}</span>)}

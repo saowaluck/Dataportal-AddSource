@@ -129,6 +129,7 @@ const Resource = {
           url: result.records[0]._fields[0].start.properties.url,
           createdDate: result.records[0]._fields[0].start.properties.createdDate,
           updatedDate: result.records[0]._fields[0].start.properties.updatedDate,
+          isDuplicate: false,
         }
         addIndex(
           resources.id,
@@ -137,7 +138,14 @@ const Resource = {
           resources.url,
           req.tags,
         )
+      } else {
+        resources = {
+          id: isDuplicate.records[0]._fields[0].identity.low,
+          name: isDuplicate.records[0]._fields[0].properties.name,
+          isDuplicate: true,
+        }
       }
+      return resources
     }
     return resources
   },
@@ -446,6 +454,15 @@ const Resource = {
       type: item._fields[0].properties.type,
     }))
     return resources
+  },
+
+  getRelation: async (id) => {
+    const favorite = await session.run(`MATCH (m:Member)-[f:favorite]-(r:Resource) WHERE ID(r) = ${id} RETURN Count(*) As count`)
+    const pin = await session.run(`MATCH (r:Resource)-[p:pin]-(t:Team) WHERE ID(r) = ${id} RETURN Count(*) As count`)
+    return {
+      favorite: favorite.records[0]._fields[0].low,
+      pin: pin.records[0]._fields[0].low,
+    }
   },
 
   searchResource: async (text) => {

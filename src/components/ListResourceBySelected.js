@@ -69,6 +69,7 @@ class ListResourceBySelected extends Component {
   }
 
   render() {
+    console.log(this.props.thisResourceByTeam)
     const { activeIndex } = this.state
     return (
       <div className='ui row vertical segment'>
