@@ -56,7 +56,7 @@ class AllResourceList extends Component {
                   </div>
                   <br />
                   <p>
-                    <span><i className='heart icon' />{item.favorite}</span>&nbsp;&nbsp;
+                    <span><i className='heart icon' />{item.favorite - 1}</span>&nbsp;&nbsp;
                     <span>
                       <a href={`/members/${item.resource.memberId}/`}>
                         <i className='user icon people' />{item.resource.member}

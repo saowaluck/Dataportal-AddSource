@@ -31,6 +31,8 @@ class EditDatabaseResource extends Component {
     editDescription: '',
     isRedirect: false,
     open: false,
+    favorite: '',
+    pin: '',
   }
 
   componentDidMount = () => {
@@ -53,6 +55,17 @@ class EditDatabaseResource extends Component {
             ],
           })
         ))
+      })
+      .catch(() => {
+      })
+    axios.get(`${process.env.REACT_APP_API_URL}/resources/${this.props.id}/relation/`)
+      .then(res => {
+        this.setState({
+          favorite: res.data.favorite,
+          pin: res.data.pin,
+        })
+      })
+      .catch(() => {
       })
   }
 
@@ -280,6 +293,17 @@ class EditDatabaseResource extends Component {
     })
   }
 
+  content = () => {
+    if (this.state.pin > 0 && this.state.favorite > 0) {
+      return 'This resource has pin by team and favorite by member.'
+    } else if (this.state.pin > 0) {
+      return 'This resource has pin by team.'
+    } else if (this.state.favorite > 0) {
+      return 'This resource has favorite by member.'
+    }
+    return true
+  }
+
   render() {
     return (
       <div className='ui main container'>
@@ -380,7 +404,8 @@ class EditDatabaseResource extends Component {
         </div>
         <Confirm
           open={this.state.open}
-          content='Are you sure to delete this resource ?'
+          header='Are you sure to delete this resource ?'
+          content={this.content()}
           cancelButton='Not right now'
           confirmButton='Yes, delete resource'
           onCancel={this.handleCancel}

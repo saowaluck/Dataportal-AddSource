@@ -48,13 +48,14 @@ class AllTeamList extends Component {
   }
 
   handleSubmit = e => {
+    const memberEmail = this.props.auth.getEmail()
     if (e.key === 'Enter' && this.state.searchText.trim() === '') {
-      axios.get(`${process.env.REACT_APP_API_URL}/teams/`)
+      axios.get(`${process.env.REACT_APP_API_URL}/teams/?memberEmail=${memberEmail}`)
         .then((res) => {
           this.setState({ teams: res.data })
         })
     } else if (e.key === 'Enter' && this.state.searchText.trim() !== '') {
-      axios.get(`${process.env.REACT_APP_API_URL}/teams/search/${this.state.searchText}`)
+      axios.get(`${process.env.REACT_APP_API_URL}/teams/search/${this.state.searchText}/?memberEmail=${memberEmail}`)
         .then((res) => {
           this.setState({ teams: res.data })
         })

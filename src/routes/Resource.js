@@ -66,6 +66,12 @@ router.post('/:id/favorites/', async (req, res) => {
   res.json({ isFavorite, members })
 })
 
+router.get('/:id/relation/', async (req, res) => {
+  const id = Number(req.params.id)
+  const relation = await Resource.getRelation(id)
+  res.json(relation)
+})
+
 router.get('/:id/favorites/', async (req, res) => {
   const { id } = req.params
   const email = req.query.memberEmail
@@ -153,7 +159,7 @@ router.post('/', async (req, res) => {
   let resources
   const member = await Member.getMemberByEmail(req.body.email)
   resources = await Resource.createResource(req.body)
-  if (resources.length !== 0) {
+  if (resources.isDuplicate !== true) {
     const resourceId = Number(resources.id)
     await Resource.addRelationFavorite(resourceId, req.body.email)
     const memberId = Number(member.id)
@@ -174,7 +180,7 @@ router.post('/', async (req, res) => {
     }
     res.json({ id: resourceId })
   } else {
-    res.json({ id: undefined })
+    res.json(resources)
   }
 })
 

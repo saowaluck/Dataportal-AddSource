@@ -14,6 +14,7 @@ class AddKnowledgePostResource extends Component {
     options: [],
     message: false,
     messageTags: false,
+    isDuplicate: '',
   }
 
   componentDidMount() {
@@ -91,10 +92,11 @@ class AddKnowledgePostResource extends Component {
       email: this.props.auth.getEmail(),
     })
       .then((res) => {
-        if (res.data.id === undefined) {
+        if (res.data.isDuplicate) {
           this.setState({
             isSubmit: false,
             message: true,
+            isDuplicate: res.data,
           })
         } else {
           this.setState({
@@ -114,25 +116,25 @@ class AddKnowledgePostResource extends Component {
         <form onSubmit={this.handleSubmit}>
           <div className='required field'>
             <label htmlFor='name'>Name</label>
-              <input
-                type='text'
-                name='name'
-                placeholder='Name'
-                value={this.state.name}
-                required
-                onChange={this.handleChange}
-              />
+            <input
+              type='text'
+              name='name'
+              placeholder='Name'
+              value={this.state.name}
+              required
+              onChange={this.handleChange}
+            />
           </div>
           <div className='required field'>
             <label htmlFor='url'>URL</label>
-              <input
-                type='url'
-                name='url'
-                placeholder='URL'
-                value={this.state.url}
-                required
-                onChange={this.handleChange}
-              />
+            <input
+              type='url'
+              name='url'
+              placeholder='URL'
+              value={this.state.url}
+              required
+              onChange={this.handleChange}
+            />
           </div>
           {this.state.messageTags &&
             <div className='ui red message'>
@@ -164,7 +166,10 @@ class AddKnowledgePostResource extends Component {
         </form>
         { this.state.message &&
           <div className='ui red message'>
-            The value was already entered. Type and URL must be unique. Please try again
+            Have resource duplicate this type and url,can see resource in
+            <a href={`/resources/${this.state.isDuplicate.id}/`}>
+              <b>&nbsp;{this.state.isDuplicate.name}</b>
+            </a>
           </div>
         }
         {this.state.isSubmit && (<Redirect to={`/resources/${this.state.id}/`} />)}

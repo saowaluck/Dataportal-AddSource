@@ -14,6 +14,7 @@ export const fetchResourcesSelectedByTeam = item => dispatch => {
   axios
     .get(path)
     .then(team => {
+      console.log(team.data)
       const thisResourceByTeam = team.data
       dispatch(fetchResourcesSelectedByTeamSuccess(thisResourceByTeam))
     })

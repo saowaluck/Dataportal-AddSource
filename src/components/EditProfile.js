@@ -75,6 +75,8 @@ class EditProfile extends Component {
                   <input
                     type='text'
                     name='position'
+                    pattern='[A-Za-z]+'
+                    title='Not allowed numbers and characters.'
                     placeholder='position'
                     value={this.state.position}
                     onChange={this.handleChange}

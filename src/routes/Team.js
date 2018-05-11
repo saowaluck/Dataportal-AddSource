@@ -124,12 +124,17 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/search/:text/', async (req, res) => {
+  const email = req.query.memberEmail
   const { text } = req.params
   let members = [{ name: '' }]
   const teams = await Team.searchTeams(text)
   const result = await Promise.all(teams.map(async team => {
     members = await Team.getMembersOfTeam(team.id)
-    return { team, members }
+    const joined = members.map(item => item.email === email)
+    if (joined.some(item => item === true)) {
+      return { team, members, joined: true }
+    }
+    return { team, members, joined: false }
   }))
   res.status(200).json(result)
 })
